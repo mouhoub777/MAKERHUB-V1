@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Telegram Pages - MAKERHUB</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/telegramsubscription.css">
+    
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option-card:hover {
+            border-color: #ffd600;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .option-card.selected {
+            border-color: #ffd600;
+            background: #fffef0;
+        }
+
+        .option-flag {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .option-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .option-native {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .option-symbol {
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffd600;
+            margin-bottom: 8px;
+        }
+
+        .option-code {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .selected-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .selected-info strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-modal-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-modal-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-modal-primary {
+            background: #ffd600;
+            color: #1a1a1a;
+        }
+
+        .btn-modal-primary:hover {
+            background: #f0c800;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(255, 214, 0, 0.3);
+        }
+
+        .btn-modal-primary:disabled {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ffd600;
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .search-clear:hover {
+            color: #666;
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            background: #ffd600;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1a1a1a;
+            margin: 0 auto 16px;
+        }
+
+        .modal-header-danger .modal-icon {
+            background: #ff4444;
+            color: white;
+        }
+
+        .modal-header-currency .modal-icon {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #ffd600;
+            color: #1a1a1a;
+        }
+
+        .btn-primary:hover {
+            background: #f0c800;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(255, 214, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #cc0000;
+        }
+
+        .btn-currency {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-currency:hover {
+            background: #7c3aed;
+        }
+
+        .modal-content.modal-compact {
+            max-width: 450px;
+        }
+
+        .modal-content.modal-large {
+            max-width: 800px;
+        }
+
+        /* Currency update option styles */
+        .currency-update-option.selected {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .currency-update-option:hover {
+            border-color: #8b5cf6;
+        }
+
+        .currency-update-option .option-symbol {
+            color: #8b5cf6;
+        }
+
+        .currency-update-option.selected .option-check {
+            background: #8b5cf6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <div class="header-title">
+                        <h1 id="pageTitle">
+                            <i class="fas fa-file-alt"></i>
+                            Telegram Pages
+                        </h1>
+                        <p class="header-subtitle" id="pageSubtitle">
+                            Manage your Telegram subscription pages
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="createPageBtn">
+                        <i class="fas fa-plus"></i>
+                        <span class="btn-text">Create Page</span>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Pages Section -->
+                <section class="pages-section">
+                    <div class="section-header">
+                        <h2 class="section-title">My Pages</h2>
+                        <div class="section-meta">
+                            <div class="page-count" id="pageCount">0 Pages</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pages Grid -->
+                    <div class="pages-grid" id="pagesGrid">
+                        <!-- Create Page Card -->
+                        <div class="create-page-card" id="createPageCard">
+                            <div class="create-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <h3 id="createNewPageTitle">Create New Page</h3>
+                            <p id="createNewPageDesc">Create a professional Telegram subscription page</p>
+                        </div>
+                        
+                        <!-- Loading Card (hidden by default) -->
+                        <div class="loading-card" id="loadingCard" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <p id="loadingText">Loading pages...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Language Selection Modal -->
+    <div id="languageModal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" id="languageModalOverlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <h2 class="modal-title">Select Language</h2>
+                <p class="modal-subtitle">Choose the primary language for your landing page</p>
+                <button class="modal-close" id="languageModalClose" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="search" 
+                        id="languageSearch" 
+                        class="search-input" 
+                        placeholder="Search languages..." 
+                        aria-label="Search languages"
+                    >
+                    <button class="search-clear" id="languageSearchClear" aria-label="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="options-grid languages-grid" id="languagesGrid" role="list">
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <div class="modal-footer-info">
+                    Selected: <strong id="selectedLanguageName">None</strong>
+                </div>
+                <button id="confirmLanguageBtn" class="btn btn-primary" disabled>
+                    Continue to Currency <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Currency Selection Modal -->
+    <div id="currencyModal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" id="currencyModalOverlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h2 class="modal-title">Select Currency</h2>
+                <p class="modal-subtitle">Choose the currency for your pricing</p>
+                <button class="modal-close" id="currencyModalClose" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="search" 
+                        id="currencySearch" 
+                        class="search-input" 
+                        placeholder="Search currencies..." 
+                        aria-label="Search currencies"
+                    >
+                    <button class="search-clear" id="currencySearchClear" aria-label="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="options-grid currencies-grid" id="currenciesGrid" role="list">
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="currencyBackBtn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button id="confirmCurrencyBtn" class="btn btn-primary" disabled>
+                    Create Page <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page Language Configuration Modal -->
+    <div id="pageLanguageModal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" id="pageLanguageModalOverlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h2 class="modal-title" id="pageLanguageModalTitle">Configure Page Language</h2>
+                <p class="modal-subtitle">Choose the language to translate this page interface</p>
+                <button class="modal-close" id="pageLanguageModalClose" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="search" 
+                        id="pageLanguageSearch" 
+                        class="search-input" 
+                        placeholder="Search languages..." 
+                        aria-label="Search languages"
+                    >
+                    <button class="search-clear" id="pageLanguageSearchClear" aria-label="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="options-grid languages-grid" id="pageLanguagesGrid" role="list">
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="pageLanguageCancelBtn">
+                    Cancel
+                </button>
+                <button id="confirmPageLanguageBtn" class="btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    <span>Apply <span id="selectedPageLanguageName">English</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page Currency Configuration Modal -->
+    <div id="pageCurrencyModal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" id="pageCurrencyModalOverlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header modal-header-currency">
+                <div class="modal-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h2 class="modal-title" id="pageCurrencyModalTitle">Configure Page Currency</h2>
+                <p class="modal-subtitle">Choose the currency for displaying prices on this page</p>
+                <button class="modal-close" id="pageCurrencyModalClose" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="search" 
+                        id="pageCurrencySearch" 
+                        class="search-input" 
+                        placeholder="Search currencies..." 
+                        aria-label="Search currencies"
+                    >
+                    <button class="search-clear" id="pageCurrencySearchClear" aria-label="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="options-grid currencies-grid" id="pageCurrenciesGrid" role="list">
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="pageCurrencyCancelBtn">
+                    Cancel
+                </button>
+                <button id="confirmPageCurrencyBtn" class="btn btn-currency">
+                    <i class="fas fa-check"></i>
+                    <span>Apply <span id="selectedPageCurrencyName">$ USD</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" id="deleteModalOverlay"></div>
+        <div class="modal-content modal-compact">
+            <div class="modal-header modal-header-danger">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 class="modal-title" id="deleteModalTitle">Delete Page</h2>
+                <button class="modal-close" id="deleteModalClose" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <p class="confirm-message">Are you sure you want to delete <strong id="pageNameToDelete"></strong>?</p>
+                <div class="confirm-warning">
+                    <i class="fas fa-info-circle"></i>
+                    <div>This action cannot be undone. All data associated with this page will be permanently deleted.</div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="deleteCancelBtn">Cancel</button>
+                <button class="btn btn-danger" id="deleteConfirmBtn">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete Page</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+    
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage-compat.js"></script>
+    
+    <script src="/config/firebase.js"></script>
+    
+    <!-- Sidebar Component -->
+    <script src="/assets/js/sidebar.js"></script>
+    
+    <script src="/utils/constants.js"></script>
+    <script src="/assets/js/telegramsubscription.js"></script>
+    
+    <!-- Initialize Event Handlers -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Menu toggle
+        var menuToggle = document.getElementById('menuToggle');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                if (typeof toggleSidebar === 'function') toggleSidebar();
+            });
+        }
+        
+        // Sidebar overlay
+        var sidebarOverlay = document.getElementById('sidebarOverlay');
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', function() {
+                if (typeof closeSidebar === 'function') closeSidebar();
+            });
+        }
+        
+        // Create Page Button
+        var createPageBtn = document.getElementById('createPageBtn');
+        if (createPageBtn) {
+            createPageBtn.addEventListener('click', function() {
+                if (typeof startCreatePage === 'function') startCreatePage();
+            });
+        }
+        
+        // Create Page Card
+        var createPageCard = document.getElementById('createPageCard');
+        if (createPageCard) {
+            createPageCard.addEventListener('click', function() {
+                if (typeof startCreatePage === 'function') startCreatePage();
+            });
+        }
+        
+        // Refresh Button
+        var refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function() {
+                if (typeof refreshPages === 'function') refreshPages();
+            });
+        }
+        
+        // Language Modal (Create Page)
+        var languageModalOverlay = document.getElementById('languageModalOverlay');
+        if (languageModalOverlay) {
+            languageModalOverlay.addEventListener('click', function() {
+                if (typeof closeLanguageModal === 'function') closeLanguageModal();
+            });
+        }
+        
+        var languageModalClose = document.getElementById('languageModalClose');
+        if (languageModalClose) {
+            languageModalClose.addEventListener('click', function() {
+                if (typeof closeLanguageModal === 'function') closeLanguageModal();
+            });
+        }
+        
+        var languageSearch = document.getElementById('languageSearch');
+        if (languageSearch) {
+            languageSearch.addEventListener('input', function() {
+                if (typeof SearchAndFilter === 'object' && SearchAndFilter.filterLanguages) {
+                    SearchAndFilter.filterLanguages(this.value);
+                }
+            });
+        }
+        
+        var languageSearchClear = document.getElementById('languageSearchClear');
+        if (languageSearchClear) {
+            languageSearchClear.addEventListener('click', function() {
+                if (typeof clearLanguageSearch === 'function') clearLanguageSearch();
+            });
+        }
+        
+        var confirmLanguageBtn = document.getElementById('confirmLanguageBtn');
+        if (confirmLanguageBtn) {
+            confirmLanguageBtn.addEventListener('click', function() {
+                if (typeof proceedToCurrencySelection === 'function') proceedToCurrencySelection();
+            });
+        }
+        
+        // Currency Modal (Create Page)
+        var currencyModalOverlay = document.getElementById('currencyModalOverlay');
+        if (currencyModalOverlay) {
+            currencyModalOverlay.addEventListener('click', function() {
+                if (typeof closeCurrencyModal === 'function') closeCurrencyModal();
+            });
+        }
+        
+        var currencyModalClose = document.getElementById('currencyModalClose');
+        if (currencyModalClose) {
+            currencyModalClose.addEventListener('click', function() {
+                if (typeof closeCurrencyModal === 'function') closeCurrencyModal();
+            });
+        }
+        
+        var currencySearch = document.getElementById('currencySearch');
+        if (currencySearch) {
+            currencySearch.addEventListener('input', function() {
+                if (typeof SearchAndFilter === 'object' && SearchAndFilter.filterCurrencies) {
+                    SearchAndFilter.filterCurrencies(this.value);
+                }
+            });
+        }
+        
+        var currencySearchClear = document.getElementById('currencySearchClear');
+        if (currencySearchClear) {
+            currencySearchClear.addEventListener('click', function() {
+                if (typeof clearCurrencySearch === 'function') clearCurrencySearch();
+            });
+        }
+        
+        var currencyBackBtn = document.getElementById('currencyBackBtn');
+        if (currencyBackBtn) {
+            currencyBackBtn.addEventListener('click', function() {
+                if (typeof backToLanguageSelection === 'function') backToLanguageSelection();
+            });
+        }
+        
+        var confirmCurrencyBtn = document.getElementById('confirmCurrencyBtn');
+        if (confirmCurrencyBtn) {
+            confirmCurrencyBtn.addEventListener('click', function() {
+                if (typeof redirectToCreateLanding === 'function') redirectToCreateLanding();
+            });
+        }
+        
+        // Page Language Modal (Update Existing Page)
+        var pageLanguageModalOverlay = document.getElementById('pageLanguageModalOverlay');
+        if (pageLanguageModalOverlay) {
+            pageLanguageModalOverlay.addEventListener('click', function() {
+                if (typeof closeLanguageUpdateModal === 'function') closeLanguageUpdateModal();
+            });
+        }
+        
+        var pageLanguageModalClose = document.getElementById('pageLanguageModalClose');
+        if (pageLanguageModalClose) {
+            pageLanguageModalClose.addEventListener('click', function() {
+                if (typeof closeLanguageUpdateModal === 'function') closeLanguageUpdateModal();
+            });
+        }
+        
+        var pageLanguageSearch = document.getElementById('pageLanguageSearch');
+        if (pageLanguageSearch) {
+            pageLanguageSearch.addEventListener('input', function() {
+                if (typeof SearchAndFilter === 'object' && SearchAndFilter.filterUpdateLanguages) {
+                    SearchAndFilter.filterUpdateLanguages(this.value);
+                }
+            });
+        }
+        
+        var pageLanguageSearchClear = document.getElementById('pageLanguageSearchClear');
+        if (pageLanguageSearchClear) {
+            pageLanguageSearchClear.addEventListener('click', function() {
+                if (typeof clearLanguageUpdateSearch === 'function') clearLanguageUpdateSearch();
+            });
+        }
+        
+        var pageLanguageCancelBtn = document.getElementById('pageLanguageCancelBtn');
+        if (pageLanguageCancelBtn) {
+            pageLanguageCancelBtn.addEventListener('click', function() {
+                if (typeof closeLanguageUpdateModal === 'function') closeLanguageUpdateModal();
+            });
+        }
+        
+        var confirmPageLanguageBtn = document.getElementById('confirmPageLanguageBtn');
+        if (confirmPageLanguageBtn) {
+            confirmPageLanguageBtn.addEventListener('click', function() {
+                if (typeof applyLanguageUpdate === 'function') applyLanguageUpdate();
+            });
+        }
+        
+        // Page Currency Modal (Update Existing Page)
+        var pageCurrencyModalOverlay = document.getElementById('pageCurrencyModalOverlay');
+        if (pageCurrencyModalOverlay) {
+            pageCurrencyModalOverlay.addEventListener('click', function() {
+                if (typeof closeCurrencyUpdateModal === 'function') closeCurrencyUpdateModal();
+            });
+        }
+        
+        var pageCurrencyModalClose = document.getElementById('pageCurrencyModalClose');
+        if (pageCurrencyModalClose) {
+            pageCurrencyModalClose.addEventListener('click', function() {
+                if (typeof closeCurrencyUpdateModal === 'function') closeCurrencyUpdateModal();
+            });
+        }
+        
+        var pageCurrencySearch = document.getElementById('pageCurrencySearch');
+        if (pageCurrencySearch) {
+            pageCurrencySearch.addEventListener('input', function() {
+                if (typeof SearchAndFilter === 'object' && SearchAndFilter.filterUpdateCurrencies) {
+                    SearchAndFilter.filterUpdateCurrencies(this.value);
+                }
+            });
+        }
+        
+        var pageCurrencySearchClear = document.getElementById('pageCurrencySearchClear');
+        if (pageCurrencySearchClear) {
+            pageCurrencySearchClear.addEventListener('click', function() {
+                if (typeof clearCurrencyUpdateSearch === 'function') clearCurrencyUpdateSearch();
+            });
+        }
+        
+        var pageCurrencyCancelBtn = document.getElementById('pageCurrencyCancelBtn');
+        if (pageCurrencyCancelBtn) {
+            pageCurrencyCancelBtn.addEventListener('click', function() {
+                if (typeof closeCurrencyUpdateModal === 'function') closeCurrencyUpdateModal();
+            });
+        }
+        
+        var confirmPageCurrencyBtn = document.getElementById('confirmPageCurrencyBtn');
+        if (confirmPageCurrencyBtn) {
+            confirmPageCurrencyBtn.addEventListener('click', function() {
+                if (typeof applyCurrencyUpdate === 'function') applyCurrencyUpdate();
+            });
+        }
+        
+        // Delete Modal
+        var deleteModalOverlay = document.getElementById('deleteModalOverlay');
+        if (deleteModalOverlay) {
+            deleteModalOverlay.addEventListener('click', function() {
+                if (typeof closeDeleteModal === 'function') closeDeleteModal();
+            });
+        }
+        
+        var deleteModalClose = document.getElementById('deleteModalClose');
+        if (deleteModalClose) {
+            deleteModalClose.addEventListener('click', function() {
+                if (typeof closeDeleteModal === 'function') closeDeleteModal();
+            });
+        }
+        
+        var deleteCancelBtn = document.getElementById('deleteCancelBtn');
+        if (deleteCancelBtn) {
+            deleteCancelBtn.addEventListener('click', function() {
+                if (typeof closeDeleteModal === 'function') closeDeleteModal();
+            });
+        }
+        
+        var deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+        if (deleteConfirmBtn) {
+            deleteConfirmBtn.addEventListener('click', function() {
+                if (typeof confirmDelete === 'function') confirmDelete();
+            });
+        }
+    });
+    </script>
+</body>
+</html>

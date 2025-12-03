@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Add Telegram Channel - MAKERHUB.PRO</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/assets/css/ajoutcanal.css">
+  
+  <!-- Override pour le fond blanc -->
+  <style>
+    body {
+      background: #ffffff !important;
+    }
+    .dashboard-container {
+      background: #ffffff !important;
+    }
+    .main-content {
+      background: #ffffff !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-title">
+          <h1>Connect Telegram Channel</h1>
+          <p class="header-subtitle">Automate paid subscriptions via your channel</p>
+        </div>
+        <div class="header-actions">
+          <!-- Back button that works immediately -->
+          <button class="btn-close-modal" id="backButtonTop">
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- ========= FORM SCREEN ========= -->
+        <div class="channel-form-container" id="formSection">
+          <!-- Warning Box -->
+          <div class="warning-box">
+            <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="warning-content">
+              <strong>Configuration required</strong>
+              <p>
+                To enable automation, add the bot
+                <a href="https://t.me/Makerhubsub_bot" target="_blank" rel="noopener noreferrer" class="bot-link">@Makerhubsub_bot</a>
+                as an <u>administrator</u> in your Telegram channel.<br><br>
+                <b>Grant it permission to add and remove users.</b>
+              </p>
+            </div>
+          </div>
+
+          <!-- Info Banner -->
+          <div class="info-banner">
+            <div class="info-banner-icon"><i class="fas fa-info-circle"></i></div>
+            <div class="info-banner-text">
+              <strong>Paste your invite link to the private/public channel.</strong>
+            </div>
+          </div>
+
+          <!-- Form Section -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fab fa-telegram-plane telegram-icon"></i>
+              Channel Details
+            </h2>
+
+            <!-- Form Card -->
+            <div class="form-card">
+              <form id="canalForm" novalidate>
+                <input type="hidden" id="csrfToken" name="csrfToken">
+                <input type="hidden" id="pageId" name="pageId">
+
+                <!-- Channel Link -->
+                <div class="form-group">
+                  <label class="form-label" for="channelLink">
+                    Invite Link
+                    <span class="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="channelLink"
+                    name="channelLink"
+                    class="form-input"
+                    required
+                    placeholder="https://t.me/+AABBccDD1122  or  @yourchannel"
+                    aria-describedby="channel-link-help"
+                    autocomplete="off"
+                  >
+                  <p class="help-text" id="channel-link-help">
+                    Paste a private invite (t.me/+hash or t.me/joinchat/hash) or a public @username.
+                  </p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="error-message" role="alert" aria-live="polite" style="display:none;"></div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="backButtonBottom">Cancel</button>
+            <button type="submit" form="canalForm" class="btn btn-primary" id="connectBtn">
+              <span>Connect Channel</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========= SUCCESS SCREEN (caché) ========= -->
+        <aside class="card status-card" id="statusCard" style="display:none;" aria-live="polite">
+          <div class="hd">
+            <h2>All set ✅</h2>
+            <p class="muted">Your channel is connected and the page has been activated.</p>
+          </div>
+          <div class="bd">
+            <div class="row row-top" style="align-items:flex-start;gap:12px;">
+              <div class="status-icon"><i>🎉</i></div>
+              <div>
+                <p>
+                  You can go back to the Telegram dashboard. Flags
+                  <span class="pill ok">connected=true</span> and
+                  <span class="pill ok">activated=true</span> will be added to the URL.
+                </p>
+                <div class="row" style="margin-top:6px;gap:10px;">
+                  <button id="goToDashboardSuccess" type="button" class="btn btn-primary">🚀 Open Telegram Dashboard</button>
+                  <button id="backToEdit" type="button" class="btn">✏️ Keep editing</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Menu Toggle -->
+  <button id="menuToggle" class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Connecting to Telegram...</p>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+  
+  <!-- Firebase configuration from /config/ folder -->
+  <script src="/config/firebase.js"></script>
+  
+  <!-- Sidebar Component -->
+  <script src="/assets/js/sidebar.js"></script>
+  
+  <!-- Main ajoutcanal script -->
+  <script src="/assets/js/ajoutcanal.js"></script>
+  
+  <!-- Critical handlers that must work immediately -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // IMPORTANT: Handlers pour les boutons de navigation - doivent fonctionner immédiatement
+      // même si Firebase n'est pas encore chargé
+      
+      // Fonction de navigation back
+      function handleBackNavigation() {
+        console.log('↩️ Back navigation triggered');
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageId = urlParams.get('page') || 
+                      sessionStorage.getItem('currentLandingPageId') || 
+                      localStorage.getItem('currentLandingPageId') ||
+                      localStorage.getItem('makerhub_current_page');
+        
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          const target = pageId 
+            ? `/telegramsubscription.html?page=${encodeURIComponent(pageId)}`
+            : '/telegramsubscription.html';
+          window.location.href = target;
+        }
+      }
+      
+      // Fonction pour aller au dashboard Telegram
+      function goToTelegramDashboard() {
+        console.log('🚀 Going to Telegram Dashboard');
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageId = urlParams.get('page') || 
+                      sessionStorage.getItem('currentLandingPageId') || 
+                      localStorage.getItem('currentLandingPageId');
+        
+        const params = [];
+        if (pageId) params.push(`page=${encodeURIComponent(pageId)}`);
+        params.push('connected=true', 'activated=true');
+        window.location.href = `/telegramsubscription.html?${params.join('&')}`;
+      }
+      
+      // Attacher les handlers immédiatement
+      const backButtonTop = document.getElementById('backButtonTop');
+      const backButtonBottom = document.getElementById('backButtonBottom');
+      const goToDashboardSuccess = document.getElementById('goToDashboardSuccess');
+      const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+      const backToEdit = document.getElementById('backToEdit');
+      
+      // Boutons Back/Cancel
+      if (backButtonTop) {
+        backButtonTop.addEventListener('click', handleBackNavigation);
+      }
+      if (backButtonBottom) {
+        backButtonBottom.addEventListener('click', handleBackNavigation);
+      }
+      
+      // Bouton Dashboard (header)
+      if (backToDashboardBtn) {
+        backToDashboardBtn.addEventListener('click', goToTelegramDashboard);
+      }
+      
+      // Bouton Success Dashboard
+      if (goToDashboardSuccess) {
+        goToDashboardSuccess.addEventListener('click', goToTelegramDashboard);
+      }
+      
+      // Bouton Keep Editing
+      if (backToEdit) {
+        backToEdit.addEventListener('click', function() {
+          document.getElementById('statusCard').style.display = 'none';
+          document.getElementById('formSection').style.display = 'block';
+          document.getElementById('channelLink').focus();
+        });
+      }
+      
+      // Sign out handler
+      const signoutBtn = document.getElementById('signoutBtn');
+      if (signoutBtn) {
+        signoutBtn.addEventListener('click', async function(e) {
+          e.preventDefault();
+          if (window.firebaseAuth) {
+            try {
+              await window.firebaseAuth.signOut();
+              window.location.href = '/auth.html';
+            } catch (error) {
+              console.error('Sign out error:', error);
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

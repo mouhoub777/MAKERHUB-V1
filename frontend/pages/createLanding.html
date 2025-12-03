@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Landing Page - MAKERHUB</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&family=Work+Sans:wght@400;500;600&family=Merriweather:wght@400;700&family=Nunito:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/createLanding.css">
+    
+    <style>
+        /* Style pour la grille de couleurs responsive */
+        .mini-color-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 32px);
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+        
+        .mini-color-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        
+        .mini-color-circle:hover {
+            transform: scale(1.15);
+        }
+        
+        .mini-color-circle.selected {
+            border-color: #333;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
+        }
+        
+        .mini-color-palette {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+            width: fit-content;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .mini-color-palette.active {
+            display: block;
+        }
+        
+        /* Responsive pour petits écrans */
+        @media (max-width: 400px) {
+            .mini-color-grid {
+                grid-template-columns: repeat(6, 28px);
+                gap: 6px;
+            }
+            .mini-color-circle {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-content">
+                    <div class="page-header-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div>
+                        <h1 class="page-title">Create Landing Page Telegram</h1>
+                        <p class="page-description">Design beautiful landing pages with advanced formatting and real-time preview</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container avec 3 colonnes -->
+            <div class="container">
+                <!-- Colonne 1: Page Content -->
+                <div class="form-panel">
+                    <h3><i class="fas fa-edit"></i> Page Content</h3>
+                    
+                    <!-- Channel Name -->
+                    <label for="channelName">Channel Name *</label>
+                    <input type="text" id="channelName" placeholder="My Amazing Channel" required>
+
+                    <!-- Dynamic Banner -->
+                    <label for="banner" style="margin-top: 15px;">Dynamic Banner (optional)</label>
+                    <input type="text" id="banner" placeholder="🔥 Limited Time Offer!">
+
+                    <!-- Logo -->
+                    <label style="margin-top: 15px;">Logo</label>
+                    <input type="file" id="logo" accept="image/*,video/*" style="display: none;">
+                    <button type="button" id="logoUploadBtn" class="btn btn-secondary">
+                        Choose File
+                    </button>
+                    <span id="logoFileName" style="margin-left: 10px; font-size: 13px; color: #666;">No file chosen</span>
+
+                    <!-- Logo Shape -->
+                    <label style="margin-top: 15px;">Logo Shape</label>
+                    <div class="shape-selector">
+                        <div class="shape-option active" data-shape="circle">
+                            <div class="shape-preview circle"></div>
+                            <span>Circle</span>
+                        </div>
+                        <div class="shape-option" data-shape="square">
+                            <div class="shape-preview square"></div>
+                            <span>Square</span>
+                        </div>
+                    </div>
+
+                    <!-- Brand Name -->
+                    <label for="brand">Brand Name *</label>
+                    <div class="text-formatting-controls">
+                        <button type="button" class="format-btn" id="brandBoldBtn" data-field="brand" data-format="bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="format-btn" id="brandItalicBtn" data-field="brand" data-format="italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="brand" placeholder="Your Amazing Brand" required>
+
+                    <!-- Font Family -->
+                    <label for="fontSelector">Font Family</label>
+                    <select id="fontSelector" class="font-selector-container">
+                        <option value="inter" class="font-option inter">Inter (Default)</option>
+                        <option value="poppins" class="font-option poppins">Poppins</option>
+                        <option value="montserrat" class="font-option montserrat">Montserrat</option>
+                        <option value="playfair" class="font-option playfair">Playfair Display</option>
+                        <option value="work-sans" class="font-option work-sans">Work Sans</option>
+                        <option value="merriweather" class="font-option merriweather">Merriweather</option>
+                        <option value="nunito" class="font-option nunito">Nunito</option>
+                        <option value="dm-sans" class="font-option dm-sans">DM Sans</option>
+                    </select>
+
+                    <!-- Slogan -->
+                    <label for="slogan">Slogan *</label>
+                    <div class="text-formatting-controls">
+                        <button type="button" class="format-btn" id="sloganBoldBtn" data-field="slogan" data-format="bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="format-btn" id="sloganItalicBtn" data-field="slogan" data-format="italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="slogan" placeholder="Your catchy slogan here">
+
+                    <!-- Description Format -->
+                    <label for="descriptionFormat">Description Format</label>
+                    <select id="descriptionFormat">
+                        <option value="">No emoji prefix</option>
+                        <option value="⚡">⚡ Lightning</option>
+                        <option value="🔥">🔥 Fire</option>
+                        <option value="⭐">⭐ Stars</option>
+                        <option value="💎">💎 Diamond</option>
+                        <option value="🚀">🚀 Rocket</option>
+                        <option value="🎯">🎯 Target</option>
+                        <option value="💡">💡 Light bulb</option>
+                        <option value="✨">✨ Sparkles</option>
+                        <option value="🌟">🌟 Glowing star</option>
+                        <option value="💰">💰 Money bag</option>
+                        <option value="🎉">🎉 Party</option>
+                        <option value="👑">👑 Crown</option>
+                    </select>
+
+                    <!-- Description -->
+                    <label for="description">Description</label>
+                    <div class="text-formatting-controls">
+                        <button type="button" class="format-btn" id="descriptionBoldBtn" data-field="description" data-format="bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="format-btn" id="descriptionItalicBtn" data-field="description" data-format="italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button type="button" class="format-btn" id="bulletListBtn" title="Bullet List">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button type="button" class="format-btn" id="numberedListBtn" title="Numbered List">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <button type="button" class="format-btn" id="arrowListBtn" title="Arrow List">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <textarea id="description" rows="6" placeholder="Describe your amazing offer..."></textarea>
+
+                    <!-- Description Background -->
+                    <div class="toggle-group">
+                        <label class="toggle-label">Description Background</label>
+                        <div class="toggle-switch" id="descBackgroundToggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <!-- Opacity Slider -->
+                    <div class="opacity-slider-container" id="backgroundOpacityControl" style="display: none;">
+                        <label>Background Opacity</label>
+                        <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="30">
+                        <div class="slider-labels">
+                            <span>0%</span>
+                            <span id="opacityValue">30%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+
+                    <!-- Additional Media -->
+                    <label style="margin-top: 15px;">Additional Media</label>
+                    <div id="mediaContainer">
+                        <button type="button" class="btn-add-media">
+                            <i class="fas fa-plus"></i>
+                            Add Image/Video
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Colonne 2: Preview -->
+                <div class="preview-panel">
+                    <div class="preview-content" id="previewContent">
+                        <!-- Banner -->
+                        <div id="prevBanner" class="banner" style="display: none;">
+                            <span id="bannerText" class="banner-text"></span>
+                        </div>
+                        
+                        <!-- Logo - CORRIGÉ: Masqué par défaut -->
+                        <div class="logo-container" id="logoContainer" style="display: none;">
+                            <img id="logoImg" class="logo-preview" alt="Logo" style="display: none;">
+                            <video id="logoVideo" class="logo-preview" style="display: none;" loop autoplay muted></video>
+                        </div>
+
+                        <!-- Title & Subtitle -->
+                        <h1 id="prevBrand" class="preview-title">Your Amazing Brand</h1>
+                        <p id="prevSlogan" class="preview-subtitle">Your subtitle here</p>
+
+                        <!-- Description -->
+                        <div id="prevDesc" class="preview-description">
+                            Description will appear here...
+                        </div>
+
+                        <!-- Media Gallery -->
+                        <div id="mediaGallery" class="media-gallery" style="display: none;"></div>
+
+                        <!-- Access Section -->
+                        <div id="previewAccessSection">
+                            <h2>Accès</h2>
+                            <div class="access-panel">
+                                <div class="access-content">
+                                    <div id="previewAccessEmoji" class="access-emoji">🔒</div>
+                                    <div class="access-info">
+                                        <h3 id="previewAccessProductTitle" class="access-title">Your Amazing Brand</h3>
+                                        <p class="access-subtitle">
+                                            <i class="fab fa-telegram"></i>
+                                            Canal Telegram
+                                        </p>
+                                    </div>
+                                </div>
+                                <div id="previewAccessLock" class="access-lock">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reviews Section -->
+                        <div id="previewReviewsSection">
+                            <h2>Reviews</h2>
+                            <div id="previewGlobalRating" class="global-rating" style="display: none;">
+                                <div class="review-stars">
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                                <span id="globalRatingText">5.0 (127)</span>
+                            </div>
+                            <div id="previewReviewsList"></div>
+                        </div>
+
+                        <!-- Payment Button Sticky -->
+                        <div class="payment-section-sticky">
+                            <button type="button" id="previewPaymentBtn" class="payment-main-btn">
+                                Join Now
+                            </button>
+                            
+                            <!-- Payment Sheet -->
+                            <div class="payment-sheet-content" id="paymentSheetContent">
+                                <div class="payment-handle" id="paymentHandle"></div>
+                                
+                                <h3>Choose Your Plan</h3>
+                                
+                                <div class="payment-options" id="paymentOptionsContainer">
+                                    <!-- Les options de prix seront générées dynamiquement ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne 3: Design & Settings (SANS Design Templates) -->
+                <div class="form-panel">
+                    <h3><i class="fas fa-palette"></i> Design & Settings</h3>
+
+                    <!-- Color Palette - Grille complète comme l'image -->
+                    <label>Color Palette</label>
+                    <button type="button" id="colorPickerBtn" class="color-picker-button">
+                        <div class="color-preview-circle" id="colorPreview" style="background: #000000;"></div>
+                        <div class="color-picker-text">
+                            <div class="color-name" id="colorName">Black</div>
+                            <div class="color-value" id="colorValue">#000000</div>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
+                    <div id="colorPalette" class="mini-color-palette">
+                        <div class="mini-color-grid">
+                            <!-- Ligne 1: Violets et Roses -->
+                            <div class="mini-color-circle" data-color="#c27aff" data-name="Light Purple" style="background: #c27aff;"></div>
+                            <div class="mini-color-circle" data-color="#a855f7" data-name="Purple" style="background: #a855f7;"></div>
+                            <div class="mini-color-circle" data-color="#7c3aed" data-name="Violet" style="background: #7c3aed;"></div>
+                            <div class="mini-color-circle" data-color="#f472b6" data-name="Pink" style="background: #f472b6;"></div>
+                            <div class="mini-color-circle" data-color="#ff69b4" data-name="Hot Pink" style="background: #ff69b4;"></div>
+                            <div class="mini-color-circle" data-color="#ec4899" data-name="Magenta" style="background: #ec4899;"></div>
+                            <div class="mini-color-circle" data-color="#6366f1" data-name="Indigo" style="background: #6366f1;"></div>
+                            
+                            <!-- Ligne 2: Bleus -->
+                            <div class="mini-color-circle" data-color="#3b82f6" data-name="Blue" style="background: #3b82f6;"></div>
+                            <div class="mini-color-circle" data-color="#1e3a8a" data-name="Navy" style="background: #1e3a8a;"></div>
+                            <div class="mini-color-circle" data-color="#2563eb" data-name="Royal Blue" style="background: #2563eb;"></div>
+                            <div class="mini-color-circle" data-color="#0ea5e9" data-name="Sky Blue" style="background: #0ea5e9;"></div>
+                            <div class="mini-color-circle" data-color="#f87171" data-name="Light Red" style="background: #f87171;"></div>
+                            <div class="mini-color-circle" data-color="#fb7185" data-name="Rose" style="background: #fb7185;"></div>
+                            <div class="mini-color-circle" data-color="#ff1493" data-name="Deep Pink" style="background: #ff1493;"></div>
+                            
+                            <!-- Ligne 3: Rouges et Cyans -->
+                            <div class="mini-color-circle" data-color="#dc2626" data-name="Red" style="background: #dc2626;"></div>
+                            <div class="mini-color-circle" data-color="#ef4444" data-name="Bright Red" style="background: #ef4444;"></div>
+                            <div class="mini-color-circle" data-color="#ff0000" data-name="Pure Red" style="background: #ff0000;"></div>
+                            <div class="mini-color-circle" data-color="#06b6d4" data-name="Cyan" style="background: #06b6d4;"></div>
+                            <div class="mini-color-circle" data-color="#22d3d3" data-name="Turquoise" style="background: #22d3d3;"></div>
+                            <div class="mini-color-circle" data-color="#14b8a6" data-name="Teal" style="background: #14b8a6;"></div>
+                            <div class="mini-color-circle" data-color="#059669" data-name="Emerald" style="background: #059669;"></div>
+                            
+                            <!-- Ligne 4: Verts -->
+                            <div class="mini-color-circle" data-color="#10b981" data-name="Green" style="background: #10b981;"></div>
+                            <div class="mini-color-circle" data-color="#34d399" data-name="Light Green" style="background: #34d399;"></div>
+                            <div class="mini-color-circle" data-color="#4ade80" data-name="Mint" style="background: #4ade80;"></div>
+                            <div class="mini-color-circle" data-color="#22c55e" data-name="Grass" style="background: #22c55e;"></div>
+                            <div class="mini-color-circle" data-color="#86efac" data-name="Pale Green" style="background: #86efac;"></div>
+                            <div class="mini-color-circle" data-color="#fef08a" data-name="Light Yellow" style="background: #fef08a;"></div>
+                            <div class="mini-color-circle" data-color="#fde047" data-name="Yellow" style="background: #fde047;"></div>
+                            
+                            <!-- Ligne 5: Verts lime et Jaunes -->
+                            <div class="mini-color-circle" data-color="#00d084" data-name="Spring" style="background: #00d084;"></div>
+                            <div class="mini-color-circle" data-color="#84cc16" data-name="Lime" style="background: #84cc16;"></div>
+                            <div class="mini-color-circle" data-color="#a3e635" data-name="Chartreuse" style="background: #a3e635;"></div>
+                            <div class="mini-color-circle" data-color="#bef264" data-name="Yellow Green" style="background: #bef264;"></div>
+                            <div class="mini-color-circle" data-color="#d9f99d" data-name="Pale Lime" style="background: #d9f99d;"></div>
+                            <div class="mini-color-circle" data-color="#fef9c3" data-name="Cream" style="background: #fef9c3;"></div>
+                            <div class="mini-color-circle" data-color="#facc15" data-name="Gold" style="background: #facc15;"></div>
+                            
+                            <!-- Ligne 6: Oranges et Neutres -->
+                            <div class="mini-color-circle" data-color="#eab308" data-name="Amber" style="background: #eab308;"></div>
+                            <div class="mini-color-circle" data-color="#f59e0b" data-name="Orange" style="background: #f59e0b;"></div>
+                            <div class="mini-color-circle" data-color="#fb923c" data-name="Light Orange" style="background: #fb923c;"></div>
+                            <div class="mini-color-circle" data-color="#ff8c00" data-name="Dark Orange" style="background: #ff8c00;"></div>
+                            <div class="mini-color-circle" data-color="#ff5722" data-name="Deep Orange" style="background: #ff5722;"></div>
+                            <div class="mini-color-circle" data-color="#ffffff" data-name="White" style="background: #ffffff; border: 2px solid #e0e0e0;"></div>
+                            <div class="mini-color-circle selected" data-color="#000000" data-name="Black" style="background: #000000;"></div>
+                            
+                            <!-- Ligne 7: Marrons et Gris -->
+                            <div class="mini-color-circle" data-color="#78350f" data-name="Brown" style="background: #78350f;"></div>
+                            <div class="mini-color-circle" data-color="#92400e" data-name="Chocolate" style="background: #92400e;"></div>
+                            <div class="mini-color-circle" data-color="#a16207" data-name="Caramel" style="background: #a16207;"></div>
+                            <div class="mini-color-circle" data-color="#6b7280" data-name="Gray" style="background: #6b7280;"></div>
+                            <div class="mini-color-circle" data-color="#9ca3af" data-name="Light Gray" style="background: #9ca3af;"></div>
+                            <div class="mini-color-circle" data-color="#d1d5db" data-name="Silver" style="background: #d1d5db;"></div>
+                            <div class="mini-color-circle" data-color="#374151" data-name="Dark Gray" style="background: #374151;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Access Section -->
+                    <div class="access-section">
+                        <h4><i class="fas fa-lock"></i> Access Section</h4>
+                        
+                        <label for="accessEmoji">Access Emoji</label>
+                        <select id="accessEmoji">
+                            <option value="🔒">🔒 Lock</option>
+                            <option value="⚡">⚡ Lightning</option>
+                            <option value="🔑">🔑 Key</option>
+                            <option value="🎯">🎯 Target</option>
+                            <option value="🚀">🚀 Rocket</option>
+                            <option value="💎">💎 Diamond</option>
+                            <option value="🌟">🌟 Star</option>
+                            <option value="👑">👑 Crown</option>
+                        </select>
+                    </div>
+
+                    <!-- Payment Settings -->
+                    <div class="payment-settings-section">
+                        <h4><i class="fas fa-credit-card"></i> Payment Button</h4>
+                        
+                        <label for="buttonText">Button Text</label>
+                        <input type="text" id="buttonText" value="Join Now">
+
+                        <label for="buttonEmoji" style="margin-top: 10px;">Button Emoji</label>
+                        <select id="buttonEmoji">
+                            <option value="">No emoji</option>
+                            <option value="🚀">🚀 Rocket</option>
+                            <option value="⚡">⚡ Lightning</option>
+                            <option value="🔥">🔥 Fire</option>
+                            <option value="💎">💎 Diamond</option>
+                            <option value="🎯">🎯 Target</option>
+                            <option value="✨">✨ Sparkles</option>
+                            <option value="🌟">🌟 Star</option>
+                        </select>
+                    </div>
+
+                    <!-- Create Page Button -->
+                    <div style="margin-top: 30px;">
+                        <button type="button" class="btn btn-primary" id="createPageBtn" style="width: 100%;">
+                            <i class="fas fa-rocket"></i>
+                            Create Page
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Message Elements -->
+    <div id="error" class="message error" style="display: none;"></div>
+    <div id="success" class="message success" style="display: none;"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage-compat.js"></script>
+
+    <!-- Configuration Firebase CORRIGÉ -->
+    <script src="/config/firebase.js"></script>
+    
+    <!-- Sidebar Component -->
+    <script src="/assets/js/sidebar.js"></script>
+    
+    <!-- Constants DOIT être chargé AVANT les autres scripts -->
+    <script src="/utils/constants.js"></script>
+    
+    <!-- Script createLanding.js -->
+    <script src="/assets/js/createLanding.js"></script>
+</body>
+</html>

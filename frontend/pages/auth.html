@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MAKERHUB - The All-in-One Creator Hub. Landing pages, mini-shop, personal branding, meeting planner, mailing, statistics & Telegram management.">
+    <meta name="keywords" content="creator hub, landing pages, telegram management, personal branding, meeting planner">
+    <meta name="author" content="MAKERHUB">
+    <meta property="og:title" content="MAKERHUB - The All-in-One Creator Hub">
+    <meta property="og:description" content="From idea to payment in a few clicks. Everything you need to build, launch and automate your digital business.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://makerhub.pro">
+    <meta property="og:image" content="https://makerhub.pro/assets/images/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <title>MAKERHUB - The All-in-One Creator Hub</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- External Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/auth.css">
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-content" aria-label="Skip to main content">Skip to content</a>
+    
+    <!-- HEADER -->
+    <header class="header" role="banner">
+        <div class="header-container">
+            <a href="#" class="logo" aria-label="MAKERHUB Home">
+                <div class="logo-icon" aria-hidden="true"></div>
+                <div class="logo-text">
+                    <span class="brand">MAKER</span><span class="lynk">HUB</span>
+                </div>
+            </a>
+            
+            <nav class="nav-menu" role="navigation" aria-label="Main navigation">
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="header-buttons">
+                <button class="btn btn-secondary" id="loginBtn-header" aria-label="Login to your account">Login</button>
+                <button class="btn btn-primary" id="signupBtn-header" aria-label="Create new account">Sign Up</button>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+        <!-- HERO -->
+        <section class="hero" aria-labelledby="hero-title">
+            <h1 id="hero-title">The All-in-One Creator Hub</h1>
+            <p class="subtitle">Landing Pages, Mini-Shop, Personal Branding, Meeting Planner, Mailing, Statistics & Telegram Member Management</p>
+            <p class="hero-description">From idea to payment in a few clicks. Everything you need to build, launch and automate your digital business.</p>
+            
+            <div class="brand-capture">
+                <h2 class="capture-title">Start in 30 seconds</h2>
+                <form class="capture-form" id="profileForm" aria-label="Quick signup form">
+                    <label for="profileInput" class="visually-hidden">Profile name</label>
+                    <input type="text" class="capture-input" placeholder="Enter your profile name..." required id="profileInput" autocomplete="username" aria-describedby="profile-hint">
+                    <span id="profile-hint" class="visually-hidden">Choose a unique name for your MAKERHUB profile URL</span>
+                    <button type="submit" class="btn-capture">Activate My Hub</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- LANDING PAGES CAROUSEL -->
+        <section class="landing-carousel-section" aria-labelledby="carousel-title">
+            <div class="carousel-container">
+                <h2 id="carousel-title" class="carousel-title">Create Landing Pages That Convert</h2>
+                <p class="carousel-subtitle">Professional templates ready to customize</p>
+                
+                <div class="carousel-wrapper" role="region" aria-label="Template gallery">
+                    <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous templates">
+                        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    
+                    <div class="carousel-track" id="carouselTrack" role="list" aria-label="Available templates">
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">📱</div>
+                            </div>
+                            <h3>SMS/Email Capture</h3>
+                            <p>Collect qualified leads</p>
+                            <button class="template-btn" aria-label="Use SMS/Email Capture template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">🎯</div>
+                            </div>
+                            <h3>Sales Page</h3>
+                            <p>Sell your digital products</p>
+                            <button class="template-btn" aria-label="Use Sales Page template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">📅</div>
+                            </div>
+                            <h3>Masterclass Booking</h3>
+                            <p>Fill your events</p>
+                            <button class="template-btn" aria-label="Use Masterclass Booking template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">🚀</div>
+                            </div>
+                            <h3>Launch Page</h3>
+                            <p>Launch your new project</p>
+                            <button class="template-btn" aria-label="Use Launch Page template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">💳</div>
+                            </div>
+                            <h3>Telegram Subscription</h3>
+                            <p>Monetize your private channel</p>
+                            <button class="template-btn" aria-label="Use Telegram Subscription template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">🎤</div>
+                            </div>
+                            <h3>Live Registration</h3>
+                            <p>Manage your webinars</p>
+                            <button class="template-btn" aria-label="Use Live Registration template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">📚</div>
+                            </div>
+                            <h3>Course Page</h3>
+                            <p>Sell your online courses</p>
+                            <button class="template-btn" aria-label="Use Course Page template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">⏰</div>
+                            </div>
+                            <h3>Coming Soon</h3>
+                            <p>Build anticipation</p>
+                            <button class="template-btn" aria-label="Use Coming Soon template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">🎁</div>
+                            </div>
+                            <h3>Limited Offer</h3>
+                            <p>Urgency and scarcity</p>
+                            <button class="template-btn" aria-label="Use Limited Offer template">Use</button>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">👤</div>
+                            </div>
+                            <h3>Pro Profile</h3>
+                            <p>Your modern digital CV</p>
+                            <button class="template-btn" aria-label="Use Pro Profile template">Use</button>
+                        </div>
+                    </div>
+                    
+                    <button class="carousel-btn next" id="carouselNext" aria-label="Next templates">
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHAT MAKES US UNIQUE -->
+        <section class="unique-section" aria-labelledby="unique-title">
+            <div class="unique-container">
+                <h2 id="unique-title" class="section-title">What Makes Us Unique</h2>
+                <p class="section-subtitle">Why creators choose MAKERHUB</p>
+                
+                <div class="unique-grid">
+                    <article class="unique-card">
+                        <div class="unique-screenshot">
+                            <img src="../assets/images/calendar-analytics.jpg" alt="Dashboard Calendar View" loading="lazy" width="400" height="200">
+                        </div>
+                        <h3>Revolutionary Calendar Analytics</h3>
+                        <p>The only calendar that merges client bookings, sales tracking AND daily planning. Visualize your entire business day by day.</p>
+                        <div class="unique-badge">Exclusive Innovation</div>
+                    </article>
+                    
+                    <article class="unique-card featured">
+                        <div class="unique-screenshot">
+                            <img src="../assets/images/personal-branding.jpg" alt="Personal Branding Profile" loading="lazy" width="400" height="200">
+                        </div>
+                        <h3>Your Digital Ecosystem on One Page</h3>
+                        <p>Ultra-fast no-code editing. Your Instagram posts in the feed, your lives in Events, your integrated shop.</p>
+                        <div class="unique-badge">100% Automated</div>
+                    </article>
+                    
+                    <article class="unique-card">
+                        <div class="unique-screenshot">
+                            <img src="../assets/images/telegram-manager.jpg" alt="Telegram Manager interface" loading="lazy" width="400" height="200">
+                        </div>
+                        <h3>Member Management & Telegram Reminders</h3>
+                        <p>Automatic member management, channel monetization, instant reminders. 90% open rate vs 20% email.</p>
+                        <div class="unique-badge">90% Open Rate</div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
+            <div class="how-it-works-container">
+                <div class="section-header">
+                    <h2 id="how-it-works-title" class="section-title">How It Works</h2>
+                    <p class="section-description">Get started in minutes with our simple 4-step process</p>
+                </div>
+                
+                <ol class="steps-grid">
+                    <li class="step">
+                        <div class="step-number" aria-hidden="true">1</div>
+                        <h3>Enter Your Profile</h3>
+                        <p>Simply enter your profile name and we create your personalized digital space</p>
+                    </li>
+                    <li class="step">
+                        <div class="step-number" aria-hidden="true">2</div>
+                        <h3>Choose Your Services</h3>
+                        <p>Select from our complete suite of tools according to your business needs</p>
+                    </li>
+                    <li class="step">
+                        <div class="step-number" aria-hidden="true">3</div>
+                        <h3>Customize & Launch</h3>
+                        <p>Customize your pages, configure your systems, and launch your digital presence</p>
+                    </li>
+                    <li class="step">
+                        <div class="step-number" aria-hidden="true">4</div>
+                        <h3>Grow & Scale</h3>
+                        <p>Use our analytics and automations to optimize and scale your business</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section class="services" id="services" aria-labelledby="services-title">
+            <div class="services-container">
+                <div class="section-header">
+                    <h2 id="services-title" class="section-title">Everything You Need to Succeed</h2>
+                    <p class="section-description">A complete hub to monetize, manage and scale your creator business</p>
+                </div>
+                
+                <div class="services-grid">
+                    <article class="service-card">
+                        <div class="card-icon" aria-hidden="true">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="card-title">High Converting Landing Pages</h3>
+                        <p class="card-description">Create sales pages that convert. Optimized templates, A/B testing, real-time analytics.</p>
+                        <button class="card-cta" aria-label="Get started with landing pages">Get Started</button>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon" aria-hidden="true">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h3 class="card-title">Mini-Shop Online & Personal Branding</h3>
+                        <p class="card-description">Your public profile with a feed of posts. About section, integrated mini-shop, and all your links.</p>
+                        <button class="card-cta" aria-label="Create your profile">Create Profile</button>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon" aria-hidden="true">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="card-title">Smart Meeting Planner</h3>
+                        <p class="card-description">Advanced booking system with analytics. Schedule your appointments, lives and masterclasses.</p>
+                        <button class="card-cta" aria-label="Configure meeting planner">Configure</button>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon" aria-hidden="true">
+                            <i class="fab fa-telegram-plane"></i>
+                        </div>
+                        <h3 class="card-title">Native Telegram Member Management</h3>
+                        <p class="card-description">Manage all your Telegram members from one interface. Import, segmentation, bulk messages.</p>
+                        <button class="card-cta" aria-label="Activate Telegram management">Activate</button>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon" aria-hidden="true">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="card-title">Integrated SMTP Email Marketing</h3>
+                        <p class="card-description">Complete email system with native SMTP. Automated campaigns, templates, and reminders.</p>
+                        <button class="card-cta" aria-label="Launch email campaign">Launch Campaign</button>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon" aria-hidden="true">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="card-title">Complete Analytics & Planning</h3>
+                        <p class="card-description">Advanced analytics dashboard to track your performance.</p>
+                        <button class="card-cta" aria-label="View analytics">View Stats</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING SECTION -->
+        <section class="pricing" id="pricing" aria-labelledby="pricing-title">
+            <div class="pricing-container">
+                <div class="section-header">
+                    <h2 id="pricing-title" class="section-title">Choose Your Plan</h2>
+                    <p class="section-description">Scale your business with the right plan. Start free and grow with your success.</p>
+                </div>
+
+                <div class="billing-toggle" role="group" aria-label="Billing period selection">
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" id="monthly" aria-pressed="true">Monthly</button>
+                        <button class="toggle-btn" id="annual" aria-pressed="false">Annual</button>
+                    </div>
+                    <div class="discount-badge" aria-live="polite">Save 30%</div>
+                </div>
+
+                <div class="pricing-grid">
+                    <!-- Freemium Plan -->
+                    <article class="pricing-card">
+                        <div class="plan-header">
+                            <h3 class="plan-name">Freemium</h3>
+                            <p class="plan-tagline">Perfect for getting started</p>
+                            <div class="plan-price">
+                                <span class="price-currency">$</span>
+                                <span class="price-amount">0</span>
+                                <span class="price-period">/month</span>
+                            </div>
+                            <div class="commission-info">
+                                Commission: <span class="commission-rate">10%</span> on all sales
+                            </div>
+                        </div>
+                        
+                        <ul class="features-list">
+                            <li>Telegram Subscription Management (1 channel)</li>
+                            <li>Profile page</li>
+                            <li>2 Sales pages</li>
+                            <li>1 Lead capture</li>
+                            <li>Statistics</li>
+                            <li class="feature-disabled">Live streaming</li>
+                            <li class="feature-disabled">Telegram reminders</li>
+                            <li class="feature-disabled">Meeting Planner</li>
+                        </ul>
+                        
+                        <button class="plan-cta cta-secondary" aria-label="Start with free plan">Start Free</button>
+                    </article>
+
+                    <!-- Pro Plan -->
+                    <article class="pricing-card popular">
+                        <div class="popular-badge">Most Popular</div>
+                        <div class="plan-header">
+                            <h3 class="plan-name">Pro</h3>
+                            <p class="plan-tagline">For growing creators</p>
+                            <div class="plan-price">
+                                <span class="price-annual" aria-hidden="true">$69</span>
+                                <span class="price-currency">$</span>
+                                <span class="price-amount" id="pro-price">49</span>
+                                <span class="price-period">/month</span>
+                            </div>
+                        </div>
+                        
+                        <ul class="features-list">
+                            <li>Telegram Subscription Management <span class="highlight">4%</span></li>
+                            <li>Profile page</li>
+                            <li>Unlimited sales pages</li>
+                            <li>Unlimited lead capture</li>
+                            <li>Telegram Event Reminders</li>
+                            <li>Meeting Planner</li>
+                            <li>Business Calendar</li>
+                            <li>Unlimited sequential mailing</li>
+                        </ul>
+                        
+                        <button class="plan-cta cta-primary" aria-label="Start 14-day pro trial">14-Day Trial</button>
+                    </article>
+
+                    <!-- Business Plan -->
+                    <article class="pricing-card">
+                        <div class="plan-header">
+                            <h3 class="plan-name">Business</h3>
+                            <p class="plan-tagline">For teams and agencies</p>
+                            <div class="plan-price">
+                                <span class="price-annual" aria-hidden="true">$139</span>
+                                <span class="price-currency">$</span>
+                                <span class="price-amount" id="business-price">99</span>
+                                <span class="price-period">/month</span>
+                            </div>
+                        </div>
+                        
+                        <ul class="features-list">
+                            <li>Unlimited Telegram Management <span class="highlight">2%</span></li>
+                            <li>Profile page</li>
+                            <li>Unlimited sales pages</li>
+                            <li>Unlimited lead capture</li>
+                            <li>Unlimited live + HD</li>
+                            <li>Telegram Funnel</li>
+                            <li>AI Writing</li>
+                            <li>Statistics</li>
+                        </ul>
+                        
+                        <button class="plan-cta cta-primary" aria-label="Upgrade to business plan">Upgrade to Business</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINAL CTA -->
+        <section class="final-cta" aria-labelledby="final-cta-title">
+            <h2 id="final-cta-title" class="cta-title">Ready to Transform Your Business?</h2>
+            <p class="cta-description">Join thousands of entrepreneurs who have already built their digital empire</p>
+            <button class="btn btn-primary btn-large" id="finalCTA">Start Now - It's Free!</button>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contact" role="contentinfo">
+        <div class="footer-container">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <h4>MAKERHUB</h4>
+                    <p>The all-in-one hub that replaces 10 tools for your digital business.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <nav aria-label="Legal links">
+                        <a href="/terms-of-sale">Terms of Sale</a>
+                        <a href="/terms-of-use">Terms of Use</a>
+                        <a href="/privacy-policy">Privacy Policy</a>
+                    </nav>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <nav aria-label="Company links">
+                        <a href="/contact">Contact</a>
+                        <a href="/about">About</a>
+                        <a href="/blog">Blog</a>
+                    </nav>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <a href="mailto:live@makerhub.pro">live@makerhub.pro</a>
+                    <div class="social-link">
+                        <a href="https://t.me/Makerhub" target="_blank" class="telegram-link" rel="noopener noreferrer">
+                            <i class="fab fa-telegram-plane" aria-hidden="true"></i>
+                            @Makerhub
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 MAKERHUB. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL OVERLAY -->
+    <div id="overlay" class="modal-overlay" role="presentation"></div>
+
+    <!-- SIGNUP MODAL -->
+    <div id="signupModal" class="modal-box" role="dialog" aria-labelledby="signup-title" aria-modal="true">
+        <div class="modal-header">
+            <h3 id="signup-title">Create Your Account</h3>
+            <button class="close-modal-btn" id="closeSignupModal" aria-label="Close signup dialog">&times;</button>
+        </div>
+        
+        <div id="signupForm" role="form" aria-label="Signup form">
+            <div class="input-group">
+                <label for="signupEmail" class="visually-hidden">Email address</label>
+                <input type="email" id="signupEmail" placeholder="Email" required autocomplete="email" />
+                <div id="emailValidation" class="input-validation" aria-live="polite"></div>
+            </div>
+            <div id="emailMessage" class="validation-message" role="alert"></div>
+            
+            <div class="input-group">
+                <label for="profileName" class="visually-hidden">Profile name</label>
+                <input type="text" id="profileName" placeholder="Profile name (your unique URL)" required autocomplete="username" />
+                <div id="profileValidation" class="input-validation" aria-live="polite"></div>
+            </div>
+            <div id="profileMessage" class="validation-message" role="alert"></div>
+            
+            <div class="input-group">
+                <label for="signupPassword" class="visually-hidden">Password</label>
+                <input type="password" id="signupPassword" placeholder="Password" required autocomplete="new-password" />
+            </div>
+            <div id="passwordStrength" class="password-strength" role="status" aria-live="polite"></div>
+            
+            <div class="checkbox-group" id="rememberMeGroup">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Remember me</label>
+            </div>
+            
+            <button type="button" id="signupBtn" disabled>Create My Account</button>
+            <div class="loading" id="signupLoading" role="status" style="display:none;">
+                <div class="spinner"></div>
+            </div>
+            <div class="error" id="signupError" role="alert" style="display:none;"></div>
+            <div class="success" id="signupSuccess" role="status" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal-box" role="dialog" aria-labelledby="login-title" aria-modal="true">
+        <div class="modal-header">
+            <h3 id="login-title">Log In</h3>
+            <button class="close-modal-btn" id="closeLoginModal" aria-label="Close login dialog">&times;</button>
+        </div>
+        
+        <div id="loginForm" role="form" aria-label="Login form">
+            <div class="input-group">
+                <label for="email" class="visually-hidden">Email address</label>
+                <input type="email" id="email" placeholder="Email" required autocomplete="email" />
+            </div>
+            
+            <div class="input-group">
+                <label for="password" class="visually-hidden">Password</label>
+                <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="rememberLogin" name="rememberLogin">
+                <label for="rememberLogin">Remember me</label>
+            </div>
+            
+            <button type="button" class="forgot-password-link" id="forgotPasswordBtn">Forgot password?</button>
+            
+            <button type="button" id="loginBtn">Sign In</button>
+            <div class="loading" id="loginLoading" role="status" style="display:none;">
+                <div class="spinner"></div>
+            </div>
+            <div class="error" id="loginError" role="alert" style="display:none;"></div>
+            <div class="success" id="loginSuccess" role="status" style="display:none;"></div>
+        </div>
+        
+        <div class="footer">
+            Don't have an account? <button type="button" id="showSignupFromLogin" class="link-button">Sign up</button>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotModal" class="modal-box" role="dialog" aria-labelledby="forgot-title" aria-modal="true">
+        <div class="modal-header">
+            <h3 id="forgot-title">Reset Password</h3>
+            <button class="close-modal-btn" id="closeForgotModal" aria-label="Close reset password dialog">&times;</button>
+        </div>
+        
+        <div id="forgotForm" role="form" aria-label="Password reset form">
+            <p class="modal-description">Enter your email address and we'll send you a link to reset your password.</p>
+            
+            <div class="input-group">
+                <label for="forgotEmail" class="visually-hidden">Email address</label>
+                <input type="email" id="forgotEmail" placeholder="Email" required autocomplete="email" />
+            </div>
+            
+            <button type="button" id="forgotBtn">Send Reset Link</button>
+            <div class="loading" id="forgotLoading" role="status" style="display:none;">Sending...</div>
+            <div class="error" id="forgotError" role="alert" style="display:none;"></div>
+            <div class="success" id="forgotSuccess" role="status" style="display:none;"></div>
+        </div>
+        
+        <div class="footer">
+            Remember your password? <button type="button" id="showLoginFromForgot" class="link-button">Back to login</button>
+        </div>
+    </div>
+
+    <!-- Configuration JavaScript -->
+    <script>
+        window.MAKERHUB_CONFIG = {
+            NODE_API_URL: 'http://localhost:3000',
+            NODE_ENV: 'development'
+        };
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script src="/config/firebase.js"></script>
+
+    <!-- Auth Application -->
+    <script src="/assets/js/auth-firebase.js"></script>
+
+    <!-- Event to notify when Firebase is ready -->
+    <script>
+        function checkFirebaseReady() {
+            if (window.firebaseServices && window.firebaseServices.auth && window.firebaseServices.db) {
+                window.dispatchEvent(new Event('firebaseReady'));
+                console.log('✅ Firebase ready');
+            } else {
+                setTimeout(checkFirebaseReady, 100);
+            }
+        }
+        checkFirebaseReady();
+    </script>
+
+</body>
+</html>

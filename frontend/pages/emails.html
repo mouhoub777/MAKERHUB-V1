@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Email Marketing - MAKERHUB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/emails.css">
+  
+</head>
+<body>
+
+<!-- Sidebar Container -->
+<div id="sidebar-container"></div>
+
+<main class="main-content">
+  <div class="content-wrapper">
+    <div class="page-header">
+      <h1 class="page-title">Email Collection</h1>
+      <p class="page-description">
+        Manage your email subscribers collected from Stripe checkout. 
+        <span style="color: var(--warning); font-weight: 500;">Email campaigns coming in V2!</span>
+      </p>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number" id="totalSubscribers">0</div>
+        <div class="stat-label">Total Subscribers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="selectedCount">0</div>
+        <div class="stat-label">Selected</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="filteredCount">0</div>
+        <div class="stat-label">Filtered Results</div>
+      </div>
+    </div>
+
+    <!-- V1 Notice -->
+    <div style="background: var(--info-bg); border: 1px solid var(--info); border-radius: var(--radius-md); 
+                padding: var(--spacing-md); margin-bottom: var(--spacing-lg); color: var(--info);">
+      <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+      <strong>V1 - Collection Mode:</strong> 
+      Emails are automatically collected from Stripe checkout. The full email campaign system with SMTP is ready but will be activated in V2.
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">
+        <i class="fas fa-filter"></i>
+        Filter by Source
+      </div>
+      <select class="filter-dropdown" id="sourceFilter" onchange="filterTable()">
+        <option value="all">All Sources</option>
+        <option value="Stripe Checkout">Stripe Checkout</option>
+        <option value="One-Time Purchase">One-Time Purchase</option>
+        <option value="Telegram Subscriber">Telegram Subscriber</option>
+        <option value="Live / Masterclass / Webinar">Live / Masterclass / Webinar</option>
+        <option value="Lead Capture">Lead Capture</option>
+        <option value="Scheduled Booking">Scheduled Booking</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <div class="table-header">
+        <h3>
+          <i class="fas fa-database"></i>
+          Collected Email Addresses
+        </h3>
+        <div class="header-actions">
+          <span class="selected-count" id="selectedDisplay">0 selected</span>
+          <button class="send-email-btn" id="sendEmailBtn" onclick="sendEmailToSelected()" disabled>
+            <i class="fas fa-download"></i>
+            Export Selected (V2: Send Campaign)
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-wrapper">
+        <table id="subscribersTable">
+          <thead>
+            <tr>
+              <th class="checkbox-cell">
+                <input type="checkbox" class="select-all-checkbox" id="selectAll" onchange="toggleSelectAll()">
+              </th>
+              <th>First Name</th>
+              <th>Email</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Data will be loaded from Firebase -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<!-- Firebase Configuration -->
+<script src="/config/firebase.js"></script>
+
+<!-- Sidebar Component -->
+<script src="/assets/js/sidebar.js"></script>
+
+<!-- Page Scripts -->
+<script src="/assets/js/emails.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard MAKERHUB.PRO - Gérez votre présence numérique">
+  <title>Dashboard - MAKERHUB.PRO</title>
+  
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- CHEMIN CORRIGÉ -->
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+</head>
+<body>
+  <!-- Loading -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-title">
+          <h1>Dashboard</h1>
+          <p class="header-subtitle">Gérez et développez votre présence numérique</p>
+        </div>
+        
+        <div class="header-actions">
+          <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-details">
+              <span class="user-name" id="userName">Utilisateur</span>
+              <span class="user-email" id="userEmail">email@example.com</span>
+            </div>
+          </div>
+          <button class="btn-logout" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="btn-text">Déconnexion</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Features -->
+        <div class="features-section">
+          <h2>Fonctionnalités</h2>
+          <div class="features-grid">
+            <!-- Telegram -->
+            <div class="feature-card" data-feature="telegram">
+              <div class="feature-header">
+                <div class="feature-icon telegram">
+                  <i class="fab fa-telegram"></i>
+                </div>
+                <span class="feature-badge">Populaire</span>
+              </div>
+              <h3 class="feature-title">Monétisation Telegram</h3>
+              <p class="feature-description">
+                Transformez votre chaîne Telegram en source de revenus récurrents avec abonnements automatisés
+              </p>
+              <div class="feature-stats">
+                <div class="feature-stat">
+                  <i class="fas fa-users"></i>
+                  <span>+2.5k utilisateurs</span>
+                </div>
+                <div class="feature-stat">
+                  <i class="fas fa-star"></i>
+                  <span>4.8/5</span>
+                </div>
+              </div>
+              <button class="feature-cta">
+                Configurer <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Profile -->
+            <div class="feature-card" data-feature="profile">
+              <div class="feature-header">
+                <div class="feature-icon profile">
+                  <i class="fas fa-user"></i>
+                </div>
+              </div>
+              <h3 class="feature-title">Profil créateur</h3>
+              <p class="feature-description">
+                Centralisez tous vos liens et créez une vitrine professionnelle pour votre marque personnelle
+              </p>
+              <div class="feature-stats">
+                <div class="feature-stat">
+                  <i class="fas fa-link"></i>
+                  <span>Liens illimités</span>
+                </div>
+                <div class="feature-stat">
+                  <i class="fas fa-palette"></i>
+                  <span>100% custom</span>
+                </div>
+              </div>
+              <button class="feature-cta">
+                Créer profil <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Landing -->
+            <div class="feature-card" data-feature="landing">
+              <div class="feature-header">
+                <div class="feature-icon landing">
+                  <i class="fas fa-rocket"></i>
+                </div>
+                <span class="feature-badge new">Nouveau</span>
+              </div>
+              <h3 class="feature-title">Landing Pages</h3>
+              <p class="feature-description">
+                Pages de vente haute conversion avec A/B testing et analytics intégrés
+              </p>
+              <div class="feature-stats">
+                <div class="feature-stat">
+                  <i class="fas fa-chart-line"></i>
+                  <span>+25% conversion</span>
+                </div>
+                <div class="feature-stat">
+                  <i class="fas fa-mobile-alt"></i>
+                  <span>Mobile first</span>
+                </div>
+              </div>
+              <button class="feature-cta">
+                Créer page <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Email -->
+            <div class="feature-card" data-feature="email">
+              <div class="feature-header">
+                <div class="feature-icon email">
+                  <i class="fas fa-envelope"></i>
+                </div>
+              </div>
+              <h3 class="feature-title">Email Marketing Pro</h3>
+              <p class="feature-description">
+                Campagnes email automatisées avec segmentation avancée et SMTP intégré
+              </p>
+              <div class="feature-stats">
+                <div class="feature-stat">
+                  <i class="fas fa-infinity"></i>
+                  <span>Emails illimités</span>
+                </div>
+                <div class="feature-stat">
+                  <i class="fas fa-robot"></i>
+                  <span>Automation</span>
+                </div>
+              </div>
+              <button class="feature-cta">
+                Configurer <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Boutique -->
+            <div class="feature-card" data-feature="boutique">
+              <div class="feature-header">
+                <div class="feature-icon boutique">
+                  <i class="fas fa-store"></i>
+                </div>
+              </div>
+              <h3 class="feature-title">Boutique en ligne</h3>
+              <p class="feature-description">
+                Vendez produits digitaux et physiques avec paiements sécurisés Stripe
+              </p>
+              <div class="feature-stats">
+                <div class="feature-stat">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Paiements sécurisés</span>
+                </div>
+                <div class="feature-stat">
+                  <i class="fas fa-globe"></i>
+                  <span>Multi-devises</span>
+                </div>
+              </div>
+              <button class="feature-cta">
+                Créer boutique <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Analytics -->
+            <div class="feature-card" data-feature="analytics">
+              <div class="feature-header">
+                <div class="feature-icon analytics">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+                <span class="feature-badge pro">Pro</span>
+              </div>
+              <h3 class="feature-title">Analytics avancés</h3>
+              <p class="feature-description">
+                Tableau de bord temps réel avec insights IA pour optimiser vos performances
+              </p>
+              <div class="feature-stats">
+                <div class="feature-stat">
+                  <i class="fas fa-clock"></i>
+                  <span>Temps réel</span>
+                </div>
+                <div class="feature-stat">
+                  <i class="fas fa-brain"></i>
+                  <span>Insights IA</span>
+                </div>
+              </div>
+              <button class="feature-cta">
+                Voir analytics <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Setup Modal -->
+  <div class="modal-overlay" id="setupModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Configuration Telegram</h2>
+        <button class="modal-close" id="closeModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="setupForm">
+        <div class="form-group">
+          <label class="form-label" for="langSelect">
+            <i class="fas fa-language"></i>
+            Langue du bot
+          </label>
+          <select class="form-select" id="langSelect" required>
+            <option value="fr" selected>Français</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="it">Italiano</option>
+            <option value="de">Deutsch</option>
+            <option value="pt">Português</option>
+            <option value="ru">Русский</option>
+            <option value="ar">العربية</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="currencySelect">
+            <i class="fas fa-coins"></i>
+            Devise principale
+          </label>
+          <select class="form-select" id="currencySelect" required>
+            <option value="EUR" selected>EUR - Euro</option>
+            <option value="USD">USD - Dollar US</option>
+            <option value="GBP">GBP - Livre Sterling</option>
+            <option value="CHF">CHF - Franc Suisse</option>
+            <option value="CAD">CAD - Dollar Canadien</option>
+            <option value="AUD">AUD - Dollar Australien</option>
+            <option value="JPY">JPY - Yen Japonais</option>
+            <option value="CNY">CNY - Yuan Chinois</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="botName">
+            <i class="fas fa-robot"></i>
+            Nom du bot
+          </label>
+          <input type="text" class="form-input" id="botName" 
+                 placeholder="Ex: MonBusinessBot" required>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check"></i>
+            Continuer
+          </button>
+          <button type="button" class="btn btn-secondary" id="cancelModal">
+            <i class="fas fa-times"></i>
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Scripts - CHEMINS MODIFIÉS -->
+  <script src="/config/firebase.js"></script>
+  
+  <!-- Sidebar Component -->
+  <script src="/assets/js/sidebar.js"></script>
+  
+  <script src="/utils/constants.js"></script>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

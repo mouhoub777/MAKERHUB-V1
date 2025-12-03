@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analytics - MAKERHUB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/statistiques.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+
+<!-- Sidebar Container -->
+<div id="sidebar-container"></div>
+
+<main class="main-content">
+  <div class="content-wrapper">
+    <div class="page-header">
+      <h1 class="page-title">Analytics</h1>
+      <p class="page-description">Track your landing pages performance and optimize your conversion rates</p>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="filters-bar">
+      <div class="filters-left">
+        <div class="filter-group">
+          <span class="filter-label">Landing Page:</span>
+          <select class="filter-select landing-select" id="landingFilter">
+            <option value="all">All Pages</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Period:</span>
+          <select class="filter-select" id="periodFilter">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 3 months</option>
+            <option value="365">Last year</option>
+          </select>
+        </div>
+      </div>
+      <div class="filters-right">
+        <button class="refresh-btn" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Page Views</div>
+          <div class="stat-icon">
+            <i class="fas fa-eye"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="totalViews">0</div>
+        <div class="stat-change neutral">
+          <i class="fas fa-minus"></i>
+          <span>No data</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Button Clicks</div>
+          <div class="stat-icon">
+            <i class="fas fa-mouse-pointer"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="totalClicks">0</div>
+        <div class="stat-change neutral">
+          <i class="fas fa-minus"></i>
+          <span>No data</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Subscriptions</div>
+          <div class="stat-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="totalSubscriptions">0</div>
+        <div class="stat-change neutral">
+          <i class="fas fa-minus"></i>
+          <span>No data</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Conversion Rate</div>
+          <div class="stat-icon">
+            <i class="fas fa-percentage"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="conversionRate">0%</div>
+        <div class="stat-change neutral">
+          <i class="fas fa-minus"></i>
+          <span>No data</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Total Revenue</div>
+          <div class="stat-icon">
+            <i class="fas fa-euro-sign"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="totalRevenue">€0</div>
+        <div class="stat-change neutral">
+          <i class="fas fa-minus"></i>
+          <span>No data</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Avg. Revenue/Sub</div>
+          <div class="stat-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="avgRevenue">€0.00</div>
+        <div class="stat-change neutral">
+          <i class="fas fa-minus"></i>
+          <span>No data</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Views & Clicks Trend</div>
+          <div class="chart-subtitle">Daily performance</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="clicksChart" style="display: none;"></canvas>
+          <div class="chart-placeholder" id="clicksPlaceholder">
+            <i class="fas fa-chart-line"></i>
+            No data available yet
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Revenue by Page</div>
+          <div class="chart-subtitle">Top performing pages</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="revenueChart" style="display: none;"></canvas>
+          <div class="chart-placeholder" id="revenuePlaceholder">
+            <i class="fas fa-chart-pie"></i>
+            No revenue data available
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Landing Pages Performance Table -->
+    <div class="links-section">
+      <div class="section-header">
+        <div class="section-title">Landing Pages Performance</div>
+        <div class="section-subtitle" id="pagesCount">0 pages</div>
+      </div>
+      
+      <table class="links-table">
+        <thead>
+          <tr>
+            <th>Landing Page</th>
+            <th>Views</th>
+            <th>Clicks</th>
+            <th>Subscriptions</th>
+            <th>Rate</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody id="linksTableBody">
+          <tr>
+            <td colspan="6" class="empty-state">
+              <i class="fas fa-chart-line"></i>
+              <span>No landing pages yet</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay" style="display: none;">
+  <div class="loading-spinner">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Loading stats...</span>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="/config/firebase.js"></script>
+
+<!-- Sidebar Component -->
+<script src="/assets/js/sidebar.js"></script>
+
+<script src="/assets/js/statistiques.js"></script>
+
+</body>
+</html>

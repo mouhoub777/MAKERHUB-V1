@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- SEO Meta Tags -->
+  <title>Pricing Configuration - MAKERHUB.PRO | Pricing Plans Manager</title>
+  <meta name="description" content="Configure your pricing plans with MAKERHUB. Create attractive offers with discounts, free trials and flexible options to maximize your conversions." />
+  <meta name="keywords" content="pricing configuration, pricing plans, pricing strategy, makerhub, monetization, subscriptions, free trial" />
+  <meta name="author" content="MAKERHUB" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="language" content="en" />
+
+  <!-- Technical Meta Tags -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#ffd600" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- External -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/prix.css" />
+</head>
+<body>
+
+<div class="dashboard-container">
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+    <i class="fas fa-bars" aria-hidden="true"></i>
+  </button>
+
+  <!-- Sidebar Container -->
+  <div id="sidebar-container"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        <h1>Pricing Configuration</h1>
+        <p class="header-subtitle">Manage your pricing plans and payment settings</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-close-modal" id="closeBtn">
+          <i class="fas fa-times"></i><span>Close</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Loading State -->
+      <div id="loadingState" style="text-align: center; padding: 48px;">
+        <div style="display: inline-block;">
+          <div style="width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top-color: #ffd600; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+          <p style="margin-top: 16px; color: #666;">Loading pricing configuration...</p>
+        </div>
+      </div>
+
+      <!-- Main Content (hidden initially) -->
+      <div id="mainContent" style="display: none;">
+        <!-- Pricing Plans -->
+        <section class="form-section" aria-labelledby="pricing-plans-title">
+          <h3 id="pricing-plans-title" class="form-section-title">
+            <i class="fas fa-tag"></i> Pricing Plans Configuration
+          </h3>
+
+          <div id="pricingPlans">
+            <!-- Plans injected by prix.js -->
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="addPlanBtn">
+            <i class="fas fa-plus"></i> Add Plan
+          </button>
+        </section>
+
+        <!-- Footer actions -->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelBtn">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button class="btn btn-primary" id="saveBtn">
+            <i class="fas fa-save"></i> Save Configuration
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<!-- Firebase Config -->
+<script src="/config/firebase.js"></script>
+
+<!-- Sidebar Component -->
+<script src="/assets/js/sidebar.js"></script>
+
+<!-- Constants fallback -->
+<script>
+  // Fallback si constants.js n'existe pas
+  if (!window.MAKERHUB_CONFIG) {
+    window.MAKERHUB_CONFIG = {
+      CURRENCIES: [
+        { code: 'EUR', symbol: '€', name: 'Euro' },
+        { code: 'USD', symbol: '$', name: 'US Dollar' },
+        { code: 'GBP', symbol: '£', name: 'British Pound' },
+        { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc' },
+        { code: 'CAD', symbol: 'CA$', name: 'Canadian Dollar' },
+        { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+        { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+        { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' }
+      ],
+      SYMBOL_TO_CODE: {
+        '€': 'EUR',
+        '$': 'USD',
+        '£': 'GBP',
+        'CHF': 'CHF',
+        'CA$': 'CAD',
+        'A$': 'AUD',
+        '¥': 'JPY'
+      },
+      CODE_TO_SYMBOL: {
+        'EUR': '€',
+        'USD': '$',
+        'GBP': '£',
+        'CHF': 'CHF',
+        'CAD': 'CA$',
+        'AUD': 'A$',
+        'JPY': '¥',
+        'CNY': '¥'
+      }
+    };
+  }
+</script>
+
+<!-- Try to load constants if exists -->
+<script src="/utils/constants.js" onerror="console.warn('constants.js not found, using fallback')"></script>
+
+<!-- Pricing logic -->
+<script src="/assets/js/prix.js"></script>
+
+<!-- Initialization script -->
+<script>
+  // Attendre que tout soit chargé
+  window.addEventListener('load', function() {
+    // Cacher le loading et montrer le contenu après un court délai
+    setTimeout(function() {
+      const loadingState = document.getElementById('loadingState');
+      const mainContent = document.getElementById('mainContent');
+      
+      if (loadingState) loadingState.style.display = 'none';
+      if (mainContent) mainContent.style.display = 'block';
+    }, 500);
+  });
+
+  // Animation de rotation pour le spinner
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+
+</body>
+</html>

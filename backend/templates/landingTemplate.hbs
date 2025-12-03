@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{brand}}{{#if slogan}} - {{slogan}}{{/if}}</title>
+    <meta name="description" content="{{metaDescription}}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family={{fontGoogle}}:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" fetchpriority="high">
+    
+    <style>
+        :root {
+            --accent: {{borderColor}};
+            --text: {{textColor}};
+            --bg: {{backgroundColor}};
+            --font: {{fontFamily}};
+            --btn-text: {{btnTextColor}};
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: var(--font);
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Container principal */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Banner en haut */
+        .banner {
+            background: rgba(0,0,0,0.05);
+            text-align: center;
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        /* Logo Section */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .logo.square {
+            border-radius: 12px;
+        }
+        
+        /* Contenu Principal */
+        .content {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .brand {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            line-height: 1.1;
+            {{#if textFormatting.brand.bold}}font-weight: 900;{{/if}}
+            {{#if textFormatting.brand.italic}}font-style: italic;{{/if}}
+        }
+        
+        .slogan {
+            font-size: 18px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            {{#if textFormatting.slogan.bold}}font-weight: 700;{{/if}}
+            {{#if textFormatting.slogan.italic}}font-style: italic;{{/if}}
+        }
+        
+        .description {
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: left;
+            {{#if textFormatting.description.bold}}font-weight: 600;{{/if}}
+            {{#if textFormatting.description.italic}}font-style: italic;{{/if}}
+            {{#if descriptionBackgroundEnabled}}
+            background: {{descriptionBackgroundColor}};
+            padding: 20px;
+            border-radius: 12px;
+            {{/if}}
+        }
+        
+        .description ul, .description ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        
+        .description li {
+            margin-bottom: 8px;
+        }
+        
+        /* Media Gallery */
+        .media-gallery {
+            display: grid;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .media-gallery img,
+        .media-gallery video {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+        
+        /* Access Section */
+        .access-section {
+            margin: 40px 0;
+        }
+        
+        .access-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            text-align: left;
+            color: var(--text);
+        }
+        
+        .access-panel {
+            background: #ffffff; /* fallback */
+            background: color-mix(in srgb, var(--bg) 92%, #fff 8%);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .access-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .access-emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .access-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .access-subtitle {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+        
+        .payment-button {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--btn-text);
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+            position: static;
+        }
+        
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* Reviews Section */
+        .reviews-section {
+            margin: 40px 0;
+        }
+        
+        .reviews-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            text-align: left;
+            color: var(--text);
+        }
+        
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .reviews-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .global-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .stars {
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .review-card {
+            background: rgba(0,0,0,0.03);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--accent);
+            color: var(--btn-text);
+        }
+        
+        .review-info {
+            flex: 1;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .review-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .review-stars {
+            color: #ffd700;
+        }
+        
+        .review-comment {
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        /* Section prix moderne - SL-CTA */
+        .sl-cta {
+            margin: 50px 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Desktop version styles */
+        .desktop-version {
+            display: block;
+        }
+        
+        .mobile-version {
+            display: none;
+        }
+        
+        /* Styles prix modernes desktop */
+        .price-card {
+            background: #fff;
+            border: 3px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .price-option {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            padding: 20px 25px;
+            border-radius: 16px;
+            cursor: pointer;
+            position: relative;
+            transition: all .2s;
+            border: 3px solid #e0e0e0;
+        }
+        
+        .price-option:hover {
+            border-color: var(--accent);
+        }
+        
+        .price-option.selected {
+            border-color: var(--accent);
+            background: #f9f9f9;
+        }
+        
+        .price-option.selected::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .price-main-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .price-option .left {
+            font-weight: 600;
+            font-size: 20px;
+            padding-left: 35px;
+            color: #333;
+        }
+        
+        .price-option .right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .price-strike {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        .discount-badge {
+            background: var(--accent);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .option-info {
+            display: flex;
+            gap: 15px;
+            padding-left: 55px;
+            font-size: 13px;
+        }
+        
+        /* Couleurs noires pour les badges info */
+        .option-info-item,
+        .option-info-item.highlight,
+        .toggle-info-item,
+        .toggle-info-item.highlight,
+        .mobile-option-info-item,
+        .mobile-option-info-item.highlight { 
+            color: #333 !important;
+            font-weight: 600;
+        }
+        
+        .cta-button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 22px 60px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: transform .2s;
+            margin-top: 20px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile styles */
+        .mobile-container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 15px 20px 20px 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.1);
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .mobile-cta {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .options-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            margin-bottom: 2px;
+        }
+        
+        .toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .toggle-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        .toggle-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+        
+        .toggle-options {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #333 !important;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        
+        .toggle-options::after {
+            content: "˄";
+            font-size: 16px;
+            color: #333 !important;
+            transition: transform .2s;
+        }
+        
+        .options-toggle.active .toggle-options::after {
+            content: "˅";
+        }
+        
+        .options-panel {
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .options-panel.active {
+            display: block;
+        }
+        
+        .mobile-option {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            position: relative;
+            transition: all .2s;
+            border: 3px solid #e0e0e0;
+            background: #fff;
+        }
+        
+        .mobile-option:hover {
+            border-color: var(--accent);
+        }
+        
+        .mobile-option.selected {
+            border-color: var(--accent);
+            background: #f9f9f9;
+        }
+        
+        .mobile-option.selected::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .mobile-option-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .mobile-option .left {
+            font-weight: 600;
+            font-size: 17px;
+            padding-left: 35px;
+            color: #333;
+        }
+        
+        .mobile-option .right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .mobile-option .price-strike {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .mobile-option .discount-badge {
+            background: var(--accent);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        
+        .mobile-option-info {
+            display: flex;
+            gap: 12px;
+            padding-left: 55px;
+            font-size: 12px;
+        }
+        
+        /* CTA Section finale */
+        .cta-section {
+            margin: 60px 0 40px;
+            text-align: center;
+        }
+        
+        .cta-content {
+            background: rgba(0,0,0,0.03);
+            padding: 40px;
+            border-radius: 20px;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+        
+        /* Footer styles */
+        .landing-footer {
+            margin-top: 80px;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .footer-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+            opacity: 0.6;
+            margin-bottom: 8px;
+        }
+        
+        .footer-link {
+            color: var(--accent);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .footer-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .desktop-version {
+                display: none !important;
+            }
+            
+            .mobile-version {
+                display: block !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .brand {
+                font-size: 30px;
+            }
+            
+            .slogan {
+                font-size: 16px;
+            }
+            
+            .description {
+                font-size: 15px;
+                padding: 15px;
+            }
+            
+            .access-panel {
+                padding: 20px;
+            }
+            
+            .access-emoji {
+                font-size: 40px;
+            }
+            
+            .access-title {
+                font-size: 18px;
+            }
+            
+            .payment-button {
+                width: 100%;
+                display: block;
+                padding: 16px;
+            }
+            
+            .cta-content {
+                padding: 30px 20px;
+            }
+            
+            .cta-title {
+                font-size: 20px;
+            }
+            
+            .review-card {
+                padding: 15px;
+            }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .mobile-container {
+                max-width: 100%;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container > * {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Neutralise tout blur/overlay résiduel */
+        .surface, 
+        .surface-overlay, 
+        .overlay-blur {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            background: transparent !important;
+            border: 0 !important;
+        }
+        
+        /* Assure la pile d'affichage des CTAs */
+        .sl-cta { 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        .sl-card { 
+            z-index: 11; 
+        }
+        
+        .sl-mobile { 
+            z-index: 12; 
+        }
+        
+        /* Si on affiche le nouveau CTA, on masque l'ancien pour éviter tout overlay/blur */
+        .sl-cta ~ .payment-button { 
+            display: none !important; 
+        }
+        
+        /* Et pour être certain qu'aucune zone sticky ne crée de halo */
+        .sl-btn-sticky { 
+            position: fixed; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            border-radius: 0; 
+        }
+        
+        /* Styles additionnels pour compatibilité */
+        .bold { font-weight: bold !important; }
+        .italic { font-style: italic !important; }
+        
+        /* Print styles */
+        @media print {
+            .banner, .cta-section, .footer, .sl-cta { display: none; }
+            .container { max-width: 100%; }
+        }
+        
+        /* Anti-blur additionnel */
+        .sl-card, .sl-mobile, .sl-sheet, .price-card, .mobile-container {
+            background-clip: padding-box;
+        }
+        
+        .sl-cta * {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        
+        /* Masquer anciens CTAs si pricing moderne */
+        .has-modern-pricing .access-section .payment-button,
+        .has-modern-pricing .cta-section .payment-button {
+            display: none !important;
+        }
+        
+        /* CSS anti-image vide/cassée */
+        .logo-container img[src=""], .logo-container img:not([src]) { display: none !important; }
+    </style>
+</head>
+<body class="{{#if priceSection}}has-modern-pricing{{/if}}">
+    <div class="container">
+        {{#if banner}}
+        <div class="banner">{{banner}}</div>
+        {{/if}}
+        
+        {{#if logoUrl}}
+        <div class="logo-container">
+            {{#if (eq logoShape 'square')}}
+            <img src="{{logoUrl}}" alt="" class="logo square" loading="lazy" decoding="async"
+                 onerror="this.closest('.logo-container').style.display='none';">
+            {{else}}
+            <img src="{{logoUrl}}" alt="" class="logo" loading="lazy" decoding="async"
+                 onerror="this.closest('.logo-container').style.display='none';">
+            {{/if}}
+        </div>
+        {{/if}}
+        
+        <div class="content">
+            <h1 class="brand">{{brand}}</h1>
+            {{#if slogan}}
+            <p class="slogan">{{slogan}}</p>
+            {{/if}}
+            {{#if description}}
+            <div class="description">{{{description}}}</div>
+            {{/if}}
+        </div>
+        
+        {{#if mediaSection}}
+        <div class="media-section">
+            {{{mediaSection}}}
+        </div>
+        {{/if}}
+        
+        <div class="access-section">
+            <h2>Accès</h2>
+            <a class="access-panel" href="/checkout/{{slug}}" aria-label="Accéder au paiement pour {{brand}}">
+                {{#if accessEmoji}}<span class="access-emoji">{{accessEmoji}}</span>{{/if}}
+                <h3 class="access-title">{{brand}}</h3>
+                <p class="access-subtitle">Canal Telegram privé</p>
+            </a>
+        </div>
+        
+        {{#if reviewsSection}}
+        <div class="reviews-section">
+            <h2>Reviews</h2>
+            {{{reviewsSection}}}
+        </div>
+        {{/if}}
+        
+        <!-- Section prix moderne avec boutons desktop/mobile -->
+        {{#if priceSection}}
+        <div class="sl-cta">
+            {{{priceSection}}}
+        </div>
+        {{/if}}
+        
+        {{#unless priceSection}}
+        <div class="cta-section">
+            <div class="cta-content">
+                <h2 class="cta-title">{{#if ctaTitle}}{{ctaTitle}}{{else}}Rejoignez l'aventure{{/if}}</h2>
+                <p class="cta-subtitle">{{#if ctaSubtitle}}{{ctaSubtitle}}{{else}}Accès immédiat au canal Telegram privé{{/if}}</p>
+                <a href="/checkout/{{slug}}" class="payment-button">
+                    {{#if buttonEmoji}}{{buttonEmoji}} {{/if}}{{buttonText}}
+                </a>
+            </div>
+        </div>
+        {{/unless}}
+    </div>
+    
+    <!-- Footer avec mentions légales -->
+    <footer class="landing-footer">
+        <div class="footer-content">
+            <p class="footer-text">By subscribing, you accept specific conditions from the creator and the privacy policy.</p>
+            <p class="footer-text">Your subscription is non-binding, and you can cancel at any time.</p>
+            {{#if creatorEmail}}
+            <p class="footer-text">For any questions, you can contact the creator at <a href="mailto:{{creatorEmail}}" class="footer-link">{{creatorEmail}}</a>.</p>
+            {{/if}}
+        </div>
+    </footer>
+</body>
+</html>

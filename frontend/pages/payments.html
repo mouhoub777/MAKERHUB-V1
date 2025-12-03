@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payments - MAKERHUB.PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/payments.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar Container -->
+  <div id="sidebar-container"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="header-title">
+          <h1>Payment Settings</h1>
+          <p class="header-subtitle">Connect your Stripe account to accept payments</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+          </button>
+          <button id="logout" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="btn-text">Logout</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Status Card -->
+      <div class="card card-highlight">
+        <div class="card-icon">
+          <i class="fas fa-link"></i>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">Stripe Connection Status</h2>
+          <p class="card-subtitle">Connect your Stripe account to start accepting payments from your customers</p>
+          
+          <div id="stripe-status" class="status-container">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <span>Checking your account status...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="card">
+        <div class="card-header-section">
+          <h2 class="section-title">Creator Profile</h2>
+          <p class="section-subtitle">Your account information for payment processing</p>
+        </div>
+        
+        <div class="form-container">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="creator-email">
+                <i class="fas fa-envelope"></i>
+                Email Address
+              </label>
+              <input 
+                type="email" 
+                class="form-input"
+                id="creator-email" 
+                placeholder="Loading..."
+                disabled
+                readonly
+              />
+              <span class="form-help">This email is associated with your payment account</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="creator-name">
+                <i class="fas fa-user"></i>
+                Creator Name
+              </label>
+              <input 
+                type="text" 
+                class="form-input"
+                id="creator-name" 
+                placeholder="Loading..."
+                disabled
+                readonly
+              />
+              <span class="form-help">Your public creator name</span>
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <div class="alert-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="alert-content">
+              <strong>Profile Information Locked</strong>
+              <p>For security reasons, profile changes must be made through our support team. Please contact <a href="mailto:support@makerhub.pro">support@makerhub.pro</a> for assistance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+
+<!-- Firebase Configuration -->
+<script src="/config/firebase.js"></script>
+
+<!-- Sidebar Component -->
+<script src="/assets/js/sidebar.js"></script>
+
+<!-- Page Scripts -->
+<script src="/assets/js/payments.js"></script>
+
+</body>
+</html>
