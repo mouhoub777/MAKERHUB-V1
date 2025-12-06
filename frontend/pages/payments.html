@@ -8,6 +8,164 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/payments.css">
+  <style>
+    /* Stripe Config Section */
+    .stripe-config-section {
+      margin-top: 24px;
+    }
+    
+    .config-alert {
+      background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CD 100%);
+      border: 1px solid #FFE066;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .config-alert-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .config-alert-icon {
+      width: 48px;
+      height: 48px;
+      background: #FFD600;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .config-alert-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+    }
+    
+    .config-alert-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
+    
+    .config-steps {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .config-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .config-step:last-child {
+      margin-bottom: 0;
+    }
+    
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: #FFD600;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .step-content strong {
+      color: #1a1a1a;
+    }
+    
+    .step-content p {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: #666;
+    }
+    
+    .config-image-container {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .config-image {
+      width: 100%;
+      max-width: 700px;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+      display: block;
+      margin: 0 auto;
+    }
+    
+    .config-image-caption {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-top: 12px;
+    }
+    
+    .config-button-container {
+      text-align: center;
+    }
+    
+    .btn-stripe {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #635BFF 0%, #7B73FF 100%);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+    }
+    
+    .btn-stripe:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 91, 255, 0.4);
+    }
+    
+    .btn-stripe i {
+      font-size: 18px;
+    }
+
+    .important-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #DC3545;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+    }
+  </style>
 </head>
 <body>
 
@@ -30,9 +188,6 @@
           <p class="header-subtitle">Connect your Stripe account to accept payments</p>
         </div>
         <div class="header-actions">
-          <button class="btn-icon" aria-label="Notifications">
-            <i class="fas fa-bell"></i>
-          </button>
           <button id="logout" class="btn-logout">
             <i class="fas fa-sign-out-alt"></i>
             <span class="btn-text">Logout</span>
@@ -57,6 +212,81 @@
               <div class="spinner"></div>
               <span>Checking your account status...</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⚙️ STRIPE BILLING CONFIGURATION SECTION -->
+      <div class="card stripe-config-section">
+        <div class="card-header-section">
+          <h2 class="section-title">
+            <i class="fas fa-cog" style="color: #635BFF; margin-right: 8px;"></i>
+            Stripe Billing Configuration
+            <span class="important-badge">
+              <i class="fas fa-exclamation"></i>
+              Important
+            </span>
+          </h2>
+          <p class="section-subtitle">Configure your Stripe account to automatically manage failed payments and remove non-paying members</p>
+        </div>
+
+        <div class="config-alert">
+          <div class="config-alert-header">
+            <div class="config-alert-icon">⚙️</div>
+            <div>
+              <h3 class="config-alert-title">Required Configuration</h3>
+              <p class="config-alert-subtitle">Set up automatic retry and subscription cancellation for failed payments</p>
+            </div>
+          </div>
+
+          <div class="config-steps">
+            <div class="config-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <strong>Go to Stripe Dashboard → Settings → Billing → Subscriptions</strong>
+                <p>Or click the button below to go directly to the settings</p>
+              </div>
+            </div>
+            <div class="config-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <strong>Configure "Manage failed payments"</strong>
+                <p>Set retry attempts to <strong>4 times</strong> within <strong>1 week</strong></p>
+              </div>
+            </div>
+            <div class="config-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <strong>Set subscription status to "Cancel the subscription"</strong>
+                <p>This ensures non-paying members are automatically removed from your Telegram channel</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="config-image-container">
+            <img src="/assets/images/stripe-config.png" alt="Stripe Billing Configuration" class="config-image" onerror="this.style.display='none'">
+            <p class="config-image-caption">
+              <i class="fas fa-info-circle"></i>
+              Your Stripe settings should look like this
+            </p>
+          </div>
+
+          <div class="config-button-container">
+            <a href="https://dashboard.stripe.com/settings/billing/subscriptions" target="_blank" rel="noopener noreferrer" class="btn-stripe">
+              <i class="fab fa-stripe-s"></i>
+              Open Stripe Billing Settings
+              <i class="fas fa-external-link-alt" style="font-size: 14px;"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top: 0;">
+          <div class="alert-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <div class="alert-content">
+            <strong>How it works</strong>
+            <p>When a payment fails, Stripe will retry up to 4 times over 1 week. If all retries fail, the subscription is cancelled and the member is automatically removed from your Telegram channel.</p>
           </div>
         </div>
       </div>
@@ -109,7 +339,7 @@
             </div>
             <div class="alert-content">
               <strong>Profile Information Locked</strong>
-              <p>For security reasons, profile changes must be made through our support team. Please contact <a href="mailto:support@makerhub.pro">support@makerhub.pro</a> for assistance.</p>
+              <p>For security reasons, profile changes must be made through our support team. Please contact <a href="/cdn-cgi/l/email-protection#91e2e4e1e1fee3e5d1fcf0faf4e3f9e4f3bfe1e3fe"><span class="__cf_email__" data-cfemail="0d7e787d7d627f794d606c66687f65786f237d7f62">[email&#160;protected]</span></a> for assistance.</p>
             </div>
           </div>
         </div>
@@ -126,14 +356,23 @@
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
 
-<!-- Firebase Configuration -->
+<!-- Config -->
 <script src="/config/firebase.js"></script>
 
-<!-- Sidebar Component -->
+<!-- Sidebar -->
 <script src="/assets/js/sidebar.js"></script>
 
-<!-- Page Scripts -->
+<!-- Page Script -->
 <script src="/assets/js/payments.js"></script>
+
+<!-- Logout Script -->
+<script>
+  document.getElementById('logout')?.addEventListener('click', () => {
+    firebase.auth().signOut().then(() => {
+      window.location.href = '/auth.html';
+    });
+  });
+</script>
 
 </body>
 </html>

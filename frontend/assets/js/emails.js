@@ -69,21 +69,7 @@ async function loadEmailsFromFirebase() {
       });
     });
 
-    // If no data, show demo data for testing
-    if (allData.length === 0) {
-      console.log('No emails found. Showing demo data.');
-      allData = [
-        {
-          id: 'demo1',
-          firstName: "Demo",
-          email: "demo@example.com",
-          source: "Stripe Checkout",
-          landingPageId: "demo-page",
-          createdAt: new Date()
-        }
-      ];
-    }
-
+    // PAS DE DEMO DATA - Afficher directement les vrais emails
     filteredData = [...allData];
     renderTable();
     
@@ -112,8 +98,8 @@ function renderTable() {
       <tr>
         <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
           <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-          <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">No subscribers yet</div>
-          <div style="font-size: 14px;">Emails will be collected automatically when customers complete checkout</div>
+          <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Aucun email collecté</div>
+          <div style="font-size: 14px;">Les emails seront collectés automatiquement après chaque paiement Stripe</div>
         </td>
       </tr>
     `;
@@ -142,20 +128,6 @@ function renderTable() {
   });
   
   updateStats();
-}
-
-// Filter table by source
-function filterTable() {
-  const filterValue = document.getElementById('sourceFilter').value;
-  
-  if (filterValue === 'all') {
-    filteredData = [...allData];
-  } else {
-    filteredData = allData.filter(subscriber => subscriber.source === filterValue);
-  }
-  
-  renderTable();
-  document.getElementById('selectAll').checked = false;
 }
 
 // Toggle select all checkboxes
@@ -302,17 +274,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   } else {
     console.error('Firebase Auth not initialized');
-    // Load demo data for testing
-    allData = [
-      {
-        firstName: "Test",
-        email: "test@example.com",
-        source: "Lead Capture",
-        createdAt: new Date()
-      }
-    ];
-    filteredData = [...allData];
-    renderTable();
+    // PAS DE DEMO DATA - Afficher message d'erreur
+    const tableBody = document.getElementById('tableBody');
+    if (tableBody) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 40px; color: var(--danger);">
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+            <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Firebase non initialisé</div>
+            <div style="font-size: 14px;">Veuillez rafraîchir la page ou vérifier la configuration</div>
+          </td>
+        </tr>
+      `;
+    }
   }
   
   // Initialize sidebar links
@@ -323,17 +297,4 @@ document.addEventListener('DOMContentLoaded', function() {
       window.location.href = link.getAttribute('href');
     };
   });
-  
-  // Add export all button functionality
-  const exportAllBtn = document.createElement('button');
-  exportAllBtn.className = 'btn btn-secondary';
-  exportAllBtn.innerHTML = '<i class="fas fa-download"></i> Export All';
-  exportAllBtn.onclick = exportAllEmails;
-  exportAllBtn.style.marginLeft = '10px';
-  
-  // Add export button to header actions
-  const headerActions = document.querySelector('.header-actions');
-  if (headerActions) {
-    headerActions.appendChild(exportAllBtn);
-  }
 });

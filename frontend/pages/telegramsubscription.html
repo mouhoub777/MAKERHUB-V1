@@ -15,6 +15,24 @@
     <link rel="stylesheet" href="/assets/css/telegramsubscription.css">
     
     <style>
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
         /* Modal Styles */
         .modal {
             display: none;
@@ -392,6 +410,10 @@
                     <button class="btn btn-primary" id="createPageBtn">
                         <i class="fas fa-plus"></i>
                         <span class="btn-text">Create Page</span>
+                    </button>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="btn-text">Logout</span>
                     </button>
                 </div>
             </header>
@@ -904,6 +926,13 @@
                 if (typeof confirmDelete === 'function') confirmDelete();
             });
         }
+    });
+    
+    // Logout
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        firebase.auth().signOut().then(() => {
+            window.location.href = '/auth.html';
+        });
     });
     </script>
 </body>

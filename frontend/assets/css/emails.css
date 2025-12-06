@@ -60,8 +60,16 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
-  display: flex;
   font-size: 14px;
+}
+
+#sidebar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  z-index: 100;
 }
 
 /* SIDEBAR */
@@ -247,19 +255,18 @@ body {
   border-radius: 0 2px 2px 0;
 }
 
-/* MAIN CONTENT */
+/* MAIN CONTENT - CORRIGÉ */
 .main-content {
   margin-left: 240px;
   padding: 0;
-  width: calc(100% - 240px);
+  flex: 1;
   min-height: 100vh;
   background: var(--bg-primary);
 }
 
 .content-wrapper {
-  padding: var(--spacing-2xl) var(--spacing-2xl) var(--spacing-xl);
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: var(--spacing-2xl);
+  max-width: 1200px;
 }
 
 .page-header {
@@ -285,7 +292,7 @@ body {
 /* STATS SECTION */
 .stats-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-2xl);
 }
@@ -607,7 +614,6 @@ tr:hover {
   
   .main-content {
     margin-left: 0;
-    width: 100%;
   }
   
   .content-wrapper {

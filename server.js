@@ -1,5 +1,5 @@
 // server.js - MAKERHUB V1 - Serveur Node.js Principal
-// VERSION CORRIGÉE - Traduction à la demande avec DeepL
+// VERSION CORRIGÉE - Webhook proxy AVANT body parser
 'use strict';
 
 require('dotenv').config();
@@ -38,11 +38,37 @@ try {
   console.error('❌ Erreur connexion Firebase:', error.message);
 }
 
-// ==================== MIDDLEWARES ====================
+// ==================== TRUST PROXY (pour ngrok/HTTPS) ====================
+app.set('trust proxy', 1);
 
-// Webhook Stripe - AVANT les autres middlewares (body brut requis)
-app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
-app.use('/api/webhook', express.raw({ type: 'application/json' }));
+// ==================== PYTHON SERVICE URL ====================
+const pythonServiceUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:5001';
+
+// ==================== WEBHOOK PROXY - AVANT TOUT BODY PARSER ====================
+// ✅ CRITIQUE: Le proxy webhook doit être AVANT express.json() pour que le body brut soit transmis
+app.use('/webhook', createProxyMiddleware({
+  target: pythonServiceUrl,
+  changeOrigin: true,
+  timeout: 30000,
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+    console.log('🔔 Webhook reçu, transmission à Python...');
+  },
+  onProxyRes: (proxyRes, req, res) => {
+    console.log(`🔔 Webhook traité, status: ${proxyRes.statusCode}`);
+  },
+  onError: (err, req, res) => {
+    console.error('❌ Erreur proxy Webhook:', err.message);
+    res.status(503).json({
+      success: false,
+      error: 'Service Webhook indisponible'
+    });
+  }
+}));
+
+console.log('🔔 Proxy Webhook configuré sur /webhook (AVANT body parser)');
+
+// ==================== MIDDLEWARES ====================
 
 // Configuration CORS
 const corsOptions = {
@@ -67,7 +93,7 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id', 'x-user-email']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id', 'x-user-email', 'stripe-signature']
 };
 
 app.use(cors(corsOptions));
@@ -106,7 +132,7 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
-// Body parsers (APRÈS le webhook Stripe)
+// Body parsers (APRÈS le webhook proxy)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -119,14 +145,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// ==================== PROXY PYTHON ====================
-const pythonServiceUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:5001';
+// ==================== AUTRES PROXIES PYTHON ====================
 
 app.use('/api/python', createProxyMiddleware({
   target: pythonServiceUrl,
   changeOrigin: true,
   pathRewrite: { '^/api/python': '' },
   timeout: 10000,
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+  },
   onError: (err, req, res) => {
     console.error('❌ Erreur proxy Python:', err.message);
     res.status(503).json({
@@ -138,10 +166,78 @@ app.use('/api/python', createProxyMiddleware({
 
 console.log('🐍 Proxy Python configuré sur /api/python/*');
 
+// ==================== PROXY CHECKOUT VERS PYTHON ====================
+app.use('/checkout', createProxyMiddleware({
+  target: pythonServiceUrl,
+  changeOrigin: true,
+  timeout: 30000,
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+  },
+  onError: (err, req, res) => {
+    console.error('❌ Erreur proxy Checkout:', err.message);
+    res.status(503).json({
+      success: false,
+      error: 'Service Checkout indisponible'
+    });
+  }
+}));
+
+console.log('💳 Proxy Checkout configuré sur /checkout/*');
+
+// ==================== PROXY SUCCESS/CANCEL VERS PYTHON ====================
+app.use('/success', createProxyMiddleware({
+  target: pythonServiceUrl,
+  changeOrigin: true,
+  timeout: 10000,
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+  },
+  onError: (err, req, res) => {
+    console.error('❌ Erreur proxy Success:', err.message);
+    res.status(503).send('<html><body><h1>Service indisponible</h1></body></html>');
+  }
+}));
+
+app.use('/cancel', createProxyMiddleware({
+  target: pythonServiceUrl,
+  changeOrigin: true,
+  timeout: 10000,
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+  },
+  onError: (err, req, res) => {
+    console.error('❌ Erreur proxy Cancel:', err.message);
+    res.status(503).send('<html><body><h1>Service indisponible</h1></body></html>');
+  }
+}));
+
+console.log('✅ Proxy Success/Cancel configuré');
+
+// ==================== PROXY API TELEGRAM VERS PYTHON ====================
+app.use('/api/telegram', createProxyMiddleware({
+  target: pythonServiceUrl,
+  changeOrigin: true,
+  timeout: 30000,
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+  },
+  onError: (err, req, res) => {
+    console.error('❌ Erreur proxy Telegram:', err.message);
+    res.status(503).json({
+      success: false,
+      error: 'Service Telegram indisponible'
+    });
+  }
+}));
+
+console.log('📱 Proxy Telegram configuré sur /api/telegram/*');
+
 // ==================== FICHIERS STATIQUES ====================
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use('/pages', express.static(path.join(__dirname, 'frontend/pages')));
 app.use('/assets', express.static(path.join(__dirname, 'frontend/assets')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/config', express.static(path.join(__dirname, 'config')));
 app.use('/utils', express.static(path.join(__dirname, 'utils')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -211,68 +307,6 @@ app.use('/api/checkout', require('./backend/routes/checkoutRoutes'));
 app.use('/api/tracking', require('./backend/routes/Trackingroutes'));
 app.use('/api/landing-checkout', require('./backend/routes/landingCheckoutRoutes'));
 
-// ==================== WEBHOOK STRIPE ====================
-app.post('/webhook/stripe', async (req, res) => {
-  try {
-    const sig = req.headers['stripe-signature'];
-    
-    if (!process.env.STRIPE_WEBHOOK_SECRET) {
-      console.warn('⚠️ STRIPE_WEBHOOK_SECRET non configuré');
-      return res.status(200).json({ received: true });
-    }
-
-    const event = stripe.webhooks.constructEvent(
-      req.body, 
-      sig, 
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-    
-    console.log('📥 Webhook Stripe reçu:', event.type);
-    
-    switch (event.type) {
-      case 'checkout.session.completed':
-        const session = event.data.object;
-        console.log('💰 Paiement réussi:', session.id);
-        
-        if (db) {
-          await db.collection('sales').add({
-            sessionId: session.id,
-            amount: session.amount_total / 100,
-            currency: session.currency,
-            customerEmail: session.customer_email,
-            creatorId: session.metadata?.creator_id,
-            pageId: session.metadata?.page_id,
-            status: 'completed',
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
-          });
-        }
-        break;
-        
-      case 'account.updated':
-        const account = event.data.object;
-        console.log('🔄 Compte Stripe mis à jour:', account.id);
-        break;
-        
-      case 'payment_intent.succeeded':
-        console.log('✅ Payment intent succeeded');
-        break;
-        
-      case 'payment_intent.payment_failed':
-        console.log('❌ Payment intent failed');
-        break;
-        
-      default:
-        console.log(`⚡ Événement non traité: ${event.type}`);
-    }
-    
-    res.json({ received: true });
-    
-  } catch (error) {
-    console.error('❌ Erreur webhook Stripe:', error);
-    res.status(400).send(`Webhook Error: ${error.message}`);
-  }
-});
-
 // ==================== ROUTES PAGES HTML ====================
 app.get('/', (req, res) => {
   res.redirect('/auth.html');
@@ -303,46 +337,32 @@ app.get('/:page.html', (req, res, next) => {
 });
 
 // ==================== TRADUCTION À LA DEMANDE AVEC DEEPL ====================
-/**
- * Traduire le contenu d'une landing page avec DeepL si nécessaire
- * @param {Object} landingData - Données de la landing page
- * @param {string} targetLang - Langue cible (ex: 'en', 'es', 'pt')
- * @param {string} docId - ID du document Firebase pour sauvegarder
- * @returns {Object} - Données avec traductions appliquées
- */
 async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
-  // Normaliser les codes de langue
   const sourceLang = (landingData.sourceLanguage || 'fr').toLowerCase().substring(0, 2);
   const target = targetLang.toLowerCase().substring(0, 2);
   
-  // Si la langue cible est la langue source, pas besoin de traduire
   if (target === sourceLang) {
     console.log(`   🌐 Langue source (${sourceLang}) = langue demandée, pas de traduction`);
     return landingData;
   }
   
-  // Vérifier si la traduction existe déjà dans Firebase
   const translations = landingData.translations || {};
   const existingTranslation = translations[target];
   
-  // Si traduction existe et n'est pas null/vide, l'utiliser
   if (existingTranslation && existingTranslation.slogan) {
     console.log(`   🌐 Traduction ${target} trouvée dans Firebase`);
     return landingData;
   }
   
-  // Sinon, essayer de traduire avec DeepL
   console.log(`   🌐 Traduction ${target} manquante, tentative avec DeepL...`);
   
   try {
-    // Vérifier si DeepL est configuré
     const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
     if (!DEEPL_API_KEY) {
       console.log(`   ⚠️ DEEPL_API_KEY non configurée, traduction impossible`);
       return landingData;
     }
     
-    // Préparer les textes à traduire
     const textsToTranslate = [];
     const fields = [];
     
@@ -368,7 +388,6 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
       return landingData;
     }
     
-    // Mapper les codes de langue pour DeepL
     const deeplLangMap = {
       'en': 'EN',
       'es': 'ES',
@@ -388,10 +407,8 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
     const deeplTarget = deeplLangMap[target] || target.toUpperCase();
     const deeplSource = deeplLangMap[sourceLang] || sourceLang.toUpperCase();
     
-    // Appeler l'API DeepL
     const fetch = (await import('node-fetch')).default;
     
-    // Utiliser l'API gratuite ou pro selon la clé
     const apiUrl = DEEPL_API_KEY.includes(':fx') 
       ? 'https://api-free.deepl.com/v2/translate'
       : 'https://api.deepl.com/v2/translate';
@@ -422,7 +439,6 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
       return landingData;
     }
     
-    // Construire l'objet de traduction
     const newTranslation = {};
     fields.forEach((field, index) => {
       newTranslation[field] = result.translations[index].text;
@@ -430,7 +446,6 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
     
     console.log(`   ✅ Traduction ${target} générée avec DeepL`);
     
-    // Sauvegarder dans Firebase (async, ne pas attendre)
     if (db && docId) {
       db.collection('landingPages').doc(docId).update({
         [`translations.${target}`]: newTranslation,
@@ -442,7 +457,6 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
       });
     }
     
-    // Appliquer la traduction aux données
     landingData.translations = landingData.translations || {};
     landingData.translations[target] = newTranslation;
     
@@ -458,15 +472,13 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
 app.get('/:profile/:slug', async (req, res, next) => {
   try {
     const { profile, slug } = req.params;
-    
-    // ✅ Récupérer la langue demandée (null si pas spécifiée)
     const requestedLang = req.query.lang || null;
     
-    // Préfixes exclus
     const excludedPrefixes = [
       'api', 'pages', 'assets', 'css', 'js', 'images', 
       'public', 'static', 'config', 'utils', 'webhook', 
-      'uploads', 'frontend', 'backend', 'node_modules'
+      'uploads', 'frontend', 'backend', 'node_modules',
+      'checkout', 'success', 'cancel'
     ];
     
     if (excludedPrefixes.includes(profile.toLowerCase())) {
@@ -493,7 +505,6 @@ app.get('/:profile/:slug', async (req, res, next) => {
       `);
     }
     
-    // Recherche de la landing page
     let landingQuery = await db.collection('landingPages')
       .where('profileName', '==', profile)
       .where('slug', '==', slug)
@@ -546,7 +557,6 @@ app.get('/:profile/:slug', async (req, res, next) => {
       }
     }
     
-    // Page non trouvée
     if (landingQuery.empty) {
       console.log(`   ❌ Page non trouvée: ${profile}/${slug}`);
       return res.status(404).send(`
@@ -614,31 +624,24 @@ app.get('/:profile/:slug', async (req, res, next) => {
       `);
     }
     
-    // ✅ Page trouvée - Générer le HTML
     const landingDoc = landingQuery.docs[0];
     let landingData = landingDoc.data();
     
     console.log(`   ✅ Page trouvée: ${landingData.brand || landingData.title || slug}`);
     
-    // ✅ CORRECTION: Déterminer la langue à utiliser
-    // Si ?lang est spécifié, utiliser cette langue
-    // Sinon, utiliser la langue source de la page (ou 'fr' par défaut)
     const sourceLang = (landingData.sourceLanguage || 'fr').toLowerCase().substring(0, 2);
     const lang = requestedLang || sourceLang;
     
     console.log(`   🌐 Langue: ${lang} (source: ${sourceLang})`);
     
-    // ✅ TRADUCTION À LA DEMANDE: Si langue différente de la source
     if (lang !== sourceLang) {
       landingData = await translateLandingContentIfNeeded(landingData, lang, landingDoc.id);
     }
     
-    // Générer le HTML
     try {
       const LandingGenerator = require('./backend/services/landingService');
       const html = await LandingGenerator.generateHTML(landingData, lang);
       
-      // Incrémenter les vues (async)
       db.collection('landingPages').doc(landingDoc.id).update({
         viewCount: admin.firestore.FieldValue.increment(1),
         lastViewedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -738,6 +741,9 @@ app.listen(PORT, () => {
   console.log(`   ❤️  Health: http://localhost:${PORT}/api/health`);
   console.log(`   💳 Stripe: http://localhost:${PORT}/api/stripe-status`);
   console.log(`   🐍 Python: http://localhost:${PORT}/api/python/health`);
+  console.log(`   💰 Checkout: http://localhost:${PORT}/checkout/{pageId}`);
+  console.log(`   📱 Telegram: http://localhost:${PORT}/api/telegram/*`);
+  console.log(`   🔔 Webhook: http://localhost:${PORT}/webhook`);
   console.log('');
   console.log('📄 LANDING PAGES:');
   console.log(`   Format: http://localhost:${PORT}/{profileName}/{slug}`);

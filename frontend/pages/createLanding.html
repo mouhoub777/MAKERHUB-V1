@@ -15,6 +15,31 @@
     <link rel="stylesheet" href="/assets/css/createLanding.css">
     
     <style>
+        /* Btn Logout */
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
         /* Style pour la grille de couleurs responsive */
         .mini-color-grid {
             display: grid;
@@ -90,6 +115,10 @@
                         <p class="page-description">Design beautiful landing pages with advanced formatting and real-time preview</p>
                     </div>
                 </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
             </div>
 
             <!-- Container avec 3 colonnes -->
@@ -466,5 +495,14 @@
     
     <!-- Script createLanding.js -->
     <script src="/assets/js/createLanding.js"></script>
+    
+    <!-- Logout Script -->
+    <script>
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        firebase.auth().signOut().then(() => {
+          window.location.href = '/auth.html';
+        });
+      });
+    </script>
 </body>
 </html>

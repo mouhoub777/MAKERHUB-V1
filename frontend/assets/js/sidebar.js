@@ -43,7 +43,7 @@
       id: 'plans', 
       label: 'Plans', 
       icon: 'fas fa-tag', 
-      href: '/prix.html' 
+      href: '/plans.html' 
     }
   ];
 
@@ -83,7 +83,9 @@
       <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <a href="/dashboard.html" class="logo">
-            <div class="logo-icon">M</div>
+            <div class="logo-icon">
+              <img src="/public/assets/images/makerhub-logo.jpg" alt="MAKERHUB">
+            </div>
             <div class="logo-text">MAKER<span class="hub">HUB</span></div>
           </a>
         </div>
@@ -137,14 +139,18 @@
       .logo-icon {
         width: 40px;
         height: 40px;
-        background: #f5c518;
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 800;
-        font-size: 20px;
-        color: #1a1a1a;
+        overflow: hidden;
+      }
+
+      .logo-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
       }
 
       .logo-text {
@@ -225,10 +231,8 @@
         background: #2a2a2a;
       }
 
-      /* Main content offset */
-      .main-content,
-      .dashboard-container > main,
-      .content-wrapper {
+      /* Main content offset - CORRIGÉ: seulement .main-content */
+      .main-content {
         margin-left: 260px;
         min-height: 100vh;
       }
@@ -249,9 +253,7 @@
           justify-content: center;
         }
 
-        .main-content,
-        .dashboard-container > main,
-        .content-wrapper {
+        .main-content {
           margin-left: 0;
         }
 

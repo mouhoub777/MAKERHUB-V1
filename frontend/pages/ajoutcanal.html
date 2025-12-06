@@ -24,6 +24,24 @@
     .main-content {
       background: #ffffff !important;
     }
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
   </style>
 </head>
 <body>
@@ -45,6 +63,10 @@
           <button class="btn-close-modal" id="backButtonTop">
             <i class="fas fa-arrow-left"></i>
             Back
+          </button>
+          <button class="btn-logout" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
           </button>
         </div>
       </header>
@@ -257,7 +279,7 @@
       }
       
       // Sign out handler
-      const signoutBtn = document.getElementById('signoutBtn');
+      const signoutBtn = document.getElementById('logoutBtn');
       if (signoutBtn) {
         signoutBtn.addEventListener('click', async function(e) {
           e.preventDefault();

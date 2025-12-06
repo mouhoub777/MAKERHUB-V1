@@ -34,6 +34,26 @@
   <link rel="stylesheet" href="/assets/css/avis.css" />
   
   <style>
+    /* Btn Logout */
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    
     /* Styles additionnels pour le formulaire */
     .star-rating {
       display: flex;
@@ -344,9 +364,9 @@
         <p class="header-subtitle">Manage customer reviews and ratings for your page</p>
       </div>
       <div class="header-actions">
-        <button class="btn-close-modal" id="closeBtn">
-          <i class="fas fa-times"></i>
-          <span>Close</span>
+        <button class="btn-logout" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
         </button>
       </div>
     </header>
@@ -528,6 +548,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.showLoadingOverlay(false);
             }
         });
+    });
+});
+
+// Logout
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    firebase.auth().signOut().then(() => {
+        window.location.href = '/auth.html';
     });
 });
 </script>

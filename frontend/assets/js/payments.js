@@ -3,9 +3,7 @@
 
 // Constants
 const STORAGE_PREFIX = 'makerhub_';
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')
-  ? 'http://localhost:3000/api' 
-  : 'https://api.makerhub.pro/api';
+const API_BASE_URL = `${window.location.origin}/api`;  // ✅ Fonctionne avec localhost, ngrok et production
 
 // Rate limiting
 const RATE_LIMIT_MS = 1000;
@@ -127,13 +125,14 @@ const apiManager = {
     }
   },
   
+  // ✅ CORRIGÉ: Route correcte
   async checkStripeStatus() {
-    // Pas besoin du creator_id, le serveur le récupère du token
-    return this.makeRequest('/stripe-status');
+    return this.makeRequest('/stripe-connect/stripe-status');
   },
   
+  // ✅ CORRIGÉ: Route correcte
   async createStripeConnectLink(data) {
-    return this.makeRequest('/create-stripe-connect-link', {
+    return this.makeRequest('/stripe-connect/create-stripe-connect-link', {
       method: 'POST',
       body: JSON.stringify(data)
     });
@@ -262,7 +261,6 @@ const stripeManager = {
       </div>
     `;
     
-    // Ajouter l'event listener après avoir créé le bouton
     setTimeout(() => {
       const btn = document.getElementById('connectStripeBtn');
       if (btn) {
@@ -296,7 +294,6 @@ const stripeManager = {
       </div>
     `;
     
-    // Ajouter l'event listener pour le bouton retry
     setTimeout(() => {
       const btn = document.getElementById('retryBtn');
       if (btn) {
@@ -306,7 +303,9 @@ const stripeManager = {
   },
   
   async connect() {
-    const btn = event.target;
+    const btn = document.getElementById('connectStripeBtn');
+    if (!btn) return;
+    
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
     btn.disabled = true;
@@ -340,23 +339,57 @@ const stripeManager = {
 
 // Profile Manager
 const profileManager = {
-  init() {
-    this.loadProfile();
+  async init() {
+    await this.loadProfile();
   },
   
-  loadProfile() {
+  async loadProfile() {
     const user = authManager.currentUser;
     if (!user) return;
-    
-    // Try to get from Firebase user first, then localStorage
-    const email = user.email || localStorage.getItem(STORAGE_PREFIX + 'user_email') || '';
-    const name = user.displayName || localStorage.getItem(STORAGE_PREFIX + 'user_name') || 'MakerHub Creator';
     
     const emailInput = document.getElementById('creator-email');
     const nameInput = document.getElementById('creator-name');
     
-    if (emailInput) emailInput.value = email;
-    if (nameInput) nameInput.value = name;
+    if (emailInput) emailInput.value = user.email || 'Loading...';
+    if (nameInput) nameInput.value = 'Loading...';
+    
+    try {
+      const db = firebase.firestore();
+      const creatorDoc = await db.collection('creators').doc(user.uid).get();
+      
+      if (creatorDoc.exists) {
+        const creatorData = creatorDoc.data();
+        const email = creatorData.email || user.email || '';
+        const profileName = creatorData.profileName || user.displayName || 'MakerHub Creator';
+        
+        if (emailInput) emailInput.value = email;
+        if (nameInput) nameInput.value = profileName;
+        
+        console.log('✅ Profile loaded from Firestore:', { email, profileName });
+      } else {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          const email = userData.email || user.email || '';
+          const profileName = userData.profileName || userData.displayName || user.displayName || 'MakerHub Creator';
+          
+          if (emailInput) emailInput.value = email;
+          if (nameInput) nameInput.value = profileName;
+          
+          console.log('✅ Profile loaded from users collection:', { email, profileName });
+        } else {
+          if (emailInput) emailInput.value = user.email || '';
+          if (nameInput) nameInput.value = user.displayName || 'MakerHub Creator';
+          
+          console.log('⚠️ No Firestore profile found, using Firebase Auth');
+        }
+      }
+    } catch (error) {
+      console.error('Error loading profile from Firestore:', error);
+      if (emailInput) emailInput.value = user.email || '';
+      if (nameInput) nameInput.value = user.displayName || 'MakerHub Creator';
+    }
   }
 };
 
@@ -372,7 +405,6 @@ const mobileMenuManager = {
       sidebar.classList.toggle('active');
     });
     
-    // Close sidebar when clicking outside
     document.addEventListener('click', (e) => {
       if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
         sidebar.classList.remove('active');
@@ -407,35 +439,27 @@ const urlManager = {
 // Page Manager
 const pageManager = {
   async init() {
-    // Initialize toast manager
     toastManager.init();
     
-    // Check authentication
     const user = await authManager.getCurrentUser();
     
     if (!user) {
-      // Redirect to auth if not authenticated
       window.location.href = '/auth.html';
       return;
     }
     
-    // Initialize components
     stripeManager.init();
-    profileManager.init();
+    await profileManager.init();
     mobileMenuManager.init();
     
-    // Check URL parameters
     const hasRedirect = urlManager.checkRedirectParams();
     
-    // Check Stripe status
     await stripeManager.checkStatus();
     
-    // Setup event listeners
     this.setupEventListeners();
   },
   
   setupEventListeners() {
-    // Logout button
     const logoutBtn = document.getElementById('logout');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => authManager.logout());

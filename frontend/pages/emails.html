@@ -35,7 +35,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-number" id="filteredCount">0</div>
-        <div class="stat-label">Filtered Results</div>
+        <div class="stat-label">Total Emails</div>
       </div>
     </div>
 
@@ -45,22 +45,6 @@
       <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
       <strong>V1 - Collection Mode:</strong> 
       Emails are automatically collected from Stripe checkout. The full email campaign system with SMTP is ready but will be activated in V2.
-    </div>
-
-    <div class="filter-section">
-      <div class="filter-title">
-        <i class="fas fa-filter"></i>
-        Filter by Source
-      </div>
-      <select class="filter-dropdown" id="sourceFilter" onchange="filterTable()">
-        <option value="all">All Sources</option>
-        <option value="Stripe Checkout">Stripe Checkout</option>
-        <option value="One-Time Purchase">One-Time Purchase</option>
-        <option value="Telegram Subscriber">Telegram Subscriber</option>
-        <option value="Live / Masterclass / Webinar">Live / Masterclass / Webinar</option>
-        <option value="Lead Capture">Lead Capture</option>
-        <option value="Scheduled Booking">Scheduled Booking</option>
-      </select>
     </div>
 
     <div class="table-container">
@@ -74,6 +58,9 @@
           <button class="send-email-btn" id="sendEmailBtn" onclick="sendEmailToSelected()" disabled>
             <i class="fas fa-download"></i>
             Export Selected (V2: Send Campaign)
+          </button>
+          <button class="btn btn-secondary" onclick="exportAllEmails()" style="margin-left: 10px;">
+            <i class="fas fa-download"></i> Export All
           </button>
         </div>
       </div>

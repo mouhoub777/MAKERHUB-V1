@@ -1,12 +1,48 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plans de Paiement - MAKERHUB</title>
+  <title>Payment Plans - MAKERHUB</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/plans.css">
+  <style>
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .coming-soon-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(245, 197, 24, 0.15);
+      color: #b89b00;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+  </style>
 </head>
 <body>
 
@@ -16,8 +52,14 @@
 <main class="main-content">
   <div class="content-wrapper">
     <div class="page-header">
-      <h1 class="page-title">Choisissez Votre Plan</h1>
-      <p class="page-description">Développez votre business avec le plan adapté. Commencez gratuitement et évoluez selon vos besoins.</p>
+      <div>
+        <h1 class="page-title">Choose Your Plan</h1>
+        <p class="page-description">Grow your business with the right plan. Start free and scale as needed.</p>
+      </div>
+      <button class="btn-logout" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </button>
     </div>
 
     <!-- PRICING CARDS -->
@@ -28,96 +70,92 @@
         <div class="plan-header">
           <div class="plan-name">Freemium</div>
           <div class="plan-price">
-            <span class="price-currency">€</span>
+            <span class="price-currency">$</span>
             <span class="price-amount">0</span>
-            <span class="price-period">/mois</span>
+            <span class="price-period">/month</span>
+          </div>
+          <div class="commission-info">
+            Commission: <span class="commission-rate">10%</span> on all sales
           </div>
         </div>
         
-        <div class="freemium-features">
-          <ul class="features-list">
-            <li><span class="feature-highlight">1</span> Channel Telegram <span class="commission-badge-small">10%</span></li>
-            <li>Page profil</li>
-            <li><span class="feature-highlight">2</span> Pages de vente</li>
-            <li><span class="feature-highlight">1</span> Lead capture</li>
-            <li>Statistiques basiques</li>
-            <li class="disabled">Live streaming</li>
-            <li class="disabled">Relance Telegram</li>
-            <li class="disabled">Booking & Events</li>
-            <li class="disabled">Mailing</li>
-            <li class="disabled">Scheduler</li>
-          </ul>
-        </div>
+        <ul class="features-list">
+          <li>Telegram Membership</li>
+          <li>Profile page <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>2 Sales pages <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Statistics</li>
+          <li class="disabled">Live streaming <span class="coming-soon-tag">Coming Soon</span></li>
+          <li class="disabled">Telegram reminders <span class="coming-soon-tag">Coming Soon</span></li>
+          <li class="disabled">Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
+          <li class="disabled">Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
+        </ul>
         
-        <button class="plan-cta cta-secondary">Commencer Gratuitement</button>
+        <button class="plan-cta cta-secondary">Start Free</button>
       </div>
 
       <!-- Plan Pro -->
-      <div class="pricing-card">
+      <div class="pricing-card popular">
+        <div class="popular-badge">Most Popular</div>
         <div class="plan-header">
           <div class="plan-name">Pro</div>
           <div class="plan-price">
-            <span class="price-currency">€</span>
+            <span class="price-currency">$</span>
             <span class="price-amount">49</span>
-            <span class="price-period">/mois</span>
+            <span class="price-period">/month</span>
           </div>
         </div>
         
         <ul class="features-list">
-          <li><span class="feature-highlight">1</span> Channel Telegram <span class="commission-badge-small">4%</span></li>
-          <li>Page profil + domaine custom</li>
-          <li>Pages de vente <span class="feature-highlight">illimitées</span></li>
-          <li>Lead capture <span class="feature-highlight">illimité</span></li>
-          <li>Live <span class="feature-highlight">illimité</span></li>
-          <li>Relance Event Telegram</li>
-          <li>Mailing illimité</li>
-          <li>Scheduler basique</li>
-          <li>Statistiques</li>
+          <li>Telegram Membership (4%)</li>
+          <li>Creator Profile <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Unlimited sales pages <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Telegram Event Reminders <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Creator Page <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Statistics</li>
         </ul>
         
-        <button class="plan-cta cta-primary">Essai 14 jours</button>
+        <button class="plan-cta cta-primary">14-Day Trial</button>
       </div>
 
       <!-- Plan Business -->
-      <div class="pricing-card popular">
-        <div class="popular-badge">Le Plus Populaire</div>
+      <div class="pricing-card">
         <div class="plan-header">
           <div class="plan-name">Business</div>
           <div class="plan-price">
-            <span class="price-currency">€</span>
+            <span class="price-currency">$</span>
             <span class="price-amount">99</span>
-            <span class="price-period">/mois</span>
+            <span class="price-period">/month</span>
           </div>
         </div>
         
         <ul class="features-list">
-          <li><span class="feature-highlight">Channels illimités</span> <span class="commission-badge-small">2%</span></li>
-          <li>Page profil + domaine custom</li>
-          <li>Pages de vente <span class="feature-highlight">illimitées</span></li>
-          <li>Lead capture <span class="feature-highlight">illimité</span></li>
-          <li>Live <span class="feature-highlight">illimité</span> + HD</li>
-          <li>Relance Telegram Event & Booking</li>
-          <li>Booking & Events</li>
-          <li>Funnel Telegram</li>
-          <li>Mailing illimité</li>
-          <li>Scheduler avancé + IA</li>
-          <li>Analytics temps réel + exports</li>
-          <li>Support 24/7 + Manager dédié</li>
+          <li>Unlimited Telegram Channels (2%)</li>
+          <li>Creator Profile <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Unlimited sales pages <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Telegram Event Reminders <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Creator Page <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Unlimited lives <span class="coming-soon-tag">Coming Soon</span></li>
+          <li>Statistics</li>
         </ul>
         
-        <button class="plan-cta cta-primary">Passer au Business</button>
+        <button class="plan-cta cta-primary">Upgrade to Business</button>
       </div>
     </div>
 
     <!-- Tableau de comparaison -->
     <div class="comparison-section">
-      <h2 class="comparison-title">Comparaison Détaillée des Plans</h2>
+      <h2 class="comparison-title">Detailed Plan Comparison</h2>
       
       <div class="comparison-table">
         <table>
           <thead>
             <tr>
-              <th>Fonctionnalités</th>
+              <th>Features</th>
               <th>Freemium</th>
               <th>Pro</th>
               <th>Business</th>
@@ -125,70 +163,70 @@
           </thead>
           <tbody>
             <tr>
-              <td>Prix mensuel</td>
-              <td class="value">0€</td>
-              <td class="value">49€</td>
-              <td class="value">99€</td>
+              <td>Monthly price</td>
+              <td class="value">$0</td>
+              <td class="value">$49</td>
+              <td class="value">$99</td>
             </tr>
             <tr>
-              <td>Commission sur ventes</td>
+              <td>Commission on sales</td>
               <td class="value">10%</td>
               <td class="value">4%</td>
               <td class="value">2%</td>
             </tr>
             <tr>
-              <td>CA mensuel optimal</td>
-              <td class="value">0-817€</td>
-              <td class="value">817-2500€</td>
-              <td class="value">+2500€</td>
-            </tr>
-            <tr>
-              <td>Channels Telegram</td>
+              <td>Telegram Channels</td>
               <td class="value">1</td>
               <td class="value">1</td>
-              <td class="value">Illimité</td>
+              <td class="value">Unlimited</td>
             </tr>
             <tr>
-              <td>Pages de vente</td>
+              <td>Sales pages</td>
               <td class="value">2</td>
-              <td class="value">Illimité</td>
-              <td class="value">Illimité</td>
+              <td class="value">Unlimited</td>
+              <td class="value">Unlimited</td>
             </tr>
             <tr>
-              <td>Lead capture</td>
-              <td class="value">1</td>
-              <td class="value">Illimité</td>
-              <td class="value">Illimité</td>
-            </tr>
-            <tr>
-              <td>Live streaming</td>
-              <td class="cross"><i class="fas fa-times"></i></td>
-              <td class="value">Illimité</td>
-              <td class="value">Illimité HD</td>
-            </tr>
-            <tr>
-              <td>Mailing</td>
-              <td class="cross"><i class="fas fa-times"></i></td>
-              <td class="value">Illimité</td>
-              <td class="value">Illimité</td>
-            </tr>
-            <tr>
-              <td>Scheduler</td>
+              <td>Creator Profile</td>
               <td class="cross"><i class="fas fa-times"></i></td>
               <td class="check"><i class="fas fa-check"></i></td>
               <td class="check"><i class="fas fa-check"></i></td>
             </tr>
             <tr>
-              <td>Statistiques</td>
-              <td class="value">Basiques</td>
-              <td class="value">Complètes</td>
-              <td class="value">Temps réel + API</td>
+              <td>Creator Page</td>
+              <td class="cross"><i class="fas fa-times"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
             </tr>
             <tr>
-              <td>Support</td>
+              <td>Calendar & Bookings</td>
+              <td class="cross"><i class="fas fa-times"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>Email Marketing</td>
+              <td class="cross"><i class="fas fa-times"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>Telegram Funnel</td>
               <td class="cross"><i class="fas fa-times"></i></td>
               <td class="cross"><i class="fas fa-times"></i></td>
-              <td class="value">24/7 + Manager</td>
+              <td class="check"><i class="fas fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>Unlimited lives</td>
+              <td class="cross"><i class="fas fa-times"></i></td>
+              <td class="cross"><i class="fas fa-times"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>Statistics</td>
+              <td class="check"><i class="fas fa-check"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
+              <td class="check"><i class="fas fa-check"></i></td>
             </tr>
           </tbody>
         </table>
@@ -197,68 +235,45 @@
 
     <!-- FAQ Section -->
     <div class="faq-section">
-      <h2 class="faq-title">Questions Fréquentes</h2>
+      <h2 class="faq-title">Frequently Asked Questions</h2>
       
       <div class="faq-item">
         <div class="faq-question" onclick="toggleFaq(this)">
-          Puis-je changer de plan à tout moment ?
+          Can I change my plan at any time?
           <i class="fas fa-plus"></i>
         </div>
         <div class="faq-answer">
-          Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Les changements prennent effet immédiatement et nous ajustons la facturation au prorata.
+          Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately and we adjust billing accordingly.
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question" onclick="toggleFaq(this)">
-          Quelle est la différence entre la commission et les frais mensuels ?
+          What's the difference between commission and monthly fees?
           <i class="fas fa-plus"></i>
         </div>
         <div class="faq-answer">
-          Notre plan Freemium prend une commission de 10% sur vos revenus. Les plans payants ont une commission réduite (4% pour Pro, 2% pour Business) et vous payez un abonnement mensuel fixe. Plus votre plan est élevé, moins la commission est importante.
+          Our Freemium plan takes a 10% commission on your revenue. Paid plans have reduced commission (4% for Pro, 2% for Business) plus a fixed monthly subscription. The higher your plan, the lower the commission.
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question" onclick="toggleFaq(this)">
-          Y a-t-il un essai gratuit pour les plans payants ?
+          Is there a free trial for paid plans?
           <i class="fas fa-plus"></i>
         </div>
         <div class="faq-answer">
-          Oui ! Tous les plans payants incluent un essai gratuit de 14 jours. Aucune carte de crédit n'est requise pour commencer.
+          Yes! All paid plans include a 14-day free trial. No credit card required to get started.
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question" onclick="toggleFaq(this)">
-          Comment fonctionne le système de Lead Capture ?
+          Do you offer refunds?
           <i class="fas fa-plus"></i>
         </div>
         <div class="faq-answer">
-          Les pages de Lead Capture vous permettent de collecter les emails et informations de vos prospects. Le plan Freemium inclut 1 page, Pro en propose 3, tandis que Business et Enterprise offrent un nombre illimité de pages pour maximiser votre génération de leads.
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          À partir de quel CA dois-je changer de plan ?
-          <i class="fas fa-plus"></i>
-        </div>
-        <div class="faq-answer">
-          • Freemium → Pro : rentable à partir de 817€ de CA mensuel
-          • Pro → Business : rentable à partir de 2500€ de CA mensuel
-          
-          Le plan Business avec tout illimité est parfait pour les créateurs établis avec un CA régulier.
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          Proposez-vous des remboursements ?
-          <i class="fas fa-plus"></i>
-        </div>
-        <div class="faq-answer">
-          Oui, nous offrons une garantie de remboursement de 30 jours pour tous les plans payants. Si vous n'êtes pas satisfait, nous vous remboursons intégralement.
+          Yes, we offer a 30-day money-back guarantee for all paid plans. If you're not satisfied, we'll refund you in full.
         </div>
       </div>
     </div>
@@ -304,6 +319,13 @@
   document.querySelectorAll('.pricing-card').forEach(card => {
     card.style.animationPlayState = 'paused';
     observer.observe(card);
+  });
+
+  // Logout
+  document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    firebase.auth().signOut().then(() => {
+      window.location.href = '/auth.html';
+    });
   });
 </script>
 

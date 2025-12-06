@@ -6,13 +6,12 @@ const admin = require('firebase-admin');
 // Middleware pour vérifier l'authentification
 const requireAuth = require('../middleware/auth');
 
-// GET /api/stripe-status - Vérifier le statut Stripe Connect
+// GET /api/stripe-connect/stripe-status - Vérifier le statut Stripe Connect
 router.get('/stripe-status', requireAuth, async (req, res) => {
   try {
     const userId = req.user.uid;
     console.log('Checking Stripe status for user:', userId);
     
-    // Récupérer les données utilisateur depuis Firebase
     const userDoc = await admin.firestore()
       .collection('users')
       .doc(userId)
@@ -29,7 +28,6 @@ router.get('/stripe-status', requireAuth, async (req, res) => {
       return res.json({ status: 'pending' });
     }
     
-    // Vérifier le compte Stripe
     const account = await stripe.accounts.retrieve(stripeAccountId);
     
     res.json({
@@ -46,7 +44,7 @@ router.get('/stripe-status', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/create-stripe-connect-link - Créer le lien d'onboarding
+// POST /api/stripe-connect/create-stripe-connect-link - Créer le lien d'onboarding
 router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
   try {
     const userId = req.user.uid;
@@ -54,7 +52,6 @@ router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
     
     console.log('Creating Stripe Connect link for:', userEmail);
     
-    // Vérifier si l'utilisateur a déjà un compte
     const userDoc = await admin.firestore()
       .collection('users')
       .doc(userId)
@@ -66,7 +63,7 @@ router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
     if (!stripeAccountId) {
       const account = await stripe.accounts.create({
         type: 'express',
-        country: 'FR', // ou req.body.country
+        country: 'FR',
         email: userEmail,
         capabilities: {
           card_payments: { requested: true },
@@ -74,7 +71,7 @@ router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
         },
         business_type: 'individual',
         business_profile: {
-          mcc: '5734', // Computer Software Stores
+          mcc: '5734',
           name: 'MAKERHUB Creator',
           product_description: 'Digital content and services'
         }
@@ -82,7 +79,6 @@ router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
       
       stripeAccountId = account.id;
       
-      // Sauvegarder dans Firebase
       await admin.firestore()
         .collection('users')
         .doc(userId)
@@ -92,11 +88,13 @@ router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
         }, { merge: true });
     }
     
-    // Créer le lien d'onboarding
+    // ✅ CORRIGÉ: Force HTTPS pour Stripe Live mode
+    const baseUrl = `https://${req.get('host')}`;
+    
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
-      refresh_url: `${req.protocol}://${req.get('host')}/payments.html`,
-      return_url: `${req.protocol}://${req.get('host')}/payments.html?stripe_connected=true`,
+      refresh_url: `${baseUrl}/payments.html`,
+      return_url: `${baseUrl}/payments.html?stripe_connected=true`,
       type: 'account_onboarding'
     });
     
@@ -113,8 +111,8 @@ router.post('/create-stripe-connect-link', requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/stripe/dashboard-link - Obtenir le lien du dashboard Stripe
-router.get('/stripe/dashboard-link', requireAuth, async (req, res) => {
+// GET /api/stripe-connect/dashboard-link - Obtenir le lien du dashboard Stripe
+router.get('/dashboard-link', requireAuth, async (req, res) => {
   try {
     const userId = req.user.uid;
     
