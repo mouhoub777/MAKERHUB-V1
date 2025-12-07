@@ -1,4 +1,4 @@
-# telegram/services/StripeService.py
+﻿# telegram/services/StripeService.py
 """
 Service Stripe pour le service Python MAKERHUB V1
 """

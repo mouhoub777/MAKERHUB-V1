@@ -98,31 +98,6 @@
       color: #666;
     }
     
-    .config-image-container {
-      background: white;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .config-image {
-      width: 100%;
-      max-width: 700px;
-      height: auto;
-      border-radius: 12px;
-      border: 1px solid #e9ecef;
-      display: block;
-      margin: 0 auto;
-    }
-    
-    .config-image-caption {
-      text-align: center;
-      font-size: 13px;
-      color: #666;
-      margin-top: 12px;
-    }
-    
     .config-button-container {
       text-align: center;
     }
@@ -165,6 +140,26 @@
       letter-spacing: 0.5px;
       margin-left: 8px;
     }
+    
+    /* Style btn-logout */
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
   </style>
 </head>
 <body>
@@ -188,7 +183,7 @@
           <p class="header-subtitle">Connect your Stripe account to accept payments</p>
         </div>
         <div class="header-actions">
-          <button id="logout" class="btn-logout">
+          <button id="logoutBtn" class="btn-logout">
             <i class="fas fa-sign-out-alt"></i>
             <span class="btn-text">Logout</span>
           </button>
@@ -263,14 +258,6 @@
             </div>
           </div>
 
-          <div class="config-image-container">
-            <img src="/assets/images/stripe-config.png" alt="Stripe Billing Configuration" class="config-image" onerror="this.style.display='none'">
-            <p class="config-image-caption">
-              <i class="fas fa-info-circle"></i>
-              Your Stripe settings should look like this
-            </p>
-          </div>
-
           <div class="config-button-container">
             <a href="https://dashboard.stripe.com/settings/billing/subscriptions" target="_blank" rel="noopener noreferrer" class="btn-stripe">
               <i class="fab fa-stripe-s"></i>
@@ -339,7 +326,7 @@
             </div>
             <div class="alert-content">
               <strong>Profile Information Locked</strong>
-              <p>For security reasons, profile changes must be made through our support team. Please contact <a href="/cdn-cgi/l/email-protection#91e2e4e1e1fee3e5d1fcf0faf4e3f9e4f3bfe1e3fe"><span class="__cf_email__" data-cfemail="0d7e787d7d627f794d606c66687f65786f237d7f62">[email&#160;protected]</span></a> for assistance.</p>
+              <p>For security reasons, profile changes must be made through our support team. Please contact <a href="mailto:live@makerhub.pro">live@makerhub.pro</a> for assistance.</p>
             </div>
           </div>
         </div>
@@ -367,7 +354,7 @@
 
 <!-- Logout Script -->
 <script>
-  document.getElementById('logout')?.addEventListener('click', () => {
+  document.getElementById('logoutBtn')?.addEventListener('click', () => {
     firebase.auth().signOut().then(() => {
       window.location.href = '/auth.html';
     });

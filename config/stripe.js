@@ -1,4 +1,4 @@
-// ==================== STRIPE CONFIG OPTIMISÉ - ANTI-CONFLITS ====================
+﻿// ==================== STRIPE CONFIG OPTIMISÉ - ANTI-CONFLITS ====================
 // services/connect-stripe-node/src/config/stripe.js
 
 const Stripe = require('stripe');
@@ -207,22 +207,22 @@ const StripeErrorHandler = {
     // Messages personnalisés par type d'erreur
     switch (error.type) {
       case 'StripeCardError':
-        errorInfo.userMessage = 'Problème avec la carte de paiement';
+        errorInfo.userMessage = 'Problem with payment card';
         break;
       case 'StripeInvalidRequestError':
-        errorInfo.userMessage = 'Requête invalide';
+        errorInfo.userMessage = 'Invalid request';
         break;
       case 'StripeAPIError':
-        errorInfo.userMessage = 'Erreur temporaire, veuillez réessayer';
+        errorInfo.userMessage = 'Temporary error, please try again';
         break;
       case 'StripeConnectionError':
-        errorInfo.userMessage = 'Problème de connexion, veuillez réessayer';
+        errorInfo.userMessage = 'Connection problem, please try again';
         break;
       case 'StripeAuthenticationError':
         errorInfo.userMessage = 'Erreur d\'authentification';
         break;
       default:
-        errorInfo.userMessage = 'Une erreur est survenue';
+        errorInfo.userMessage = 'An error occurred';
     }
     
     return errorInfo;

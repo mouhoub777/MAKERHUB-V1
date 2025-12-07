@@ -1,16 +1,16 @@
-/* =========================================================================
- *  ajoutcanal.js — MakerHub / BrandLynk
- *  Connexion d'un canal Telegram + navigation CSP-safe (script-src-attr 'none')
- *  VERSION 2.0 - CSP COMPATIBLE - NO INLINE EVENT HANDLERS
- *  AUCUN HTML/CSS dans ce fichier — uniquement du JS.
+﻿/* =========================================================================
+ *  ajoutcanal.js - MakerHub / BrandLynk
+ *  Telegram channel connection + CSP-safe navigation (script-src-attr 'none')
+ *  VERSION 2.1 - CSP COMPATIBLE - NO INLINE EVENT HANDLERS - FIXED ENCODING
+ *  NO HTML/CSS in this file - only JS.
  * ========================================================================= */
 (function () {
   'use strict';
 
-  console.log('📱 MAKERHUB Connect Channel v2.0 CSP-Safe loaded');
+  console.log('[MAKERHUB] Connect Channel v2.1 loaded');
 
   // -----------------------------------------------------------------------
-  // ÉTAT GLOBAL
+  // GLOBAL STATE
   // -----------------------------------------------------------------------
   let currentPageId = null;
   let auth = null;
@@ -18,7 +18,7 @@
   let isSubmitting = false;
 
   // -----------------------------------------------------------------------
-  // HELPERS DOM
+  // DOM HELPERS
   // -----------------------------------------------------------------------
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -33,21 +33,47 @@
     if (existing.length >= 3) existing[0].remove();
 
     const el = document.createElement('div');
-    el.className = `toast ${type}`;
+    el.className = 'toast toast-' + type;
+    el.style.cssText = 'display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);margin-bottom:10px;min-width:300px;max-width:450px;animation:slideIn 0.3s ease;';
     
-    // CSP SAFE: Build toast with DOM methods
+    // Icon container - FORCE styles to override any CSS
     const iconSpan = document.createElement('span');
-    iconSpan.className = 'toast-icon';
-    iconSpan.textContent = type === 'success' ? '✅' : type === 'error' ? '⛔' : 'ℹ️';
+    iconSpan.style.cssText = 'display:flex;align-items:center;justify-content:center;width:24px;height:24px;flex-shrink:0;font-size:18px;';
     
+    // Use Font Awesome icons - force inline styles
+    const iconEl = document.createElement('i');
+    if (type === 'success') {
+      iconEl.className = 'fas fa-check-circle';
+      iconEl.style.color = '#22c55e';
+    } else if (type === 'error') {
+      iconEl.className = 'fas fa-exclamation-circle';
+      iconEl.style.color = '#ef4444';
+    } else if (type === 'warning') {
+      iconEl.className = 'fas fa-exclamation-triangle';
+      iconEl.style.color = '#f59e0b';
+    } else {
+      iconEl.className = 'fas fa-info-circle';
+      iconEl.style.color = '#3b82f6';
+    }
+    iconSpan.appendChild(iconEl);
+    
+    // Message content
     const contentSpan = document.createElement('span');
-    contentSpan.className = 'toast-content';
+    contentSpan.style.cssText = 'flex:1;font-size:14px;color:#333;line-height:1.4;';
     contentSpan.textContent = message;
     
+    // Close button - FORCE styles
     const closeBtn = document.createElement('button');
-    closeBtn.className = 'toast-close';
-    closeBtn.setAttribute('aria-label', 'Fermer');
-    closeBtn.textContent = '✖';
+    closeBtn.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;color:#999;font-size:14px;';
+    closeBtn.setAttribute('aria-label', 'Close');
+    
+    const closeIcon = document.createElement('i');
+    closeIcon.className = 'fas fa-times';
+    closeBtn.appendChild(closeIcon);
+    
+    // Hover effect
+    closeBtn.addEventListener('mouseenter', function() { this.style.color = '#333'; });
+    closeBtn.addEventListener('mouseleave', function() { this.style.color = '#999'; });
     
     // CSP SAFE: addEventListener instead of onclick
     closeBtn.addEventListener('click', function() {
@@ -60,11 +86,20 @@
     
     container.appendChild(el);
 
-    // Animations (déclarées en CSS)
-    setTimeout(() => (el.style.animation = 'slideIn .3s ease forwards'), 10);
+    // Animations with inline styles (no CSS dependency)
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(100%)';
+    
+    setTimeout(() => {
+      el.style.transition = 'all 0.3s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(0)';
+    }, 10);
+    
     setTimeout(() => {
       if (!el.parentNode) return;
-      el.style.animation = 'slideOut .3s ease forwards';
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(100%)';
       setTimeout(() => el.parentNode && el.remove(), 300);
     }, 5000);
   }
@@ -76,7 +111,7 @@
     if (connectBtn) {
       const btnSpan = connectBtn.querySelector('span');
       if (btnSpan) {
-        btnSpan.textContent = show ? 'Connexion...' : 'Connect Channel';
+        btnSpan.textContent = show ? 'Connecting...' : 'Connect Channel';
       }
       connectBtn.disabled = !!show;
     }
@@ -94,7 +129,7 @@
   // NAVIGATION / REDIRECTIONS (CSP SAFE)
   // -----------------------------------------------------------------------
   function handleBackNavigation() {
-    console.log('↩️ Handling back navigation...');
+    console.log('[NAV] Handling back navigation...');
     try {
       if (window.history.length > 1) {
         window.history.back();
@@ -108,7 +143,7 @@
   }
 
   function redirectToTelegramDashboard() {
-    console.log('🚀 Redirecting to Telegram Dashboard...');
+    console.log('[NAV] Redirecting to Telegram Dashboard...');
     const params = [];
     if (currentPageId) params.push(`page=${encodeURIComponent(currentPageId)}`);
     params.push('connected=true', 'activated=true');
@@ -116,20 +151,20 @@
   }
 
   function redirectToTelegramPage(success = false) {
-    showToast("Redirection vers la page d'abonnement...", 'info');
+    showToast('Redirecting to subscription page...', 'info');
     const params = [];
     if (currentPageId) params.push(`page=${encodeURIComponent(currentPageId)}`);
     if (success) params.push('connected=true', 'activated=true');
     const url = `/telegramsubscription.html${params.length ? '?' + params.join('&') : ''}`;
-    console.log('Final Redirection URL:', url);
+    console.log('[NAV] Final Redirection URL:', url);
     setTimeout(() => (window.location.href = url), 500);
   }
 
   // -----------------------------------------------------------------------
-  // FIREBASE BOOTSTRAP (SOUPLE : compat window.* ou compat global)
+  // FIREBASE BOOTSTRAP
   // -----------------------------------------------------------------------
   async function waitForFirebase() {
-    console.log('⏳ Waiting for Firebase...');
+    console.log('[FIREBASE] Waiting for Firebase...');
     return new Promise((resolve) => {
       let i = 0;
       const max = 50; // ~5s
@@ -137,22 +172,22 @@
         i++;
         if (window.firebaseAuth && window.firebaseDb) {
           clearInterval(t);
-          console.log('✅ Firebase is ready! (window.firebaseAuth/firebaseDb)');
+          console.log('[FIREBASE] Ready (window.firebaseAuth/firebaseDb)');
           return resolve();
         }
         if (window.firebaseServices?.auth && window.firebaseServices?.db) {
           clearInterval(t);
-          console.log('✅ Firebase services found! (window.firebaseServices)');
+          console.log('[FIREBASE] Services found (window.firebaseServices)');
           return resolve();
         }
         if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
           clearInterval(t);
-          console.log('✅ Firebase compat global detected (firebase.*)');
+          console.log('[FIREBASE] Compat global detected (firebase.*)');
           return resolve();
         }
         if (i >= max) {
           clearInterval(t);
-          console.warn('⚠️ Firebase timeout - continuing anyway');
+          console.warn('[FIREBASE] Timeout - continuing anyway');
           return resolve();
         }
       }, 100);
@@ -160,7 +195,7 @@
   }
 
   function initializeFirebase() {
-    console.log('🔥 Initializing Firebase references...');
+    console.log('[FIREBASE] Initializing references...');
     if (window.firebaseAuth && window.firebaseDb) {
       auth = window.firebaseAuth;
       db = window.firebaseDb;
@@ -171,30 +206,30 @@
       auth = firebase.auth(); // compat
       db = firebase.firestore();
     } else {
-      console.error('❌ Firebase services not available');
-      showToast('Erreur de chargement Firebase. Veuillez rafraîchir la page.', 'error');
+      console.error('[FIREBASE] Services not available');
+      showToast('Firebase loading error. Please refresh the page.', 'error');
       return;
     }
 
     auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log('👤 User authenticated:', user.email);
+        console.log('[AUTH] User authenticated:', user.email);
         initializeForm();
         checkPageExists();
       } else {
-        console.log('❌ User not authenticated, redirecting...');
+        console.log('[AUTH] User not authenticated, redirecting...');
         window.location.href = '/auth.html';
       }
     });
   }
 
   // -----------------------------------------------------------------------
-  // FIRESTORE : PAGE / STATUT
+  // FIRESTORE: PAGE / STATUS
   // -----------------------------------------------------------------------
   async function checkPageExists() {
     if (!currentPageId) {
-      console.error('❌ No page ID provided');
-      showToast('Aucune page sélectionnée', 'error');
+      console.error('[PAGE] No page ID provided');
+      showToast('No page selected', 'error');
       setTimeout(() => (window.location.href = '/telegramsubscription.html'), 2000);
       return;
     }
@@ -202,8 +237,8 @@
     try {
       const pageDoc = await db.collection('landingPages').doc(currentPageId).get();
       if (!pageDoc.exists) {
-        console.error('❌ Page not found:', currentPageId);
-        showToast('Page introuvable. Redirection...', 'error');
+        console.error('[PAGE] Page not found:', currentPageId);
+        showToast('Page not found. Redirecting...', 'error');
         setTimeout(() => (window.location.href = '/telegramsubscription.html'), 2000);
         return;
       }
@@ -211,31 +246,31 @@
       // Verify ownership
       const data = pageDoc.data() || {};
       if (data.creatorId && auth.currentUser && data.creatorId !== auth.currentUser.uid) {
-        console.error('❌ Unauthorized access to page:', currentPageId);
-        showToast('Accès non autorisé à cette page', 'error');
+        console.error('[PAGE] Unauthorized access to page:', currentPageId);
+        showToast('Unauthorized access to this page', 'error');
         setTimeout(() => (window.location.href = '/telegramsubscription.html'), 2000);
         return;
       }
       
-      console.log('✅ Page found:', data.brand || data.slug || currentPageId);
+      console.log('[PAGE] Page found:', data.brand || data.slug || currentPageId);
       updatePageInfo(data);
       if (data.telegram?.isConnected) showExistingChannel(data.telegram);
     } catch (err) {
-      console.error('❌ Error checking page:', err);
-      showToast('Erreur de vérification de la page', 'error');
+      console.error('[PAGE] Error checking page:', err);
+      showToast('Error verifying page', 'error');
     }
   }
 
   function updatePageInfo(pageData) {
     const hint = $('#currentPageHint');
-    if (hint) hint.textContent = pageData.slug || pageData.brand || currentPageId || '—';
+    if (hint) hint.textContent = pageData.slug || pageData.brand || currentPageId || '-';
   }
 
   function showExistingChannel(telegramData) {
     const channelLink = $('#channelLink');
     if (channelLink && telegramData.channelLink) channelLink.value = telegramData.channelLink;
-    showToast('Cette page a déjà un canal Telegram connecté', 'info');
-    console.log('Canal existant:', {
+    showToast('This page already has a Telegram channel connected', 'info');
+    console.log('[CHANNEL] Existing channel:', {
       channelName: telegramData.channelName,
       channelLink: telegramData.channelLink,
       connectedAt: telegramData.connectedAt
@@ -244,15 +279,15 @@
 
   async function updatePageActiveStatus(pageId, isActive = true) {
     try {
-      console.log(`📝 Updating page ${pageId} active status ->`, isActive);
+      console.log(`[PAGE] Updating page ${pageId} active status ->`, isActive);
       await db.collection('landingPages').doc(pageId).update({
         isActive: isActive,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      console.log('✅ Page status updated successfully');
+      console.log('[PAGE] Status updated successfully');
       return true;
     } catch (err) {
-      console.error('❌ Error updating page status:', err);
+      console.error('[PAGE] Error updating status:', err);
       return false;
     }
   }
@@ -279,13 +314,13 @@
     const rawLink = linkInput ? linkInput.value.trim() : '';
 
     if (!rawLink) {
-      showToast('Veuillez entrer un lien de canal Telegram', 'error');
+      showToast('Please enter a Telegram channel link', 'error');
       return;
     }
 
     const extracted = extractTelegramIdentifier(rawLink);
     if (!extracted.success) {
-      showToast(extracted.error || 'Lien Telegram invalide', 'error');
+      showToast(extracted.error || 'Invalid Telegram link', 'error');
       return;
     }
 
@@ -294,7 +329,7 @@
     showLoading(true);
 
     try {
-      console.log('📡 Connecting Telegram channel:', extracted);
+      console.log('[TELEGRAM] Connecting channel:', extracted);
 
       // Update Firestore
       await db.collection('landingPages').doc(currentPageId).update({
@@ -309,8 +344,8 @@
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      console.log('✅ Channel connected successfully');
-      showToast('Canal Telegram connecté avec succès!', 'success');
+      console.log('[TELEGRAM] Channel connected successfully');
+      showToast('Telegram channel connected successfully!', 'success');
 
       // Try to verify with Python backend (optional)
       try {
@@ -320,7 +355,7 @@
         
         if (response.ok) {
           const info = await response.json();
-          console.log('✅ Channel verified by backend:', info);
+          console.log('[TELEGRAM] Channel verified by backend:', info);
           
           // Update with channel name if available
           if (info.title) {
@@ -330,7 +365,7 @@
           }
         }
       } catch (verifyError) {
-        console.warn('⚠️ Backend verification skipped:', verifyError.message);
+        console.warn('[TELEGRAM] Backend verification skipped:', verifyError.message);
       }
 
       // Redirect to dashboard with success params
@@ -339,8 +374,8 @@
       }, 1500);
 
     } catch (err) {
-      console.error('❌ Error connecting channel:', err);
-      showToast('Erreur lors de la connexion: ' + err.message, 'error');
+      console.error('[TELEGRAM] Error connecting channel:', err);
+      showToast('Connection error: ' + err.message, 'error');
     } finally {
       isSubmitting = false;
       disableForm(false);
@@ -353,7 +388,7 @@
   // -----------------------------------------------------------------------
   function extractTelegramIdentifier(input) {
     if (!input || typeof input !== 'string') {
-      return { success: false, error: 'Lien vide ou invalide' };
+      return { success: false, error: 'Empty or invalid link' };
     }
 
     let s = input.trim();
@@ -370,7 +405,7 @@
           format: 'at_username'
         };
       }
-      return { success: false, error: "Nom d'utilisateur invalide" };
+      return { success: false, error: 'Invalid username format' };
     }
 
     // Add protocol if missing
@@ -386,7 +421,7 @@
           format: 'username_only'
         };
       } else {
-        return { success: false, error: 'Format non reconnu' };
+        return { success: false, error: 'Unrecognized link format' };
       }
     }
 
@@ -394,7 +429,7 @@
       const url = new URL(s);
       const host = url.hostname.toLowerCase();
       const valid = ['t.me', 'telegram.me', 'telegram.dog'];
-      if (!valid.includes(host)) return { success: false, error: 'Domaine non reconnu comme Telegram' };
+      if (!valid.includes(host)) return { success: false, error: 'Domain not recognized as Telegram' };
 
       const path = url.pathname || '';
 
@@ -410,7 +445,7 @@
             format: 'plus_prefix'
           };
         }
-        return { success: false, error: "Hash d'invitation invalide" };
+        return { success: false, error: 'Invalid invitation hash' };
       }
 
       // /joinchat/HASH (legacy private invite)
@@ -425,7 +460,7 @@
             format: 'joinchat'
           };
         }
-        return { success: false, error: 'Hash joinchat invalide' };
+        return { success: false, error: 'Invalid joinchat hash' };
       }
 
       // /username (public)
@@ -434,7 +469,7 @@
         const username = m[1];
         const reserved = ['share', 'addstickers', 'proxy', 'setlanguage'];
         if (reserved.includes(username.toLowerCase())) {
-          return { success: false, error: "Ce lien n'est pas un canal/groupe" };
+          return { success: false, error: 'This link is not a channel or group' };
         }
         return {
           success: true,
@@ -459,12 +494,12 @@
             };
           }
         }
-        return { success: false, error: 'Deep link Telegram invalide' };
+        return { success: false, error: 'Invalid Telegram deep link' };
       }
 
-      return { success: false, error: "Format d'URL Telegram non reconnu" };
+      return { success: false, error: 'Unrecognized Telegram URL format' };
     } catch (e) {
-      return { success: false, error: `Erreur d'analyse: ${e.message}` };
+      return { success: false, error: 'Parse error: ' + e.message };
     }
   }
 
@@ -549,8 +584,8 @@
             await auth.signOut();
             window.location.href = '/auth.html';
           } catch (error) {
-            console.error('Sign out error:', error);
-            showToast('Erreur de déconnexion', 'error');
+            console.error('[AUTH] Sign out error:', error);
+            showToast('Logout error', 'error');
           }
         }
       });
@@ -591,10 +626,10 @@
       't.me/+abc',
       'https://t.me/share/url?url=test'
     ];
-    console.log('=== TEST EXTRACTION LIENS TELEGRAM ===');
+    console.log('=== TEST TELEGRAM LINK EXTRACTION ===');
     tests.forEach((link) => {
       const res = extractTelegramIdentifier(link);
-      console.log('\nLien:', JSON.stringify(link), '\nRésultat:', res);
+      console.log('\nLink:', JSON.stringify(link), '\nResult:', res);
     });
     console.log('=====================================');
   };
@@ -609,11 +644,11 @@
   };
 
   // -----------------------------------------------------------------------
-  // HANDLERS GLOBAUX
+  // GLOBAL HANDLERS
   // -----------------------------------------------------------------------
   window.addEventListener('unhandledrejection', (e) => {
-    console.error('Unhandled promise rejection:', e?.reason);
-    showToast("Une erreur inattendue s'est produite", 'error');
+    console.error('[ERROR] Unhandled promise rejection:', e?.reason);
+    showToast('An unexpected error occurred', 'error');
   });
 
   window.addEventListener('beforeunload', () => {
@@ -627,7 +662,7 @@
   // BOOT
   // -----------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', async () => {
-    console.log('📄 DOM loaded, initializing channel manager...');
+    console.log('[INIT] DOM loaded, initializing channel manager...');
 
     // Get page ID from URL or storage
     const q = new URLSearchParams(window.location.search);
@@ -641,7 +676,7 @@
       sessionStorage.setItem('currentLandingPageId', currentPageId);
       localStorage.setItem('currentLandingPageId', currentPageId);
       localStorage.setItem('makerhub_current_page', currentPageId);
-      console.log('✅ Page ID:', currentPageId);
+      console.log('[INIT] Page ID:', currentPageId);
     } else {
       // Try to get from last created pages
       const all = JSON.parse(localStorage.getItem('makerhub_all_pages') || '[]');
@@ -650,12 +685,12 @@
         sessionStorage.setItem('currentLandingPageId', currentPageId);
         localStorage.setItem('currentLandingPageId', currentPageId);
         localStorage.setItem('makerhub_current_page', currentPageId);
-        console.log('✅ Using last created page:', currentPageId);
+        console.log('[INIT] Using last created page:', currentPageId);
       }
     }
 
     if (!currentPageId) {
-      showToast('Aucune page sélectionnée', 'error');
+      showToast('No page selected', 'error');
       setTimeout(() => (window.location.href = '/telegramsubscription.html'), 2000);
       return;
     }

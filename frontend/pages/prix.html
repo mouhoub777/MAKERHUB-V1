@@ -33,23 +33,24 @@
   <!-- Styles -->
   <link rel="stylesheet" href="/assets/css/prix.css" />
   <style>
-    .btn-logout {
+    /* Bouton Croix pour fermer */
+    .btn-close-page {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      background: transparent;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      justify-content: center;
+      font-size: 18px;
       color: #666;
-      font-size: 14px;
-      cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-logout:hover {
-      background: #fee2e2;
-      border-color: #ef4444;
-      color: #ef4444;
+    .btn-close-page:hover {
+      background: #e5e7eb;
+      color: #333;
     }
   </style>
 </head>
@@ -73,9 +74,9 @@
         <p class="header-subtitle">Manage your pricing plans and payment settings</p>
       </div>
       <div class="header-actions">
-        <button class="btn-logout" id="logoutBtn">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
+        <!-- MODIFIÉ: Bouton croix au lieu de logout -->
+        <button class="btn-close-page" id="closePageBtn" title="Close">
+          <i class="fas fa-times"></i>
         </button>
       </div>
     </header>
@@ -120,10 +121,10 @@
   </main>
 </div>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<!-- ✅ CORRIGÉ: Firebase SDKs (version 10.5.0 unifiée) -->
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
 
 <!-- Firebase Config -->
 <script src="/config/firebase.js"></script>
@@ -199,12 +200,10 @@
   document.head.appendChild(style);
 </script>
 
-<!-- Logout Script -->
+<!-- MODIFIÉ: Bouton Croix - Fermer la page -->
 <script>
-  document.getElementById('logoutBtn')?.addEventListener('click', () => {
-    firebase.auth().signOut().then(() => {
-      window.location.href = '/auth.html';
-    });
+  document.getElementById('closePageBtn')?.addEventListener('click', () => {
+    window.location.href = '/telegramsubscription.html';
   });
 </script>
 

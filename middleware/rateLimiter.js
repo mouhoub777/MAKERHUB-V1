@@ -1,4 +1,4 @@
-// middleware/rateLimiter.js - Rate limiting pour MAKERHUB
+﻿// middleware/rateLimiter.js - Rate limiting pour MAKERHUB
 // Protection contre les abus (login, checkout, emails, API)
 
 /**
@@ -33,7 +33,7 @@ const createRateLimiter = (options = {}) => {
     key = 'ratelimit',
     limit = 100,
     window = 900, // 15 minutes par défaut
-    message = 'Trop de tentatives, veuillez réessayer plus tard',
+    message = 'Too many attempts, please try again later',
     skipSuccessfulRequests = false
   } = options;
 
@@ -101,7 +101,7 @@ const createRateLimiter = (options = {}) => {
 
       next();
     } catch (error) {
-      console.error('Erreur rate limiter:', error);
+      console.error('Rate limiter error:', error);
       // En cas d'erreur, on laisse passer la requête
       next();
     }
@@ -120,7 +120,7 @@ const loginRateLimiter = createRateLimiter({
   key: 'ratelimit:login',
   limit: 5,
   window: 900, // 15 minutes
-  message: 'Trop de tentatives de connexion. Veuillez attendre 15 minutes.',
+  message: 'Too many login attempts. Please wait 15 minutes.',
   skipSuccessfulRequests: true
 });
 
@@ -132,7 +132,7 @@ const checkoutRateLimiter = createRateLimiter({
   key: 'ratelimit:checkout',
   limit: 10,
   window: 300, // 5 minutes
-  message: 'Trop de tentatives de paiement. Veuillez patienter avant de réessayer.'
+  message: 'Too many payment attempts. Please wait before trying again.'
 });
 
 /**
@@ -194,7 +194,7 @@ const landingPageRateLimiter = createRateLimiter({
   key: 'ratelimit:landing',
   limit: 10,
   window: 3600, // 1 heure
-  message: 'Limite de création de landing pages atteinte. Veuillez attendre une heure.'
+  message: 'Landing page creation limit reached. Please wait one hour.'
 });
 
 /**
@@ -204,7 +204,7 @@ const resetPasswordRateLimiter = createRateLimiter({
   key: 'ratelimit:reset',
   limit: 3,
   window: 3600, // 1 heure
-  message: 'Trop de demandes de réinitialisation. Veuillez attendre une heure.'
+  message: 'Too many reset requests. Please wait one hour.'
 });
 
 /**
@@ -273,7 +273,7 @@ const blockIP = (blockedIPs = []) => {
     if (blockedIPs.includes(ip)) {
       return res.status(403).json({
         success: false,
-        error: 'Accès refusé'
+        error: 'Access denied'
       });
     }
     
@@ -307,3 +307,4 @@ module.exports = {
   getRateLimitStatus,
   blockIP
 };
+

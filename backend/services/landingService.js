@@ -1,4 +1,5 @@
-// backend/services/landingService.js - Service complet avec Handlebars et Firebase
+﻿// backend/services/landingService.js - Service complet avec Handlebars et Firebase
+// VERSION CORRIGÉE - Traduction depuis l'ANGLAIS par défaut
 const Handlebars = require('handlebars');
 const admin = require('firebase-admin');
 const db = admin.firestore();
@@ -16,31 +17,26 @@ try {
 }
 
 // ==================== FONCTION DE TRADUCTION DEEPL DIRECTE ====================
-// Utilise fetch natif (Node.js 18+) - pas besoin d'axios
-// Détecte automatiquement si c'est une clé PRO ou FREE
-async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'FR') {
+async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'EN') {
   const deeplApiKey = process.env.DEEPL_API_KEY;
   
   if (!deeplApiKey) {
     console.warn('⚠️ DEEPL_API_KEY non configurée');
-    return texts; // Retourner les originaux
+    return texts;
   }
   
   if (!Array.isArray(texts) || texts.length === 0) {
     return [];
   }
   
-  // Normaliser les codes de langue
   const normalizedTarget = targetLang.toUpperCase().substring(0, 2);
   const normalizedSource = sourceLang.toUpperCase().substring(0, 2);
   
-  // Si même langue, pas besoin de traduire
   if (normalizedTarget === normalizedSource) {
     console.log('ℹ️ Même langue source/cible, pas de traduction');
     return texts;
   }
   
-  // Mapper les codes courts vers les codes DeepL
   const langMap = {
     'EN': 'EN',
     'FR': 'FR',
@@ -63,10 +59,7 @@ async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'FR') {
   };
   
   const deeplTarget = langMap[normalizedTarget] || normalizedTarget;
-  const deeplSource = langMap[normalizedSource] || normalizedSource;
   
-  // Détecter si c'est une clé FREE ou PRO
-  // Les clés FREE se terminent par ":fx"
   const isFreeKey = deeplApiKey.endsWith(':fx');
   const apiEndpoint = isFreeKey 
     ? 'https://api-free.deepl.com/v2/translate'
@@ -75,11 +68,8 @@ async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'FR') {
   console.log(`🔑 DeepL API: ${isFreeKey ? 'FREE' : 'PRO'}`);
   
   try {
-    // Construire les paramètres
     const params = new URLSearchParams();
     params.append('target_lang', deeplTarget);
-    // NE PAS spécifier source_lang - DeepL détecte automatiquement la langue source
-    // C'est plus fiable car les utilisateurs peuvent se tromper de langue à la création
     
     for (const text of texts) {
       params.append('text', text || '');
@@ -87,7 +77,6 @@ async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'FR') {
     
     console.log(`🌍 Appel DeepL: AUTO → ${deeplTarget} (${texts.length} textes)`);
     
-    // Utiliser fetch natif (Node.js 18+)
     const response = await fetch(apiEndpoint, {
       method: 'POST',
       headers: {
@@ -105,7 +94,6 @@ async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'FR') {
     const data = await response.json();
     const translations = data?.translations?.map(t => t.text) || [];
     
-    // S'assurer que la longueur correspond
     while (translations.length < texts.length) {
       translations.push(texts[translations.length]);
     }
@@ -115,42 +103,12 @@ async function translateTextsWithDeepL(texts, targetLang, sourceLang = 'FR') {
     
   } catch (error) {
     console.error('❌ Erreur DeepL:', error.message);
-    return texts; // Fallback vers originaux
+    return texts;
   }
 }
 
 // ==================== TRADUCTIONS UI POUR 13 LANGUES ====================
 const UI_TRANSLATIONS = {
-  fr: {
-    access: "Accès",
-    reviews: "Avis",
-    privateChannel: "Canal Telegram privé",
-    day: "jour",
-    days: "jours",
-    week: "semaine",
-    month: "mois",
-    months: "mois",
-    year: "an",
-    years: "ans",
-    lifetime: "à vie",
-    limitedPlaces: "places limitées",
-    freeDays: "jours gratuits",
-    popular: "populaire",
-    joinNow: "Rejoindre maintenant",
-    legalNote1: "En vous abonnant, vous acceptez les conditions spécifiques du créateur et la politique de confidentialité.",
-    legalNote2: "Votre abonnement est sans engagement, vous pouvez annuler à tout moment.",
-    legalNote3: "Pour toute question, vous pouvez contacter le créateur à",
-    // Nouveaux éléments traduits
-    anonymousUser: "Utilisateur",
-    option: "option",
-    options: "options",
-    noReviews: "Aucun avis pour le moment",
-    loading: "Chargement...",
-    error: "Erreur",
-    selectPlan: "Sélectionner un plan",
-    bestValue: "Meilleure offre",
-    mostPopular: "Le plus populaire"
-  },
   en: {
     access: "Access",
     reviews: "Reviews",
@@ -170,7 +128,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "By subscribing, you accept the creator's specific conditions and privacy policy.",
     legalNote2: "Your subscription is non-binding, you can cancel at any time.",
     legalNote3: "For any questions, you can contact the creator at",
-    // New translated elements
     anonymousUser: "User",
     option: "option",
     options: "options",
@@ -180,6 +137,35 @@ const UI_TRANSLATIONS = {
     selectPlan: "Select a plan",
     bestValue: "Best value",
     mostPopular: "Most popular"
+  },
+  fr: {
+    access: "Accès",
+    reviews: "Avis",
+    privateChannel: "Canal Telegram privé",
+    day: "jour",
+    days: "jours",
+    week: "semaine",
+    month: "mois",
+    months: "mois",
+    year: "an",
+    years: "ans",
+    lifetime: "à vie",
+    limitedPlaces: "places limitées",
+    freeDays: "jours gratuits",
+    popular: "populaire",
+    joinNow: "Rejoindre maintenant",
+    legalNote1: "En vous abonnant, vous acceptez les conditions spécifiques du créateur et la politique de confidentialité.",
+    legalNote2: "Votre abonnement est sans engagement, vous pouvez annuler à tout moment.",
+    legalNote3: "Pour toute question, vous pouvez contacter le créateur à",
+    anonymousUser: "Utilisateur",
+    option: "option",
+    options: "options",
+    noReviews: "Aucun avis pour le moment",
+    loading: "Chargement...",
+    error: "Erreur",
+    selectPlan: "Sélectionner un plan",
+    bestValue: "Meilleure offre",
+    mostPopular: "Le plus populaire"
   },
   es: {
     access: "Acceso",
@@ -200,7 +186,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Al suscribirte, aceptas las condiciones específicas del creador y la política de privacidad.",
     legalNote2: "Tu suscripción es sin compromiso, puedes cancelar en cualquier momento.",
     legalNote3: "Para cualquier pregunta, puedes contactar al creador en",
-    // Nuevos elementos traducidos
     anonymousUser: "Usuario",
     option: "opción",
     options: "opciones",
@@ -230,7 +215,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Ao se inscrever, você aceita as condições específicas do criador e a política de privacidade.",
     legalNote2: "Sua assinatura é sem compromisso, você pode cancelar a qualquer momento.",
     legalNote3: "Para qualquer dúvida, você pode entrar em contato com o criador em",
-    // Novos elementos traduzidos
     anonymousUser: "Usuário",
     option: "opção",
     options: "opções",
@@ -260,7 +244,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Mit dem Abonnement akzeptieren Sie die spezifischen Bedingungen des Erstellers und die Datenschutzrichtlinie.",
     legalNote2: "Ihr Abonnement ist unverbindlich, Sie können jederzeit kündigen.",
     legalNote3: "Bei Fragen können Sie den Ersteller kontaktieren unter",
-    // Neue übersetzte Elemente
     anonymousUser: "Benutzer",
     option: "Option",
     options: "Optionen",
@@ -290,7 +273,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Iscrivendoti, accetti le condizioni specifiche del creatore e l'informativa sulla privacy.",
     legalNote2: "Il tuo abbonamento è senza impegno, puoi annullare in qualsiasi momento.",
     legalNote3: "Per qualsiasi domanda, puoi contattare il creatore a",
-    // Nuovi elementi tradotti
     anonymousUser: "Utente",
     option: "opzione",
     options: "opzioni",
@@ -320,7 +302,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Подписываясь, вы принимаете особые условия создателя и политику конфиденциальности.",
     legalNote2: "Ваша подписка без обязательств, вы можете отменить в любое время.",
     legalNote3: "По любым вопросам вы можете связаться с создателем по адресу",
-    // Новые переведенные элементы
     anonymousUser: "Пользователь",
     option: "вариант",
     options: "варианты",
@@ -350,7 +331,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "订阅即表示您接受创作者的特定条款和隐私政策。",
     legalNote2: "您的订阅无约束力，可随时取消。",
     legalNote3: "如有任何问题，您可以联系创作者",
-    // 新翻译元素
     anonymousUser: "用户",
     option: "选项",
     options: "选项",
@@ -380,7 +360,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "購読することで、クリエイターの特定条件とプライバシーポリシーに同意したことになります。",
     legalNote2: "購読は拘束力がなく、いつでもキャンセルできます。",
     legalNote3: "ご質問は、クリエイターまでお問い合わせください",
-    // 新しい翻訳要素
     anonymousUser: "ユーザー",
     option: "オプション",
     options: "オプション",
@@ -410,7 +389,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "구독하시면 크리에이터의 특정 조건과 개인정보 보호정책에 동의하게 됩니다.",
     legalNote2: "구독은 구속력이 없으며 언제든지 취소할 수 있습니다.",
     legalNote3: "질문이 있으시면 크리에이터에게 연락하세요",
-    // 새로 번역된 요소
     anonymousUser: "사용자",
     option: "옵션",
     options: "옵션",
@@ -440,7 +418,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Abone olarak, içerik oluşturucunun özel koşullarını ve gizlilik politikasını kabul etmiş olursunuz.",
     legalNote2: "Aboneliğiniz bağlayıcı değildir, istediğiniz zaman iptal edebilirsiniz.",
     legalNote3: "Sorularınız için içerik oluşturucuyla iletişime geçebilirsiniz",
-    // Yeni çevrilmiş öğeler
     anonymousUser: "Kullanıcı",
     option: "seçenek",
     options: "seçenek",
@@ -470,7 +447,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "بالاشتراك، فإنك توافق على الشروط الخاصة للمنشئ وسياسة الخصوصية.",
     legalNote2: "اشتراكك غير ملزم، يمكنك الإلغاء في أي وقت.",
     legalNote3: "لأي أسئلة، يمكنك الاتصال بالمنشئ على",
-    // عناصر مترجمة جديدة
     anonymousUser: "مستخدم",
     option: "خيار",
     options: "خيارات",
@@ -500,7 +476,6 @@ const UI_TRANSLATIONS = {
     legalNote1: "Subskrybując, akceptujesz szczegółowe warunki twórcy i politykę prywatności.",
     legalNote2: "Twoja subskrypcja jest niewiążąca, możesz ją anulować w dowolnym momencie.",
     legalNote3: "W przypadku pytań możesz skontaktować się z twórcą pod adresem",
-    // Nowe przetłumaczone elementy
     anonymousUser: "Użytkownik",
     option: "opcja",
     options: "opcje",
@@ -521,7 +496,6 @@ function getUITranslations(lang) {
 
 // ==================== FONCTIONS UTILITAIRES DE SÉCURITÉ ====================
 
-// --- MINI OUTILS SÛRS ---
 function isHexColor(v){
   return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(v||''));
 }
@@ -531,7 +505,6 @@ function clampRating(r){
   return Math.min(5, Math.max(0,n));
 }
 
-// description -> liste/texte simple, en échappant tout HTML
 function formatDescriptionSafe(text) {
   if (!text) return '';
   const esc = s => String(s)
@@ -547,9 +520,6 @@ function formatDescriptionSafe(text) {
   return esc(text).replace(/\n/g,'<br>');
 }
 
-/**
- * Échapper les caractères HTML pour éviter les injections XSS
- */
 function esc(s = '') {
   return String(s)
     .replace(/&/g, '&amp;')
@@ -566,50 +536,48 @@ function periodLabel(period = 'month', lang = 'en') {
   const t = getUITranslations(lang);
   const p = String(period).toLowerCase();
   
-  // Mapping complet des périodes
+  // Mapping complet des périodes - ANGLAIS EN ENTRÉE
   const periodMap = {
+    // Anglais (entrée standard)
     'daily': t.day,
-    'jour': t.day,
     'day': t.day,
     'weekly': t.week,
-    'semaine': t.week,
     'week': t.week,
     'monthly': t.month,
-    'mois': t.month,
     'month': t.month,
     'quarterly': `3 ${t.months}`,
-    '3mois': `3 ${t.months}`,
     '3months': `3 ${t.months}`,
-    'trimestre': `3 ${t.months}`,
-    'quarter': `3 ${t.months}`,
+    '3 months': `3 ${t.months}`,
     'yearly': t.year,
-    'an': t.year,
-    'année': t.year,
     'year': t.year,
     'annual': t.year,
     'lifetime': t.lifetime,
+    'life': t.lifetime,
+    // Français (fallback legacy)
+    'jour': t.day,
+    'semaine': t.week,
+    'mois': t.month,
+    '3mois': `3 ${t.months}`,
+    'an': t.year,
+    'année': t.year,
     'àvie': t.lifetime,
-    'life': t.lifetime
+    'trimestre': `3 ${t.months}`
   };
   
   return periodMap[p] || p;
 }
 
-/**
- * Valider et sécuriser une URL
- */
 function safeUrl(u = '') {
   try {
-    const url = new URL(u, 'https://example.com'); // base pour relatives
+    const url = new URL(u, 'https://example.com');
     if (!/^https?:$/i.test(url.protocol)) return '';
-    return url.href.replace('https://example.com', ''); // garder relatives telles quelles
+    return url.href.replace('https://example.com', '');
   } catch {
     return '';
   }
 }
 
 // ==================== CONFIGURATION ====================
-// Mapping symbole vers code ISO
 const SYMBOL_TO_CODE = {
   '€': 'EUR',
   '$': 'USD',
@@ -644,7 +612,6 @@ let helpersRegistered = false;
 function registerHelpers() {
   if (helpersRegistered) return;
   
-  // Helpers de base
   Handlebars.registerHelper('safe', s => new Handlebars.SafeString(s || ''));
   Handlebars.registerHelper('eq', (a, b) => a === b);
   Handlebars.registerHelper('gt', (a, b) => Number(a) > Number(b));
@@ -654,12 +621,10 @@ function registerHelpers() {
     return s.substring(Number(start), Number(start) + Number(len));
   });
   
-  // Helpers SEO
   Handlebars.registerHelper('stripTags', s => (s || '').toString().replace(/<[^>]*>/g, ''));
   Handlebars.registerHelper('truncate', (s, n) => (s || '').toString().slice(0, n || 160));
   Handlebars.registerHelper('encode', s => encodeURIComponent((s || '').toString()).replace(/%20/g, '+'));
   
-  // Helper monétaire
   Handlebars.registerHelper('money', (price, currency = '€') => {
     const val = Number(price || 0);
     return `${val % 1 === 0 ? val.toFixed(0) : val.toFixed(2)}${currency}`;
@@ -671,19 +636,20 @@ function registerHelpers() {
 // ==================== FONCTIONS DE NORMALISATION ====================
 /**
  * Normaliser les prix avec structure complète - ANGLAIS PAR DÉFAUT
+ * Les labels arrivent en ANGLAIS et sont traduits vers la langue cible
  */
 function normalizePrices(pricesRaw, lang = 'en') {
   const arr = Array.isArray(pricesRaw) ? pricesRaw : [];
   const t = getUITranslations(lang);
   
   if (!arr.length) {
-    // Prix par défaut
+    // Prix par défaut EN ANGLAIS
     return [
       { 
         id: 'p1', 
         label: `67€ / ${t.month}`, 
         price: 67, 
-        period: 'mois', 
+        period: 'month', 
         currency: '€',
         currencyCode: 'EUR',
         best: false,
@@ -694,7 +660,7 @@ function normalizePrices(pricesRaw, lang = 'en') {
         id: 'p2', 
         label: `197€ / 3 ${t.months}`, 
         price: 197, 
-        period: '3mois', 
+        period: '3months', 
         currency: '€',
         currencyCode: 'EUR', 
         best: false,
@@ -707,7 +673,7 @@ function normalizePrices(pricesRaw, lang = 'en') {
         id: 'p3', 
         label: `497€ / ${t.year}`, 
         price: 497, 
-        period: 'an', 
+        period: 'year', 
         currency: '€',
         currencyCode: 'EUR', 
         best: true,
@@ -720,53 +686,51 @@ function normalizePrices(pricesRaw, lang = 'en') {
   }
   
   return arr.map((p, i) => {
-    // Sécuriser le prix avec clamp
     const rawPrice = Number(p.price ?? p.amount ?? 0);
     const price = Number.isFinite(rawPrice) && rawPrice >= 0 ? rawPrice : 0;
     
-    const period = (p.period || 'mois').toLowerCase();
-    
-    // Accepter n'importe quel symbole de devise sans validation
+    const period = (p.period || 'month').toLowerCase();
     const currency = p.currency || '€';
-    
-    // Dériver le code ISO si non fourni
     const currencyCode = p.currencyCode || SYMBOL_TO_CODE[currency] || 'EUR';
     
     const periodText = periodLabel(period, lang);
     
-    // Si un label personnalisé existe, traduire les termes de période dedans
+    // Si un label personnalisé existe, traduire les termes de période ANGLAIS
     let label = p.label || `${price}${currency} / ${periodText}`;
     
-    // Traduire les périodes dans le label personnalisé
-    if (p.label && lang !== 'fr') {
-      const t = getUITranslations(lang);
-      // Remplacer les termes français par la traduction
+    // CORRIGÉ: Traduire les périodes ANGLAISES dans le label personnalisé
+    if (p.label && lang !== 'en') {
+      // Remplacer les termes ANGLAIS par la traduction dans la langue cible
       label = label
-        .replace(/\/ mois/gi, `/ ${t.month}`)
-        .replace(/\/ semaine/gi, `/ ${t.week}`)
+        // Anglais -> Langue cible
+        .replace(/\/ month\b/gi, `/ ${t.month}`)
+        .replace(/\/ week\b/gi, `/ ${t.week}`)
+        .replace(/\/ year\b/gi, `/ ${t.year}`)
+        .replace(/\/ day\b/gi, `/ ${t.day}`)
+        .replace(/\/ 3 months\b/gi, `/ 3 ${t.months}`)
+        .replace(/\/ 6 months\b/gi, `/ 6 ${t.months}`)
+        .replace(/\/ 12 months\b/gi, `/ 12 ${t.months}`)
+        .replace(/\/ lifetime\b/gi, `/ ${t.lifetime}`)
+        // Fallback français (legacy)
+        .replace(/\/ mois\b/gi, `/ ${t.month}`)
+        .replace(/\/ semaine\b/gi, `/ ${t.week}`)
         .replace(/\/ an\b/gi, `/ ${t.year}`)
-        .replace(/\/ année/gi, `/ ${t.year}`)
-        .replace(/\/ jour/gi, `/ ${t.day}`)
-        .replace(/\/ trimestre/gi, `/ 3 ${t.months}`)
-        .replace(/\/ 3 mois/gi, `/ 3 ${t.months}`)
-        .replace(/\/ 6 mois/gi, `/ 6 ${t.months}`)
-        .replace(/\/ 12 mois/gi, `/ 12 ${t.months}`)
-        // Support anglais aussi
-        .replace(/\/ month/gi, `/ ${t.month}`)
-        .replace(/\/ week/gi, `/ ${t.week}`)
-        .replace(/\/ year/gi, `/ ${t.year}`)
-        .replace(/\/ day/gi, `/ ${t.day}`)
-        .replace(/\/ 3 months/gi, `/ 3 ${t.months}`)
-        .replace(/\/ 6 months/gi, `/ 6 ${t.months}`)
-        .replace(/\/ 12 months/gi, `/ 12 ${t.months}`);
+        .replace(/\/ année\b/gi, `/ ${t.year}`)
+        .replace(/\/ jour\b/gi, `/ ${t.day}`)
+        .replace(/\/ 3 mois\b/gi, `/ 3 ${t.months}`);
     }
     
-    // Sécuriser freeTrialDays avec clamp
-    const ftd = Number(p.freeTrialDays);
-    const freeTrialDays = Number.isFinite(ftd) ? Math.max(0, Math.min(90, Math.floor(ftd))) : 7;
+    // CORRIGÉ: Support de tous les noms de champs possibles
+    const ftd = Number(p.freeTrialDays || p.trialDays || 0);
+    const freeTrialDays = Number.isFinite(ftd) ? Math.max(0, Math.min(90, Math.floor(ftd))) : 0;
     
-    // Ajouter le support pour limitedSpots
-    const limitedSpots = Number(p.limitedSpots) || 0;
+    const limitedSpots = Number(p.limitedSpots || p.spots || p.availableSpots || 0);
+    
+    // Support: limitedSeats, hasLimitedSpots, isLimited
+    const hasLimitedSeats = Boolean(p.limitedSeats || p.hasLimitedSpots || p.isLimited || p.limited);
+    
+    // Support: hasFreeTrial, hasTrial, freeTrial
+    const hasFreeTrial = Boolean(p.hasFreeTrial || p.hasTrial || p.freeTrial || freeTrialDays > 0);
     
     return {
       id: p.id || p.planId || `p${i + 1}`,
@@ -776,18 +740,16 @@ function normalizePrices(pricesRaw, lang = 'en') {
       currency,
       currencyCode,
       best: Boolean(p.best),
+      isPopular: Boolean(p.best || p.isPopular),
       strike: p.strike || '',
       discount: p.discount || '',
-      limitedSeats: p.limitedSeats !== false,
-      limitedSpots: limitedSpots, // Ajout du nombre de places
-      freeTrialDays
+      limitedSeats: hasLimitedSeats,
+      limitedSpots: hasLimitedSeats ? limitedSpots : 0,
+      freeTrialDays: hasFreeTrial ? freeTrialDays : 0
     };
   });
 }
 
-/**
- * Convertir hex en rgba avec opacité
- */
 function hexToRgba(hex, alpha = 0.12) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
   const c = hex.replace('#', '');
@@ -798,11 +760,7 @@ function hexToRgba(hex, alpha = 0.12) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-/**
- * Préparer les métadonnées SEO
- */
 function prepareSEOData(data) {
-  // Meta description sécurisée
   const plainDesc = (data.description || data.slogan || '')
     .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
@@ -810,7 +768,6 @@ function prepareSEOData(data) {
   
   data.metaDescription = plainDesc.slice(0, 160);
   
-  // Font Google encodée
   const fontMap = {
     'inter': 'Inter',
     'poppins': 'Poppins',
@@ -828,9 +785,6 @@ function prepareSEOData(data) {
   data.fontFamily = data.fontFamily || `${data.fontGoogle.replace('+', ' ')}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
 }
 
-/**
- * Calculer la couleur de fond de la description
- */
 function computeDescriptionBg(data) {
   const enabled = Boolean(
     data.descriptionBackgroundEnabled ?? 
@@ -844,10 +798,6 @@ function computeDescriptionBg(data) {
   return { enabled: true, color };
 }
 
-// ==================== FONCTIONS UTILITAIRES ====================
-/**
- * Calcule automatiquement la couleur de texte contrastée
- */
 function autoContrast(hex) {
   const c = (hex || '').replace('#','');
   if (c.length !== 6) return '#ffffff';
@@ -858,9 +808,6 @@ function autoContrast(hex) {
   return yiq >= 128 ? '#000000' : '#ffffff';
 }
 
-/**
- * Devine le type de média à partir de l'URL
- */
 function guessTypeFromUrl(url = '') {
   const ext = url.split('?')[0].split('.').pop().toLowerCase();
   if (['mp4','webm','ogg'].includes(ext)) return 'video';
@@ -869,9 +816,6 @@ function guessTypeFromUrl(url = '') {
 }
 
 // ==================== CONSTRUCTION DES SECTIONS ====================
-/**
- * Construire la section média (images/vidéos)
- */
 function buildMediaSection(media = []) {
   if (!Array.isArray(media) || media.length === 0) return '';
   
@@ -890,9 +834,6 @@ function buildMediaSection(media = []) {
   return `<div class="media-gallery">${items}</div>`;
 }
 
-/**
- * Construire la section reviews/avis avec traduction - ANGLAIS PAR DÉFAUT
- */
 function buildReviewsSection(reviews = [], lang = 'en') {
   if (!Array.isArray(reviews) || reviews.length === 0) return '';
 
@@ -904,7 +845,6 @@ function buildReviewsSection(reviews = [], lang = 'en') {
   const list = reviews.map(r => {
     const rating = clampRating(r.rating);
     const safeComment = esc(r.comment || '').replace(/\n/g,'<br>');
-    // CORRECTION: Utiliser la traduction pour l'utilisateur anonyme
     const safeAuthor  = esc(r.author || r.customerName || r.name || t.anonymousUser);
     return `
       <div class="review-card">
@@ -941,9 +881,24 @@ function buildPriceSection(data, lang = 'en') {
   const btnTextColor = data.btnTextColor || autoContrast(borderColor);
   const buttonText = data.buttonText || t.joinNow;
   
+  // DEBUG: Log des données reçues pour les prix
+  console.log('=== DEBUG PRIX ===');
+  console.log('Nombre de prix:', prices.length);
+  prices.forEach((p, i) => {
+    console.log(`Plan ${i + 1}:`, {
+      label: p.label,
+      limitedSeats: p.limitedSeats,
+      limitedSpots: p.limitedSpots,
+      freeTrialDays: p.freeTrialDays,
+      strike: p.strike,
+      discount: p.discount,
+      isPopular: p.isPopular
+    });
+  });
+  console.log('==================');
+  
   if (!data.showPrices || !prices.length) return '';
 
-  // Prix sélectionné par défaut
   const defaultPrice = prices.find(p => p.best) || prices[0];
   
   // Construire les options pour desktop
@@ -951,6 +906,7 @@ function buildPriceSection(data, lang = 'en') {
     const isSelected = plan.best || index === 0 ? 'selected' : '';
     const isPopular = plan.best || plan.isPopular;
     
+    // CORRIGÉ: Affichage des options (places limitées, jours gratuits)
     let optionInfo = '';
     if (plan.limitedSeats && plan.limitedSpots > 0) {
       optionInfo += `<span class="option-info-item highlight">${plan.limitedSpots} ${t.limitedPlaces}</span>`;
@@ -961,7 +917,6 @@ function buildPriceSection(data, lang = 'en') {
       optionInfo += `<span class="option-info-item">${plan.freeTrialDays} ${t.freeDays}</span>`;
     }
     
-    // Badge Popular en haut à droite
     const popularBadge = isPopular ? `<span class="popular-badge">⭐ ${t.mostPopular}</span>` : '';
     
     return `
@@ -994,7 +949,6 @@ function buildPriceSection(data, lang = 'en') {
       optionInfo += `<span class="mobile-option-info-item">${plan.freeTrialDays} ${t.freeDays}</span>`;
     }
     
-    // Badge Popular en haut à droite
     const popularBadge = isPopular ? `<span class="popular-badge">⭐ ${t.mostPopular}</span>` : '';
     
     return `
@@ -1024,7 +978,6 @@ function buildPriceSection(data, lang = 'en') {
   }
 
   const optionCount = prices.length > 1 ? prices.length - 1 : 0;
-  // CORRECTION: Utiliser les traductions pour option/options
   const optionText = optionCount > 1 ? t.options : t.option;
 
   return `
@@ -1065,7 +1018,6 @@ function buildPriceSection(data, lang = 'en') {
     </div>
 
     <style>
-      /* Container principal - DIRECTEMENT VISIBLE ET AJUSTÉ */
       .price-section-fixed {
         position: fixed;
         bottom: 15px;
@@ -1073,7 +1025,6 @@ function buildPriceSection(data, lang = 'en') {
         z-index: 9999;
       }
 
-      /* VERSION DESKTOP - CARTE TOUJOURS VISIBLE ET LÉGÈREMENT PLUS GRANDE */
       .desktop-version {
         display: block;
       }
@@ -1172,7 +1123,6 @@ function buildPriceSection(data, lang = 'en') {
         font-size: 12px;
       }
 
-      /* Popular Badge - Bandeau en haut à droite */
       .popular-badge {
         position: absolute;
         top: -8px;
@@ -1196,17 +1146,13 @@ function buildPriceSection(data, lang = 'en') {
         border: 2px solid #f59e0b !important;
         background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(217, 119, 6, 0.05));
       }
-      
-      .price-option.is-popular::before,
-      .mobile-option.is-popular::before {
-        border-color: #f59e0b !important;
-      }
 
       .option-info {
         display: flex;
         gap: 10px;
         padding-left: 44px;
         font-size: 11px;
+        margin-top: 4px;
       }
 
       .option-info-item {
@@ -1234,7 +1180,6 @@ function buildPriceSection(data, lang = 'en') {
         box-shadow: 0 6px 20px rgba(0,0,0,0.25);
       }
 
-      /* VERSION MOBILE - COMPACTE */
       .mobile-container-fixed {
         background: white;
         border-radius: 16px;
@@ -1258,12 +1203,6 @@ function buildPriceSection(data, lang = 'en') {
         box-shadow: 0 3px 12px rgba(0,0,0,0.15);
       }
 
-      .mobile-cta:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 18px rgba(0,0,0,0.22);
-      }
-
-      /* Options toggle */
       .options-section {
         margin: 0;
       }
@@ -1296,8 +1235,6 @@ function buildPriceSection(data, lang = 'en') {
         align-items: center;
         gap: 5px;
         font-size: 10px;
-        position: relative;
-        top: 1px;
         margin-left: 5px;
       }
 
@@ -1322,7 +1259,6 @@ function buildPriceSection(data, lang = 'en') {
         font-size: 13px;
         color: #333 !important;
         transition: transform 0.2s;
-        font-weight: normal;
       }
 
       .options-toggle.active .toggle-options::after {
@@ -1338,7 +1274,6 @@ function buildPriceSection(data, lang = 'en') {
         display: block;
       }
 
-      /* Options mobile */
       .mobile-option {
         display: flex;
         flex-direction: column;
@@ -1413,6 +1348,7 @@ function buildPriceSection(data, lang = 'en') {
         gap: 8px;
         padding-left: 40px;
         font-size: 10px;
+        margin-top: 4px;
       }
 
       .mobile-option-info-item {
@@ -1420,7 +1356,6 @@ function buildPriceSection(data, lang = 'en') {
         font-weight: 600;
       }
 
-      /* Responsive */
       @media (max-width: 768px) {
         .price-section-fixed {
           bottom: 12px;
@@ -1464,7 +1399,6 @@ function buildPriceSection(data, lang = 'en') {
           init: function() {
             var self = this;
             
-            // Attendre que le DOM soit chargé
             if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', function() {
                 self.bindEvents();
@@ -1477,7 +1411,6 @@ function buildPriceSection(data, lang = 'en') {
           bindEvents: function() {
             var self = this;
             
-            // Toggle mobile
             var mobileToggle = document.getElementById('mobileToggle');
             if (mobileToggle) {
               mobileToggle.addEventListener('click', function() {
@@ -1485,7 +1418,6 @@ function buildPriceSection(data, lang = 'en') {
               });
             }
             
-            // Boutons CTA
             var desktopCta = document.getElementById('desktopCta');
             if (desktopCta) {
               desktopCta.addEventListener('click', function() {
@@ -1500,7 +1432,6 @@ function buildPriceSection(data, lang = 'en') {
               });
             }
             
-            // Options desktop
             var priceOptions = document.querySelectorAll('.price-option');
             priceOptions.forEach(function(option) {
               option.addEventListener('click', function() {
@@ -1508,7 +1439,6 @@ function buildPriceSection(data, lang = 'en') {
               });
             });
             
-            // Options mobile
             var mobileOptions = document.querySelectorAll('.mobile-option');
             mobileOptions.forEach(function(option) {
               option.addEventListener('click', function() {
@@ -1550,14 +1480,12 @@ function buildPriceSection(data, lang = 'en') {
               priceLabel.textContent = label;
             }
             
-            // Update toggle info
             var info = element.querySelector('.mobile-option-info');
             var toggleInfo = document.querySelector('.toggle-info');
             if (info && toggleInfo) {
               toggleInfo.innerHTML = info.innerHTML;
             }
             
-            // Close panel after selection
             setTimeout(function() {
               self.toggleMobileOptions();
             }, 200);
@@ -1568,87 +1496,10 @@ function buildPriceSection(data, lang = 'en') {
           }
         };
         
-        // Initialiser
         window.LandingPricing.init();
       })();
     </script>
   `;
-}
-
-// ==================== FONCTION DE TRADUCTION DEEPL ====================
-/**
- * Traduit le contenu d'une landing page avec DeepL
- * @param {Object} data - Données de la landing
- * @param {string} targetLang - Langue cible
- * @param {string} sourceLang - Langue source
- * @returns {Promise<Object>} - Données avec traductions
- */
-async function translateLandingContent(data, targetLang, sourceLang = 'en') {
-  // Si pas de service de traduction ou même langue, retourner les données telles quelles
-  if (!languageServiceInstance) {
-    console.log('⚠️ LanguageService non disponible, pas de traduction DeepL');
-    return data;
-  }
-  
-  const normalizedTarget = targetLang.toUpperCase().substring(0, 2);
-  const normalizedSource = sourceLang.toUpperCase().substring(0, 2);
-  
-  // Si même langue, pas besoin de traduire
-  if (normalizedTarget === normalizedSource) {
-    console.log(`ℹ️ Même langue source/cible (${normalizedTarget}), pas de traduction`);
-    return data;
-  }
-  
-  // Vérifier si la langue cible est supportée par DeepL
-  if (!languageServiceInstance.isSupported(normalizedTarget)) {
-    console.log(`⚠️ Langue ${normalizedTarget} non supportée par DeepL`);
-    return data;
-  }
-  
-  console.log(`🌍 Traduction DeepL: ${normalizedSource} → ${normalizedTarget}`);
-  
-  try {
-    // Collecter les textes à traduire
-    const textsToTranslate = [];
-    const fieldKeys = [];
-    
-    // Champs à traduire
-    const translatableFields = ['slogan', 'description', 'buttonText', 'banner'];
-    
-    for (const field of translatableFields) {
-      if (data[field] && typeof data[field] === 'string' && data[field].trim()) {
-        textsToTranslate.push(data[field]);
-        fieldKeys.push(field);
-      }
-    }
-    
-    if (textsToTranslate.length === 0) {
-      console.log('ℹ️ Aucun texte à traduire');
-      return data;
-    }
-    
-    console.log(`📝 Traduction de ${textsToTranslate.length} champs: ${fieldKeys.join(', ')}`);
-    
-    // Utiliser translateBatch pour traduire tous les textes en un seul appel
-    const translatedTexts = await languageServiceInstance.translateBatch(textsToTranslate, normalizedTarget);
-    
-    // Appliquer les traductions
-    const translatedData = { ...data };
-    for (let i = 0; i < fieldKeys.length; i++) {
-      if (translatedTexts[i]) {
-        translatedData[fieldKeys[i]] = translatedTexts[i];
-        console.log(`✅ ${fieldKeys[i]} traduit`);
-      }
-    }
-    
-    console.log('🎉 Traduction DeepL terminée avec succès');
-    return translatedData;
-    
-  } catch (error) {
-    console.error('❌ Erreur traduction DeepL:', error.message);
-    // En cas d'erreur, retourner les données originales
-    return data;
-  }
 }
 
 // ==================== PRESETS DE TEMPLATES ====================
@@ -1675,7 +1526,7 @@ const TEMPLATES = {
   'business-gradient': { backgroundColor:'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%)', textColor:'#ffffff', borderColor:'#ffd600', btnTextColor:'#111111' }
 };
 
-// ==================== TEMPLATE HTML HANDLEBARS AVEC TRADUCTIONS ====================
+// ==================== TEMPLATE HTML HANDLEBARS ====================
 const TEMPLATE = `<!DOCTYPE html>
 <html lang="{{currentLang}}">
 <head>
@@ -1701,85 +1552,32 @@ const TEMPLATE = `<!DOCTYPE html>
             min-height: 100vh; 
             margin: 0; 
             padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
             padding-top: 40px;
-            {{#if surfaceColor}}background: {{surfaceColor}};{{/if}}
-            {{#if surfaceBorder}}border: {{surfaceBorder}};{{/if}}
             border-radius: 16px;
-            {{#if useSurfaceOverlay}}backdrop-filter: blur(6px);{{else}}backdrop-filter: none !important;{{/if}}
         }
         
-        /* Anti-blur force globale */
-        .surface, 
-        .surface-overlay, 
-        .overlay-blur {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background: transparent !important;
-            border: 0 !important;
-        }
-        
-        .sl-card, .sl-mobile, .sl-sheet, .price-card, .mobile-container {
-            background-clip: padding-box;
-        }
-        
-        .sl-cta * {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-        }
-        
-        .banner { overflow: hidden; white-space: nowrap; margin-bottom: 20px; padding: 10px 0; min-height: 30px; }
-        .banner-text { display: inline-block; padding-left: 100%; animation: scroll-left 10s linear infinite; font-weight: 600; font-size: 14px; color: var(--text); }
+        .banner { overflow: hidden; white-space: nowrap; margin-bottom: 20px; padding: 10px 0; }
+        .banner-text { display: inline-block; padding-left: 100%; animation: scroll-left 10s linear infinite; font-weight: 600; font-size: 14px; }
         @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
         
         .logo-container { text-align: center; margin: 30px 0; }
         .logo { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 16px rgba(0,0,0,.1); }
         .logo.square { border-radius: 12px; }
         
-        .brand-title { 
-            font-size: 40px; 
-            font-weight: 800; 
-            text-align: center; 
-            margin-bottom: 15px; 
-            word-wrap: break-word; 
-            line-height: 1.15;
-            letter-spacing: -.02em;
-        }
-        .brand-title.bold { font-weight: 800 !important; }
-        .brand-title.italic { font-style: italic !important; }
+        .brand-title { font-size: 40px; font-weight: 800; text-align: center; margin-bottom: 15px; }
+        .slogan { font-size: 18px; text-align: center; opacity: .85; margin-bottom: 30px; }
+        .description { font-size: 16px; line-height: 1.8; margin: 0 20px 30px; padding: 20px; border-radius: 12px; }
         
-        .slogan { font-size: 18px; text-align: center; opacity: .85; margin-bottom: 30px; word-wrap: break-word; line-height: 1.4; }
-        .slogan.bold { font-weight: 700 !important; }
-        .slogan.italic { font-style: italic !important; }
+        .media-gallery { display: flex; flex-direction: column; gap: 15px; margin: 0 20px 30px; }
+        .media-gallery img, .media-gallery video { width: 100%; border-radius: 14px; }
         
-        .description { font-size: 16px; line-height: 1.8; margin: 0 20px 30px; padding: 20px; word-wrap: break-word; border-radius: 12px; }
-        .description.bold { font-weight: 700 !important; }
-        .description.italic { font-style: italic !important; }
-        
-        .media-gallery { display: flex; flex-direction: column; gap: 15px; margin: 0 20px 30px; width: calc(100% - 40px); }
-        .media-gallery img, .media-gallery video { 
-            width: 100%; 
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
-            border-radius: 14px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,.12); 
-        }
-        
-        /* Section Accès améliorée */
         .access-section { margin: 40px 20px; }
-        .access-section h2 { 
-            font-size: 24px; 
-            font-weight: 800; 
-            margin: 0 0 18px 0; 
-            text-align: left;
-        }
+        .access-section h2 { font-size: 24px; font-weight: 800; margin: 0 0 18px 0; }
         .access-panel { 
             border: 2px solid var(--accent); 
             border-radius: 16px; 
@@ -1787,100 +1585,33 @@ const TEMPLATE = `<!DOCTYPE html>
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            background: color-mix(in srgb, var(--bg) 92%, #fff 8%);
             cursor: pointer; 
-            transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all .3s;
         }
-        .access-panel:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 24px rgba(0,0,0,.15); 
-        }
+        .access-panel:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
         .access-content { display: flex; align-items: center; gap: 15px; }
-        .access-emoji { 
-            width: 52px; 
-            height: 52px; 
-            background: rgba(255,255,255,.1); 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 26px; 
-        }
+        .access-emoji { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
         .access-title { font-size: 19px; font-weight: 700; margin-bottom: 5px; }
         .access-subtitle { font-size: 14px; opacity: .8; display: flex; align-items: center; gap: 5px; }
-        .access-lock { 
-            width: 42px; 
-            height: 42px; 
-            background: rgba(255,255,255,.1); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: var(--accent); 
-        }
+        .access-lock { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); }
         
-        /* Section Reviews améliorée SANS FOND JAUNE */
         .reviews-section { margin: 40px 20px; }
-        .reviews-section h2 { 
-          font-size: 24px; 
-          font-weight: 800; 
-          margin-bottom: 15px; 
-          text-align: left; 
-        }
-        .review-summary {
-          text-align: left;
-          margin-bottom: 20px;
-          padding-left: 5px;
-        }
-        .review-stars-large {
-          font-size: 24px;
-          color: #ffd700;
-          margin-bottom: 5px;
-        }
-        .review-count {
-          font-size: 16px;
-          opacity: 0.8;
-        }
-        .review-card { 
-          background: transparent;
-          border-radius: 12px; 
-          padding: 20px; 
-          margin-bottom: 15px; 
-        }
+        .reviews-section h2 { font-size: 24px; font-weight: 800; margin-bottom: 15px; }
+        .review-summary { margin-bottom: 20px; }
+        .review-stars-large { font-size: 24px; color: #ffd700; margin-bottom: 5px; }
+        .review-count { font-size: 16px; opacity: 0.8; }
+        .review-card { border-radius: 12px; padding: 20px; margin-bottom: 15px; }
         .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .review-avatar { font-size: 32px; color: var(--accent); opacity: 0.8; }
         .review-author { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
         .review-stars { color: #ffd700; font-size: 14px; }
         .review-comment { font-size: 14px; line-height: 1.6; opacity: 0.9; }
         
-        /* Labels noirs forcés */
-        .option-info-item,
-        .option-info-item.highlight,
-        .toggle-info-item,
-        .toggle-info-item.highlight,
-        .mobile-option-info-item,
-        .mobile-option-info-item.highlight {
-            color: #333 !important;
-            font-weight: 600;
-        }
+        .legal-note { margin: 40px 20px 20px; padding: 16px; border-radius: 12px; font-size: 13px; line-height: 1.6; opacity: .7; text-align: center; }
         
-        .legal-note {
-            margin: 40px 20px 20px;
-            padding: 16px;
-            background: rgba(255,255,255,.03);
-            border-radius: 12px;
-            font-size: 13px;
-            line-height: 1.6;
-            opacity: .7;
-            text-align: center;
-        }
-        
-        /* Responsive */
         @media (max-width: 600px) {
-            .container { padding: 15px; padding-top: 30px; }
+            .container { padding: 15px; }
             .brand-title { font-size: 32px; }
-            .slogan { font-size: 16px; }
-            .description { font-size: 14px; margin: 0 10px 20px; padding: 15px; }
             .access-panel { flex-direction: column; text-align: center; gap: 15px; }
             .access-content { flex-direction: column; }
         }
@@ -1894,19 +1625,18 @@ const TEMPLATE = `<!DOCTYPE html>
 
         {{#if logoUrl}}
         <div class="logo-container">
-            <img src="{{logoUrl}}" alt="{{brand}}" class="logo{{#if (eq logoShape 'square')}} square{{/if}}" loading="lazy" decoding="async" />
+            <img src="{{logoUrl}}" alt="{{brand}}" class="logo{{#if (eq logoShape 'square')}} square{{/if}}" loading="lazy" />
         </div>
         {{/if}}
 
-        <h1 class="brand-title{{#if brandBold}} bold{{/if}}{{#if brandItalic}} italic{{/if}}">{{brand}}</h1>
+        <h1 class="brand-title">{{brand}}</h1>
 
         {{#if slogan}}
-        <p class="slogan{{#if sloganBold}} bold{{/if}}{{#if sloganItalic}} italic{{/if}}">{{slogan}}</p>
+        <p class="slogan">{{slogan}}</p>
         {{/if}}
 
         {{#if description}}
-        <div class="description{{#if descriptionBold}} bold{{/if}}{{#if descriptionItalic}} italic{{/if}}"
-             {{#if descriptionBackgroundColor}}style="background: {{descriptionBackgroundColor}};"{{/if}}>
+        <div class="description" {{#if descriptionBackgroundColor}}style="background: {{descriptionBackgroundColor}};"{{/if}}>
             {{{description}}}
         </div>
         {{/if}}
@@ -1917,7 +1647,7 @@ const TEMPLATE = `<!DOCTYPE html>
 
         <div class="access-section">
             <h2>{{uiAccess}}</h2>
-            <div class="access-panel" id="accessPanel" aria-label="{{uiAccess}} {{brand}}">
+            <div class="access-panel" id="accessPanel">
                 <div class="access-content">
                     <div class="access-emoji">{{accessEmoji}}</div>
                     <div>
@@ -1937,12 +1667,11 @@ const TEMPLATE = `<!DOCTYPE html>
         <div class="legal-note">
           {{uiLegalNote1}}<br>
           {{uiLegalNote2}}
-          {{#if creatorEmail}}<br>{{uiLegalNote3}} <a href="mailto:{{creatorEmail}}" style="color: var(--accent); text-decoration: none;">{{creatorEmail}}</a>.{{/if}}
+          {{#if creatorEmail}}<br>{{uiLegalNote3}} <a href="mailto:{{creatorEmail}}" style="color: var(--accent);">{{creatorEmail}}</a>.{{/if}}
         </div>
     </div>
 
     <script>
-      // Event listener pour le panneau d'accès
       document.addEventListener('DOMContentLoaded', function() {
         var accessPanel = document.getElementById('accessPanel');
         if (accessPanel) {
@@ -1955,79 +1684,54 @@ const TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Compiler le template
 let compiledTemplate = null;
 
-// ==================== FONCTION PRINCIPALE DE GÉNÉRATION HTML ====================
+// ==================== FONCTION PRINCIPALE ====================
 async function generateHTMLFromTemplate(landing) {
   try {
-    // Enregistrer les helpers
     registerHelpers();
     
-    // Compiler le template si pas déjà fait
     if (!compiledTemplate) {
       compiledTemplate = Handlebars.compile(TEMPLATE);
     }
     
     const data = { ...landing };
 
-    // Logo: invalide => vide (donc aucun rendu)
     const rawLogo = (data.logoUrl || '').trim();
     const cleaned = rawLogo ? safeUrl(rawLogo) : '';
     data.logoUrl = cleaned && cleaned !== '/' ? cleaned : '';
 
     // ==================== CONFIGURATION DES LANGUES ====================
-    // srcLang = langue SOURCE dans laquelle le contenu a été ÉCRIT/CRÉÉ
-    const srcLang = (data.sourceLanguage || data.language || 'fr').toLowerCase().substring(0, 2);
-    
-    // currentLang = langue d'AFFICHAGE pour les éléments UI (Access, Reviews, périodes)
-    // Le contenu du créateur reste tel quel, sans traduction
+    // CORRIGÉ: Langue source par défaut = ANGLAIS
+    const srcLang = (data.sourceLanguage || data.language || 'en').toLowerCase().substring(0, 2);
     const currentLang = (data.currentLang || data.language || srcLang).toLowerCase().substring(0, 2);
     
     console.log('=== CONFIGURATION LANGUES ===');
-    console.log('Langue source (contenu créé en):', srcLang);
-    console.log('Langue d\'affichage (UI):', currentLang);
-    console.log('Même langue?:', currentLang === srcLang);
+    console.log('Langue source:', srcLang);
+    console.log('Langue affichage:', currentLang);
     
-    // IMPORTANT: Le contenu du créateur (slogan, description, banner, buttonText) 
-    // N'EST PAS TRADUIT - le créateur écrit dans sa propre langue
-    // Seuls les éléments UI (Access, Reviews, périodes d'abonnement) sont traduits
-    
-    // IMPORTANT: Sauvegarder le brand original
     const originalBrand = data.brand;
-    
-    // IMPORTANT: S'assurer que le brand reste TOUJOURS l'original
     data.brand = originalBrand;
-    
     data.currentLang = currentLang;
-    // désactive tout sélecteur public
     data.showLanguageSelector = false;
 
-    // Log pour debug
     console.log('=== GÉNÉRATION HTML LANDING PAGE ===');
-    console.log('Template:', data.template);
-    console.log('Brand (original):', data.brand);
+    console.log('Brand:', data.brand);
     console.log('Slug:', data.slug);
-    console.log('Reviews:', data.reviews?.length || 0);
-    console.log('Media:', (data.media || data.mediaUrls || []).length);
     console.log('Show Prices:', data.showPrices);
     console.log('Current Language:', data.currentLang);
-    console.log('Logo URL:', data.logoUrl);
 
-    // Préparer les données SEO
     prepareSEOData(data);
     
-    // Normaliser les prix TOUJOURS avec la langue
+    // Normaliser les prix avec la langue cible pour traduction
     data.prices = normalizePrices(data.prices, currentLang);
     
-    // Gérer le fond de la description
     const descBg = computeDescriptionBg(data);
     data.descriptionBackgroundEnabled = descBg.enabled;
     if (descBg.enabled) {
       data.descriptionBackgroundColor = descBg.color;
     }
 
-    // Appliquer le preset template si défini
     if (data.template && TEMPLATES[data.template]) {
       const t = TEMPLATES[data.template];
       data.backgroundColor = data.backgroundColor || t.backgroundColor;
@@ -2036,12 +1740,10 @@ async function generateHTMLFromTemplate(landing) {
       data.btnTextColor    = data.btnTextColor    || t.btnTextColor;
     }
 
-    // Valeurs par défaut globales
-    data.fontFamily  = data.fontFamily  || 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+    data.fontFamily  = data.fontFamily  || 'Inter, system-ui, sans-serif';
     data.backgroundColor = data.backgroundColor || 'linear-gradient(135deg,#667eea,#764ba2)';
     data.textColor   = data.textColor   || '#111111';
     
-    // Gestion intelligente des couleurs d'accent et de bouton
     const accent = isHexColor((data.borderColor || '').trim()) ? data.borderColor.trim() : '#ffd600';
     data.borderColor = accent;
     
@@ -2050,16 +1752,11 @@ async function generateHTMLFromTemplate(landing) {
     const buttonText = (data.buttonText || uiT.joinNow).trim();
     const buttonEmoji = (data.buttonEmoji || '').trim();
     
-    // Valeur par défaut : on ne montre pas les prix
     const showPrices = typeof data.showPrices === 'boolean' ? data.showPrices : false;
-    
-    // Année courante
     const currentYear = new Date().getFullYear();
     
-    // Ajouter les traductions UI
     const t = getUITranslations(currentLang);
     
-    // Préparer les données du template
     const templateData = {
       ...data,
       borderColor: accent,
@@ -2069,63 +1766,28 @@ async function generateHTMLFromTemplate(landing) {
       accessEmoji: data.accessEmoji || '🔒',
       showPrices: showPrices,
       currentYear: currentYear,
-      // Traductions UI
       uiAccess: t.access,
       uiReviews: t.reviews,
       uiPrivateChannel: t.privateChannel,
       uiLegalNote1: t.legalNote1,
       uiLegalNote2: t.legalNote2,
       uiLegalNote3: t.legalNote3,
-      // Nouvelles traductions UI
-      uiAnonymousUser: t.anonymousUser,
-      uiOption: t.option,
-      uiOptions: t.options,
-      uiNoReviews: t.noReviews,
-      uiLoading: t.loading,
-      uiError: t.error,
-      uiSelectPlan: t.selectPlan,
-      uiBestValue: t.bestValue,
-      uiMostPopular: t.mostPopular,
-      // Sécurité au cas où
       prices: Array.isArray(data.prices) ? data.prices : []
     };
 
-    // === Surcouche neutre quand fond = gros dégradé (évite la "tache" centrale) ===
-    const HEAVY_GRADIENT_TEMPLATES = new Set([
-      'sakura-bloom','lava','electric-neon','holographic-classic','sunset','aurora','business-gradient','navy-blue'
-    ]);
-
-    if (data.template && HEAVY_GRADIENT_TEMPLATES.has(data.template)) {
-      templateData.surfaceColor = 'rgba(255,255,255,0.06)';
-      templateData.surfaceBorder = '1px solid rgba(255,255,255,0.12)';
-      templateData.surfaceBlur = true;
-    } else {
-      templateData.surfaceColor = '';
-      templateData.surfaceBorder = '';
-      templateData.surfaceBlur = false;
-    }
-    
-    // Désactiver complètement l'overlay pour éviter le flou
-    templateData.useSurfaceOverlay = false;
-
-    // Formater la description (avec <ul>, <br>, etc.)
     templateData.description = formatDescriptionSafe(data.description || '');
 
-    // Construire les sections avec la langue
     const mediaArray = data.media || data.mediaUrls || [];
     templateData.mediaSection = buildMediaSection(mediaArray);
     templateData.reviewsSection = buildReviewsSection(data.reviews, currentLang);
-    
-    // Construire la section prix UNIQUEMENT si showPrices est true
     templateData.priceSection = showPrices ? buildPriceSection(templateData, currentLang) : '';
 
-    // Compiler le HTML final
     const html = compiledTemplate(templateData);
     
     return html;
     
   } catch (error) {
-    console.error('❌ Erreur génération template Handlebars:', error);
+    console.error('❌ Erreur génération template:', error);
     throw error;
   }
 }
@@ -2133,8 +1795,7 @@ async function generateHTMLFromTemplate(landing) {
 // ==================== EXPORT ====================
 module.exports = {
   generateHTMLFromTemplate,
-  generateHTML: generateHTMLFromTemplate,  // ALIAS pour server.js
-  translateLandingContent,  // Export de la fonction de traduction DeepL
+  generateHTML: generateHTMLFromTemplate,
   getUITranslations,
   UI_TRANSLATIONS
 };

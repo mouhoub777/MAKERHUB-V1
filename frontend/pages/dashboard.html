@@ -73,9 +73,9 @@
               <p class="feature-description">
                 Turn your Telegram channel into a recurring revenue source with automated subscriptions
               </p>
-              <button class="feature-cta">
+              <a href="/createLanding.html" class="feature-cta">
                 Configure <i class="fas fa-arrow-right"></i>
-              </button>
+              </a>
             </div>
 
             <!-- Profile -->
@@ -88,20 +88,6 @@
               <h3 class="feature-title">Creator Profile</h3>
               <p class="feature-description">
                 Centralize all your links and create a professional showcase for your personal brand
-              </p>
-              <span class="coming-soon">Coming soon</span>
-            </div>
-
-            <!-- Landing -->
-            <div class="feature-card" data-feature="landing">
-              <div class="feature-header">
-                <div class="feature-icon landing">
-                  <i class="fas fa-rocket"></i>
-                </div>
-              </div>
-              <h3 class="feature-title">Landing Pages</h3>
-              <p class="feature-description">
-                High-converting sales pages with integrated analytics
               </p>
               <span class="coming-soon">Coming soon</span>
             </div>
@@ -167,81 +153,25 @@
     </main>
   </div>
 
-  <!-- Setup Modal -->
-  <div class="modal-overlay" id="setupModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">Telegram Setup</h2>
-        <button class="modal-close" id="closeModal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <form id="setupForm">
-        <div class="form-group">
-          <label class="form-label" for="langSelect">
-            <i class="fas fa-language"></i>
-            Bot language
-          </label>
-          <select class="form-select" id="langSelect" required>
-            <option value="en" selected>English</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-            <option value="it">Italiano</option>
-            <option value="de">Deutsch</option>
-            <option value="pt">Português</option>
-            <option value="ru">Русский</option>
-            <option value="ar">العربية</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="currencySelect">
-            <i class="fas fa-coins"></i>
-            Main currency
-          </label>
-          <select class="form-select" id="currencySelect" required>
-            <option value="USD" selected>USD - US Dollar</option>
-            <option value="EUR">EUR - Euro</option>
-            <option value="GBP">GBP - British Pound</option>
-            <option value="CHF">CHF - Swiss Franc</option>
-            <option value="CAD">CAD - Canadian Dollar</option>
-            <option value="AUD">AUD - Australian Dollar</option>
-            <option value="JPY">JPY - Japanese Yen</option>
-            <option value="CNY">CNY - Chinese Yuan</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="botName">
-            <i class="fas fa-robot"></i>
-            Bot name
-          </label>
-          <input type="text" class="form-input" id="botName" 
-                 placeholder="Ex: MyBusinessBot" required>
-        </div>
-        
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-check"></i>
-            Continue
-          </button>
-          <button type="button" class="btn btn-secondary" id="cancelModal">
-            <i class="fas fa-times"></i>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
   
+  <!-- ✅ AJOUTÉ: Firebase Config AVANT les autres scripts -->
+  <script src="/config/firebase.js"></script>
+  
   <!-- Scripts -->
   <script src="/assets/js/sidebar.js"></script>
   <script src="/assets/js/dashboard.js"></script>
+  
+  <!-- Logout Script -->
+  <script>
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      firebase.auth().signOut().then(() => {
+        window.location.href = '/auth.html';
+      });
+    });
+  </script>
 </body>
 </html>

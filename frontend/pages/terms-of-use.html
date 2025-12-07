@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MAKERHUB - Terms of Use">
+    <title>Terms of Use - MAKERHUB</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- External Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0a0a;
+            font-size: 1.2rem;
+        }
+        
+        .logo-text .brand {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .logo-text .lynk {
+            color: #FFD700;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .back-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .legal-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .legal-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .legal-header h1 {
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+        }
+        
+        .legal-header .update-date {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        
+        .legal-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+        }
+        
+        .legal-content h2 {
+            color: #FFD700;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .legal-content h2:first-child {
+            margin-top: 0;
+        }
+        
+        .legal-content h3 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        .legal-content p {
+            margin-bottom: 1rem;
+            color: #c0c0c0;
+        }
+        
+        .legal-content ul {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #c0c0c0;
+        }
+        
+        .legal-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .legal-content a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+        
+        .legal-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .company-info {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .company-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            background: #0a0a0a;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .legal-container {
+                padding: 2rem 1rem;
+            }
+            
+            .legal-content {
+                padding: 1.5rem;
+            }
+            
+            .legal-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">MAKER</span><span class="lynk">HUB</span>
+                </div>
+            </a>
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="legal-container">
+        <div class="legal-header">
+            <h1>Terms of Use</h1>
+            <p class="update-date">Last updated: December 6, 2025</p>
+        </div>
+        
+        <div class="legal-content">
+            <h2>1. Legal Information</h2>
+            
+            <div class="company-info">
+                <p><strong>Company Name:</strong> MOUB MARKETING S.R.L.</p>
+                <p><strong>Legal Form:</strong> Societate cu Răspundere Limitată (S.R.L.)</p>
+                <p><strong>Registration Number (CUI):</strong> 47903005</p>
+                <p><strong>Trade Register:</strong> J40/6123/2023</p>
+                <p><strong>Registered Office:</strong> Strada Lujerului, Nr. 1, Bloc 100, Scara A, Etaj 2, Ap. 8, Sectorul 6, București, Romania</p>
+                <p><strong>Email:</strong> <a href="mailto:live@makerhub.pro">live@makerhub.pro</a></p>
+            </div>
+            
+            <h3>Hosting</h3>
+            <p>Website hosted by: DigitalOcean, LLC<br>
+            Address: 101 Avenue of the Americas, 10th Floor, New York, NY 10013, USA<br>
+            Website: <a href="https://www.digitalocean.com" target="_blank" rel="noopener">www.digitalocean.com</a></p>
+            
+            <h2>2. Acceptance of Terms</h2>
+            <p>By accessing and using MAKERHUB ("the Platform"), you accept and agree to be bound by these Terms of Use. If you do not agree with any part of these terms, you must not use our services.</p>
+            
+            <h2>3. Description of Services</h2>
+            <p>MAKERHUB is an all-in-one creator platform that provides:</p>
+            <ul>
+                <li>Telegram channel monetization and membership management</li>
+                <li>Landing page creation tools</li>
+                <li>Email marketing services</li>
+                <li>Calendar and booking system</li>
+                <li>Creator profile pages</li>
+                <li>Payment processing via Stripe</li>
+                <li>Analytics and statistics</li>
+            </ul>
+            
+            <h2>4. Account Registration</h2>
+            <p>To use our services, you must:</p>
+            <ul>
+                <li>Be at least 18 years old</li>
+                <li>Provide accurate and complete registration information</li>
+                <li>Keep your login credentials secure and confidential</li>
+                <li>Notify us immediately of any unauthorized access to your account</li>
+            </ul>
+            <p>You are responsible for all activities that occur under your account.</p>
+            
+            <h2>5. Subscription Plans and Fees</h2>
+            
+            <h3>5.1 Available Plans</h3>
+            <ul>
+                <li><strong>Freemium:</strong> Free access with 10% commission on all sales</li>
+                <li><strong>Pro ($49/month):</strong> Full features with 4% commission on sales</li>
+                <li><strong>Business ($99/month):</strong> Unlimited features with 2% commission on sales</li>
+            </ul>
+            
+            <h3>5.2 Payment Terms</h3>
+            <ul>
+                <li>Subscription fees are billed monthly in advance</li>
+                <li>Payments are processed securely via Stripe</li>
+                <li>Commissions on sales are calculated and deducted automatically</li>
+                <li>All prices are in USD unless otherwise specified</li>
+            </ul>
+            
+            <h3>5.3 Refund Policy</h3>
+            <p>Subscription fees are non-refundable once the billing period has started. You may cancel your subscription at any time, and it will remain active until the end of the current billing period.</p>
+            
+            <h2>6. User Obligations</h2>
+            <p>You agree NOT to:</p>
+            <ul>
+                <li>Use the Platform for any illegal or unauthorized purpose</li>
+                <li>Violate any applicable laws or regulations</li>
+                <li>Infringe on intellectual property rights of others</li>
+                <li>Distribute spam, malware, or harmful content</li>
+                <li>Attempt to gain unauthorized access to our systems</li>
+                <li>Use the Platform to sell prohibited products or services</li>
+                <li>Engage in fraudulent or deceptive practices</li>
+            </ul>
+            
+            <h2>7. Intellectual Property</h2>
+            <p>All content on MAKERHUB, including but not limited to text, graphics, logos, icons, images, and software, is the property of MOUB MARKETING S.R.L. and is protected by international copyright and trademark laws.</p>
+            <p>You retain ownership of all content you create and upload to the Platform. By using our services, you grant us a limited license to host and display your content as necessary to provide our services.</p>
+            
+            <h2>8. Third-Party Services</h2>
+            <p>Our Platform integrates with third-party services including:</p>
+            <ul>
+                <li><strong>Stripe:</strong> For payment processing</li>
+                <li><strong>Telegram:</strong> For channel management and monetization</li>
+                <li><strong>Firebase:</strong> For authentication and data storage</li>
+            </ul>
+            <p>Your use of these services is subject to their respective terms and conditions.</p>
+            
+            <h2>9. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, MOUB MARKETING S.R.L. shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or business opportunities.</p>
+            <p>Our total liability for any claims arising from your use of the Platform shall not exceed the amount you paid us in the twelve (12) months preceding the claim.</p>
+            
+            <h2>10. Service Availability</h2>
+            <p>We strive to maintain 99.9% uptime but do not guarantee uninterrupted access to our services. We may perform maintenance or updates that temporarily affect service availability.</p>
+            
+            <h2>11. Termination</h2>
+            <p>We reserve the right to suspend or terminate your account at any time for violation of these Terms of Use. You may terminate your account at any time by contacting us at <a href="mailto:live@makerhub.pro">live@makerhub.pro</a>.</p>
+            
+            <h2>12. Modifications</h2>
+            <p>We reserve the right to modify these Terms of Use at any time. Changes will be posted on this page with an updated revision date. Continued use of the Platform after changes constitutes acceptance of the new terms.</p>
+            
+            <h2>13. Governing Law</h2>
+            <p>These Terms of Use are governed by and construed in accordance with the laws of Romania. Any disputes shall be submitted to the competent courts of Bucharest, Romania.</p>
+            
+            <h2>14. Contact</h2>
+            <p>For any questions regarding these Terms of Use, please contact us:</p>
+            <p>Email: <a href="mailto:live@makerhub.pro">live@makerhub.pro</a><br>
+            Telegram: <a href="https://t.me/Makerhub" target="_blank" rel="noopener">@Makerhub</a></p>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2025 MAKERHUB. All rights reserved.</p>
+    </footer>
+</body>
+</html>

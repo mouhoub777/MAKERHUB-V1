@@ -1,4 +1,4 @@
-# telegram/services/FirebaseService.py
+﻿# telegram/services/FirebaseService.py
 """
 Service Firebase pour le service Python MAKERHUB V1
 """

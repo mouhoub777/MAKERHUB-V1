@@ -39,10 +39,8 @@
     <!-- HEADER -->
     <header class="header" role="banner">
         <div class="header-container">
-            <a href="#" class="logo" aria-label="MAKERHUB Home">
-                <div class="logo-icon" aria-hidden="true">
-                    <i class="fas fa-bolt"></i>
-                </div>
+            <a href="#" class="logo" aria-label="MAKERHUB Home" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                <img src="/public/assets/images/makerhub-logo.jpg" alt="MAKERHUB" style="width: 36px; height: 36px; border-radius: 8px;">
                 <div class="logo-text">
                     <span class="brand">MAKER</span><span class="lynk">HUB</span>
                 </div>
@@ -107,16 +105,6 @@
                         <div class="template-card" role="listitem">
                             <div class="template-preview">
                                 <div class="template-icon" aria-hidden="true">
-                                    <i class="fas fa-rocket"></i>
-                                </div>
-                            </div>
-                            <h3>Sales Page</h3>
-                            <p>Sell your digital products</p>
-                        </div>
-                        
-                        <div class="template-card" role="listitem">
-                            <div class="template-preview">
-                                <div class="template-icon" aria-hidden="true">
                                     <i class="fas fa-chart-line"></i>
                                 </div>
                             </div>
@@ -127,21 +115,31 @@
                         <div class="template-card" role="listitem">
                             <div class="template-preview">
                                 <div class="template-icon" aria-hidden="true">
-                                    <i class="fas fa-video"></i>
+                                    <i class="fas fa-envelope"></i>
                                 </div>
                             </div>
-                            <h3>Live Registration</h3>
-                            <p>Manage your webinars</p>
+                            <h3>Email Marketing</h3>
+                            <p>Nurture your audience</p>
                         </div>
                         
                         <div class="template-card" role="listitem">
                             <div class="template-preview">
                                 <div class="template-icon" aria-hidden="true">
-                                    <i class="fas fa-user-circle"></i>
+                                    <i class="fas fa-language"></i>
                                 </div>
                             </div>
-                            <h3>Creator Profile</h3>
-                            <p>Your professional showcase</p>
+                            <h3>Telegram Translation</h3>
+                            <p>Reach global audience</p>
+                        </div>
+                        
+                        <div class="template-card" role="listitem">
+                            <div class="template-preview">
+                                <div class="template-icon" aria-hidden="true">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                            </div>
+                            <h3>Telegram Funnel</h3>
+                            <p>Automate your conversions</p>
                         </div>
                     </div>
                     
@@ -173,23 +171,23 @@
                     <article class="unique-card featured">
                         <div class="unique-screenshot">
                             <div class="screenshot-placeholder">
-                                <i class="fas fa-calendar-check"></i>
+                                <i class="fas fa-route"></i>
                             </div>
                         </div>
-                        <h3>Calendar & Booking System</h3>
-                        <p>Manage your lives, masterclasses and events with a Calendly-style booking page. Track everything in one unified calendar.</p>
-                        <div class="unique-badge">All-in-One</div>
+                        <h3>Telegram Funnel</h3>
+                        <p>Create automated conversation funnels to convert prospects into customers. Guide your audience through a personalized journey.</p>
+                        <div class="unique-badge">Automation</div>
                     </article>
                     
                     <article class="unique-card">
                         <div class="unique-screenshot">
                             <div class="screenshot-placeholder">
-                                <i class="fas fa-user-circle"></i>
+                                <i class="fas fa-language"></i>
                             </div>
                         </div>
-                        <h3>Your Creator Page</h3>
-                        <p>Your all-in-one link in bio: showcase your brand, promote upcoming lives, sell your products and connect all your links in one beautiful page.</p>
-                        <div class="unique-badge">Link in Bio</div>
+                        <h3>Telegram Translation</h3>
+                        <p>Automatically translate your Telegram messages into multiple languages to reach a global audience and grow your community.</p>
+                        <div class="unique-badge">Global Reach</div>
                     </article>
                 </div>
             </div>
@@ -225,6 +223,14 @@
                         <p>Use analytics, email marketing and automation to scale your business</p>
                     </li>
                 </ol>
+                
+                <!-- CTA Button -->
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn btn-primary btn-large" id="monetizeTelegramBtn" style="background: linear-gradient(135deg, #f5c518 0%, #e6b800 100%); color: #1a1a1a; font-weight: 600; padding: 16px 32px; font-size: 18px; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 197, 24, 0.3);">
+                        <i class="fab fa-telegram" style="margin-right: 10px;"></i>
+                        Monetize Your Telegram
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -244,24 +250,6 @@
                         <h3 class="card-title">Telegram Membership</h3>
                         <p class="card-description">Turn your Telegram channel into a recurring revenue source with automated subscriptions and member management.</p>
                         <button class="card-cta" aria-label="Get started with Telegram">Get Started</button>
-                    </article>
-
-                    <article class="service-card">
-                        <div class="card-icon" aria-hidden="true">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h3 class="card-title">Creator Profile</h3>
-                        <p class="card-description">Centralize all your links and create a professional showcase for your personal brand.</p>
-                        <span class="card-coming-soon">Coming Soon</span>
-                    </article>
-
-                    <article class="service-card">
-                        <div class="card-icon" aria-hidden="true">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <h3 class="card-title">Landing Pages</h3>
-                        <p class="card-description">High-converting sales pages with integrated analytics to maximize your conversions.</p>
-                        <span class="card-coming-soon">Coming Soon</span>
                     </article>
 
                     <article class="service-card">
@@ -329,11 +317,9 @@
                         
                         <ul class="features-list">
                             <li>Telegram Membership</li>
-                            <li>Profile page <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>2 Sales pages <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Statistics</li>
-                            <li class="feature-disabled">Live streaming <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li class="feature-disabled">Telegram reminders <span class="coming-soon-tag">Coming Soon</span></li>
+                            <li class="feature-disabled">Telegram Translation</li>
+                            <li class="feature-disabled">Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
                             <li class="feature-disabled">Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
                             <li class="feature-disabled">Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
                         </ul>
@@ -356,16 +342,14 @@
                         
                         <ul class="features-list">
                             <li>Telegram Membership (4%)</li>
-                            <li>Creator Profile <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Unlimited sales pages <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Telegram Event Reminders <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Creator Page <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Statistics</li>
+                            <li class="feature-disabled">Telegram Translation</li>
+                            <li class="feature-disabled">Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
+                            <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
+                            <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
                         </ul>
                         
-                        <button class="plan-cta cta-primary" aria-label="Start 14-day pro trial">14-Day Trial</button>
+                        <button class="plan-cta cta-primary" aria-label="Upgrade to pro plan">Upgrade to Pro</button>
                     </article>
 
                     <!-- Business Plan -->
@@ -382,15 +366,11 @@
                         
                         <ul class="features-list">
                             <li>Unlimited Telegram Channels (2%)</li>
-                            <li>Creator Profile <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Unlimited sales pages <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Telegram Event Reminders <span class="coming-soon-tag">Coming Soon</span></li>
+                            <li>Telegram Translation <span class="coming-soon-tag">Coming Soon</span></li>
+                            <li>Statistics</li>
                             <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Creator Page <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Unlimited lives <span class="coming-soon-tag">Coming Soon</span></li>
-                            <li>Statistics</li>
                         </ul>
                         
                         <button class="plan-cta cta-primary" aria-label="Upgrade to business plan">Upgrade to Business</button>
@@ -407,7 +387,7 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
+    <!-- FOOTER SIMPLIFIÉ -->
     <footer class="footer" id="contact" role="contentinfo">
         <div class="footer-container">
             <div class="footer-row">
@@ -419,24 +399,14 @@
                 <div class="footer-col">
                     <h4>Legal</h4>
                     <nav aria-label="Legal links">
-                        <a href="/terms-of-sale">Terms of Sale</a>
                         <a href="/terms-of-use">Terms of Use</a>
                         <a href="/privacy-policy">Privacy Policy</a>
                     </nav>
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Company</h4>
-                    <nav aria-label="Company links">
-                        <a href="/contact">Contact</a>
-                        <a href="/about">About</a>
-                        <a href="/blog">Blog</a>
-                    </nav>
-                </div>
-                
-                <div class="footer-col">
                     <h4>Contact</h4>
-                    <a href="/cdn-cgi/l/email-protection#64080d12012409050f01160c11064a14160b"><span class="__cf_email__" data-cfemail="fa96938c9fba979b919f88928f98d48a8895">[email&#160;protected]</span></a>
+                    <a href="mailto:live@makerhub.pro">live@makerhub.pro</a>
                     <div class="social-link">
                         <a href="https://t.me/Makerhub" target="_blank" class="telegram-link" rel="noopener noreferrer">
                             <i class="fab fa-telegram-plane" aria-hidden="true"></i>
@@ -562,7 +532,7 @@
     </div>
 
     <!-- Configuration JavaScript -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         window.MAKERHUB_CONFIG = {
             NODE_API_URL: 'http://localhost:3000',
             NODE_ENV: 'development'
@@ -591,6 +561,24 @@
             }
         }
         checkFirebaseReady();
+    </script>
+    
+    <!-- Monetize Telegram Button -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('monetizeTelegramBtn')?.addEventListener('click', function() {
+                // Flag pour rediriger vers createLanding après signup
+                window.redirectToCreateLanding = true;
+                
+                // Utiliser le système de modal existant
+                if (window.authApp && window.authApp.showSignupModal) {
+                    window.authApp.showSignupModal();
+                } else {
+                    // Fallback: cliquer sur le bouton Sign Up
+                    document.getElementById('signupBtn-header')?.click();
+                }
+            });
+        });
     </script>
 </body>
 </html>

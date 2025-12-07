@@ -5,28 +5,14 @@
   
   <!-- SEO Meta Tags -->
   <title>Reviews Management - MAKERHUB.PRO | Customer Reviews Manager</title>
-  <meta name="description" content="Manage customer reviews and ratings for your MAKERHUB pages. Build trust with authentic testimonials and social proof." />
-  <meta name="keywords" content="reviews management, customer testimonials, ratings, social proof, makerhub" />
-  <meta name="author" content="MAKERHUB" />
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="language" content="en" />
-  
-  <!-- Technical Meta Tags -->
+  <meta name="description" content="Manage customer reviews and ratings for your MAKERHUB pages." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="format-detection" content="telephone=no" />
-  
-  <!-- Progressive Web App Meta Tags -->
   <meta name="theme-color" content="#ffd600" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  
-  <!-- Preconnect to External Resources -->
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   
   <!-- External Resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   
@@ -34,314 +20,70 @@
   <link rel="stylesheet" href="/assets/css/avis.css" />
   
   <style>
-    /* Btn Logout */
-    .btn-logout {
+    .btn-close-page {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      background: transparent;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 50%;
       color: #666;
-      font-size: 14px;
+      font-size: 20px;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-logout:hover {
-      background: #fee2e2;
-      border-color: #ef4444;
-      color: #ef4444;
-    }
-    
-    /* Styles additionnels pour le formulaire */
-    .star-rating {
-      display: flex;
-      gap: 5px;
-      font-size: 24px;
-    }
-    
-    .star-rating .star {
-      cursor: pointer;
-      color: #ddd;
-      transition: color 0.2s;
-    }
-    
-    .star-rating .star:hover,
-    .star-rating .star.active {
-      color: #ffd600;
-    }
-    
-    .form-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    
-    /* Style pour le titre Reviews */
-    .reviews-title-section {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-    
-    .reviews-main-title {
-      font-size: 32px;
-      font-weight: 700;
-      margin: 0 0 10px 0;
-      color: #333;
-      text-align: left;
-    }
-    
-    .reviews-rating-summary {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 20px;
-      justify-content: flex-start;
-    }
-    
-    .reviews-rating-summary .star {
-      font-size: 24px;
-      color: #ddd;
-    }
-    
-    .reviews-rating-summary .star.filled {
-      color: #ffd600;
-    }
-    
-    .rating-text {
-      margin-left: 10px;
-      color: #666;
-      font-size: 16px;
-    }
-    
-    /* Styles des cartes d'avis */
-    .review-card {
-      background: #ffffff;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-    
-    .review-content {
-      display: flex;
-      gap: 15px;
-    }
-    
-    .reviewer-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    
-    .reviewer-avatar i {
-      font-size: 20px;
+    .btn-close-page:hover {
+      background: #e5e7eb;
       color: #333;
     }
-    
-    .review-body {
-      flex: 1;
-    }
-    
-    .review-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 5px;
-    }
-    
-    .reviewer-name {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 0;
-      color: #333;
-    }
-    
-    .review-rating {
-      display: flex;
-      gap: 2px;
-    }
-    
-    .review-rating .star {
-      color: #ddd;
-      font-size: 16px;
-    }
-    
-    .review-rating .star.filled {
-      color: #333;
-    }
-    
-    .review-date {
-      font-size: 13px;
-      color: #999;
-      display: block;
-      margin-bottom: 10px;
-    }
-    
-    .review-comment {
-      line-height: 1.6;
-      color: #333;
-      margin: 0;
-    }
-    
-    .delete-btn {
-      background: transparent;
-      color: #999;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      transition: color 0.2s;
-      margin-left: auto;
-    }
-    
-    .delete-btn:hover {
-      color: #ff4444;
-    }
-    
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    
-    .modal-content {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      max-width: 500px;
-      width: 90%;
-    }
-    
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 20px;
-    }
-    
-    .btn-danger {
-      background: #ff4444;
-      color: white;
-    }
-    
-    .btn-danger:hover {
-      background: #cc0000;
-    }
-    
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    
-    .loading-overlay.active {
-      display: flex;
-    }
-    
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #ffd600;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 4px;
-      color: white;
-      display: none;
-      z-index: 1001;
-    }
-    
-    .notification.success {
-      background: #10b981;
-    }
-    
-    .notification.error {
-      background: #ff4444;
-    }
-    
-    .notification.info {
-      background: #3b82f6;
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #666;
-    }
-    
-    .empty-icon {
-      font-size: 48px;
-      color: #ddd;
-      margin-bottom: 20px;
-    }
-    
-    .empty-text {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    
-    .empty-subtext {
-      font-size: 14px;
-      color: #999;
-    }
-    
-    .sort-filter {
-      width: 200px;
-    }
-    
-    .form-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 20px;
-    }
-    
-    .star.filled {
-      color: #ffd600;
-    }
-    
-    .required {
-      color: #ff4444;
-    }
+    .star-rating { display: flex; gap: 5px; font-size: 24px; }
+    .star-rating .star { cursor: pointer; color: #ddd; transition: color 0.2s; }
+    .star-rating .star:hover, .star-rating .star.active { color: #ffd600; }
+    .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+    .reviews-title-section { margin-bottom: 20px; text-align: left; }
+    .reviews-main-title { font-size: 32px; font-weight: 700; margin: 0 0 10px 0; color: #333; }
+    .reviews-rating-summary { display: flex; align-items: center; gap: 5px; font-size: 20px; }
+    .reviews-rating-summary .star { font-size: 24px; color: #ddd; }
+    .reviews-rating-summary .star.filled { color: #ffd600; }
+    .rating-text { margin-left: 10px; color: #666; font-size: 16px; }
+    .review-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative; }
+    .review-content { display: flex; gap: 15px; }
+    .reviewer-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .reviewer-avatar i { font-size: 20px; color: #333; }
+    .review-body { flex: 1; }
+    .review-header { display: flex; align-items: center; gap: 15px; margin-bottom: 5px; }
+    .reviewer-name { font-size: 16px; font-weight: 600; margin: 0; color: #333; }
+    .review-rating { display: flex; gap: 2px; }
+    .review-rating .star { color: #ddd; font-size: 16px; }
+    .review-rating .star.filled { color: #333; }
+    .review-date { font-size: 13px; color: #999; display: block; margin-bottom: 10px; }
+    .review-comment { line-height: 1.6; color: #333; margin: 0; }
+    .delete-btn { background: transparent; color: #999; border: none; padding: 5px 10px; cursor: pointer; transition: color 0.2s; margin-left: auto; }
+    .delete-btn:hover { color: #ff4444; }
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-content { background: white; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .btn-danger { background: #ff4444; color: white; }
+    .btn-danger:hover { background: #cc0000; }
+    .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.9); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .loading-overlay.active { display: flex; }
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #ffd600; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .notification { position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 4px; color: white; display: none; z-index: 1001; }
+    .notification.success { background: #10b981; }
+    .notification.error { background: #ff4444; }
+    .notification.info { background: #3b82f6; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #666; }
+    .empty-icon { font-size: 48px; color: #ddd; margin-bottom: 20px; }
+    .empty-text { font-size: 18px; margin-bottom: 10px; }
+    .empty-subtext { font-size: 14px; color: #999; }
+    .sort-filter { width: 200px; }
+    .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .star.filled { color: #ffd600; }
+    .required { color: #ff4444; }
   </style>
 </head>
 <body>
@@ -364,9 +106,8 @@
         <p class="header-subtitle">Manage customer reviews and ratings for your page</p>
       </div>
       <div class="header-actions">
-        <button class="btn-logout" id="logoutBtn">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
+        <button class="btn-close-page" id="closePageBtn" title="Close">
+          <i class="fas fa-times"></i>
         </button>
       </div>
     </header>
@@ -437,9 +178,7 @@
           </select>
         </div>
         
-        <div id="reviewsList" class="reviews-list">
-          <!-- Reviews will be added dynamically here -->
-        </div>
+        <div id="reviewsList" class="reviews-list"></div>
         
         <div id="emptyState" class="empty-state" style="display: none;">
           <i class="fas fa-comment-slash empty-icon"></i>
@@ -499,41 +238,32 @@
 
 <!-- Event Handlers -->
 <script>
-// Wait for avis.js to expose its functions
 function waitForAvisJS(callback) {
   if (typeof window.showLoadingOverlay === 'function' && 
       typeof window.saveReviews === 'function' && 
       typeof window.showNotification === 'function') {
     callback();
   } else {
-    console.log('Waiting for avis.js functions...');
     setTimeout(function() { waitForAvisJS(callback); }, 50);
   }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Wait for avis.js functions to be available
     waitForAvisJS(function() {
-        console.log('✅ avis.js functions loaded, attaching event handlers');
+        console.log('✅ avis.js functions loaded');
         
-        // Close button - Redirect to telegramsubscription
-        document.getElementById('closeBtn').addEventListener('click', function() {
-            if (window.reviews && window.reviews.length > 0) {
-                if (confirm('You have unsaved changes. Are you sure you want to close?')) {
-                    window.location.href = '/telegramsubscription.html';
-                }
-            } else {
-                window.location.href = '/telegramsubscription.html';
-            }
+        // Close page button (X) - retour à la page précédente
+        document.getElementById('closePageBtn')?.addEventListener('click', function() {
+            window.location.href = '/telegramsubscription.html';
         });
         
-        // Cancel button - Redirect to telegramsubscription
-        document.getElementById('cancelBtn').addEventListener('click', function() {
+        // Cancel button
+        document.getElementById('cancelBtn')?.addEventListener('click', function() {
             window.location.href = '/telegramsubscription.html';
         });
         
         // Save button
-        document.getElementById('saveReviewsBtn').addEventListener('click', async function() {
+        document.getElementById('saveReviewsBtn')?.addEventListener('click', async function() {
             try {
                 window.showLoadingOverlay(true);
                 await window.saveReviews();
@@ -548,13 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.showLoadingOverlay(false);
             }
         });
-    });
-});
-
-// Logout
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-    firebase.auth().signOut().then(() => {
-        window.location.href = '/auth.html';
     });
 });
 </script>

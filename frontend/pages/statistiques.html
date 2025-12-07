@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Analytics - MAKERHUB</title>
@@ -8,11 +8,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/statistiques.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-  
-  <!-- ✅ AJOUTÉ: Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   
   <style>
     .btn-logout {
@@ -38,9 +33,67 @@
       justify-content: space-between;
       align-items: flex-start;
     }
+    
+    /* Page Loader */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .page-loader .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #f5c518;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .page-loader .loader-text {
+      margin-top: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      color: #666;
+    }
+    .page-loader .loader-logo {
+      margin-bottom: 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .page-loader .loader-logo span:first-child {
+      color: #1a1a1a;
+    }
+    .page-loader .loader-logo span:last-child {
+      color: #f5c518;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-logo">
+    <span>MAKER</span><span>HUB</span>
+  </div>
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Loading analytics...</div>
+</div>
 
 <!-- Sidebar Container -->
 <div id="sidebar-container"></div>
@@ -62,12 +115,6 @@
     <div class="filters-bar">
       <div class="filters-left">
         <div class="filter-group">
-          <span class="filter-label">Landing Page:</span>
-          <select class="filter-select landing-select" id="landingFilter">
-            <option value="all">All Pages</option>
-          </select>
-        </div>
-        <div class="filter-group">
           <span class="filter-label">Period:</span>
           <select class="filter-select" id="periodFilter">
             <option value="7">Last 7 days</option>
@@ -76,12 +123,6 @@
             <option value="365">Last year</option>
           </select>
         </div>
-      </div>
-      <div class="filters-right">
-        <button class="refresh-btn" id="refreshBtn">
-          <i class="fas fa-sync-alt"></i>
-          Refresh
-        </button>
       </div>
     </div>
 
@@ -245,6 +286,11 @@
 <!-- Toast Container -->
 <div id="toastContainer" class="toast-container"></div>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+
 <!-- Firebase Config -->
 <script src="/config/firebase.js"></script>
 
@@ -261,6 +307,27 @@
       window.location.href = '/auth.html';
     });
   });
+</script>
+
+<!-- Hide loader when page is ready -->
+<script>
+  function hidePageLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+      loader.classList.add('hidden');
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 300);
+    }
+  }
+
+  // Hide loader when Firebase is ready
+  window.addEventListener('firebaseReady', () => {
+    setTimeout(hidePageLoader, 500);
+  });
+
+  // Fallback: hide after 3 seconds max
+  setTimeout(hidePageLoader, 3000);
 </script>
 
 </body>

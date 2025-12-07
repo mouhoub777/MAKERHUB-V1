@@ -1,4 +1,4 @@
-// statistiques.js - MAKERHUB V1 Analytics
+// statistiques.js - MAKERHUB V1 Analytics (Optimized)
 'use strict';
 
 console.log('📊 MAKERHUB Analytics v1.0 loaded');
@@ -9,18 +9,28 @@ let currentUser = null;
 let clicksChart = null;
 let revenueChart = null;
 
-document.addEventListener('DOMContentLoaded', initializeStats);
+// ✅ OPTIMIZED: Use firebaseReady event instead of polling
+if (window.firebaseServices && window.firebaseServices.auth && window.firebaseServices.db) {
+  // Firebase already ready
+  initializeStats();
+} else {
+  // Wait for Firebase ready event
+  window.addEventListener('firebaseReady', initializeStats, { once: true });
+}
 
 function initializeStats() {
-  const checkFirebase = setInterval(() => {
-    if (window.firebaseAuth && window.firebaseDb) {
-      clearInterval(checkFirebase);
-      auth = window.firebaseAuth;
-      db = window.firebaseDb;
-      setupAuth();
-      setupEventListeners();
-    }
-  }, 100);
+  // ✅ Use firebaseServices directly (faster)
+  auth = window.firebaseServices?.auth || window.firebaseAuth;
+  db = window.firebaseServices?.db || window.firebaseDb;
+  
+  if (!auth || !db) {
+    console.error('❌ Firebase not available');
+    return;
+  }
+  
+  console.log('✅ Firebase services connected');
+  setupAuth();
+  setupEventListeners();
 }
 
 function setupAuth() {
@@ -28,7 +38,6 @@ function setupAuth() {
     if (user) {
       currentUser = user;
       await loadStatistics(30);
-      await loadLandingPages();
     } else {
       window.location.href = '/auth.html';
     }
@@ -41,51 +50,13 @@ function setupEventListeners() {
     await loadStatistics(parseInt(e.target.value));
   });
 
-  // Landing page filter
-  document.getElementById('landingFilter')?.addEventListener('change', async (e) => {
-    await loadStatistics(parseInt(document.getElementById('periodFilter')?.value || 30), e.target.value);
-  });
-
-  // Refresh button
-  document.getElementById('refreshBtn')?.addEventListener('click', async () => {
-    const days = parseInt(document.getElementById('periodFilter')?.value || 30);
-    const pageFilter = document.getElementById('landingFilter')?.value || 'all';
-    await loadStatistics(days, pageFilter);
-    showToast('Statistics refreshed', 'success');
-  });
-
   // Mobile menu
   document.getElementById('menuToggle')?.addEventListener('click', () => {
     document.getElementById('sidebar')?.classList.toggle('active');
   });
 }
 
-async function loadLandingPages() {
-  try {
-    const pagesSnapshot = await db.collection('landingPages')
-      .where('creatorId', '==', currentUser.uid)
-      .get();
-
-    const select = document.getElementById('landingFilter');
-    if (!select) return;
-
-    // Keep "All Pages" option
-    select.innerHTML = '<option value="all">All Pages</option>';
-
-    pagesSnapshot.docs.forEach(doc => {
-      const data = doc.data();
-      const option = document.createElement('option');
-      option.value = doc.id;
-      option.textContent = data.brand || data.channelName || 'Untitled';
-      select.appendChild(option);
-    });
-
-  } catch (error) {
-    console.error('❌ Load landing pages error:', error);
-  }
-}
-
-async function loadStatistics(days = 30, pageFilter = 'all') {
+async function loadStatistics(days = 30) {
   try {
     showLoading(true);
 
@@ -105,13 +76,9 @@ async function loadStatistics(days = 30, pageFilter = 'all') {
     pagesSnapshot.docs.forEach(doc => {
       const data = doc.data();
       pageIds.push(doc.id);
-      
-      // Only count if matches filter
-      if (pageFilter === 'all' || pageFilter === doc.id) {
-        totalViews += data.viewCount || data.views || 0;
-        totalClicks += data.clickCount || data.clicks || 0;
-        topPages.push({ id: doc.id, ...data });
-      }
+      totalViews += data.viewCount || data.views || 0;
+      totalClicks += data.clickCount || data.clicks || 0;
+      topPages.push({ id: doc.id, ...data });
     });
 
     // ========================================
@@ -141,11 +108,6 @@ async function loadStatistics(days = 30, pageFilter = 'all') {
     salesSnapshot.docs.forEach(doc => {
       const sale = doc.data();
       const salePageId = sale.pageId || sale.page_id;
-      
-      // Filter by page if needed
-      if (pageFilter !== 'all' && salePageId !== pageFilter) {
-        return;
-      }
 
       const date = sale.createdAt?.toDate?.() || new Date(sale.createdAt);
       const key = date.toISOString().split('T')[0];
@@ -174,7 +136,6 @@ async function loadStatistics(days = 30, pageFilter = 'all') {
     const conversionRate = totalViews > 0 ? ((totalSubscriptions / totalViews) * 100).toFixed(1) : 0;
     const avgRevenue = totalSubscriptions > 0 ? (totalRevenue / totalSubscriptions) : 0;
 
-    // ✅ Use correct HTML element IDs
     const totalViewsEl = document.getElementById('totalViews');
     const totalClicksEl = document.getElementById('totalClicks');
     const totalSubscriptionsEl = document.getElementById('totalSubscriptions');
@@ -228,7 +189,7 @@ function updateCharts(dailyData, days) {
   // Check if there's any data
   const hasData = subscriptions.some(v => v > 0) || revenue.some(v => v > 0);
 
-  // ✅ Clicks/Subscriptions Chart (ID: clicksChart)
+  // Clicks/Subscriptions Chart
   const clicksCanvas = document.getElementById('clicksChart');
   const clicksPlaceholder = document.getElementById('clicksPlaceholder');
   
@@ -272,7 +233,7 @@ function updateCharts(dailyData, days) {
     if (clicksPlaceholder) clicksPlaceholder.style.display = 'flex';
   }
 
-  // ✅ Revenue Chart (ID: revenueChart)
+  // Revenue Chart
   const revenueCanvas = document.getElementById('revenueChart');
   const revenuePlaceholder = document.getElementById('revenuePlaceholder');
   
@@ -317,7 +278,6 @@ function updateCharts(dailyData, days) {
 }
 
 function updateTopPages(pages, pageRevenue) {
-  // ✅ Correct ID: linksTableBody
   const tbody = document.getElementById('linksTableBody');
   if (!tbody) return;
 
@@ -382,7 +342,7 @@ function formatNumber(num) {
 
 function formatCurrency(amount, currency = 'EUR') {
   if (amount === null || amount === undefined) amount = 0;
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency
   }).format(amount);

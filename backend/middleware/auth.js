@@ -1,4 +1,4 @@
-const admin = require('firebase-admin');
+﻿const admin = require('firebase-admin');
 
 // Middleware d'authentification Firebase
 const auth = async (req, res, next) => {
@@ -33,17 +33,17 @@ const auth = async (req, res, next) => {
     return next();
     
   } catch (error) {
-    console.error('Erreur authentification Firebase:', error?.message || error);
+    console.error('Firebase authentication error:', error?.message || error);
     
     if (error.code === 'auth/id-token-expired') {
       return res.status(401).json({ 
-        error: 'Token expiré',
-        message: 'Veuillez vous reconnecter' 
+        error: 'Token expirÃ©',
+        message: 'Please log in again' 
       });
     }
     
     return res.status(401).json({ 
-      error: 'Token invalide',
+      error: 'Invalid token',
       message: error.message 
     });
   }

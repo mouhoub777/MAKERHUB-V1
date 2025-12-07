@@ -1,4 +1,4 @@
-# telegram/services/TelegramService.py
+﻿# telegram/services/TelegramService.py
 """
 Service Telegram pour MAKERHUB V1
 Gestion des canaux, membres et invitations
@@ -127,8 +127,8 @@ class TelegramService:
                 await bot.send_message(
                     chat_id=int(telegram_user_id),
                     text=(
-                        "🎉 **Paiement confirmé !**\n\n"
-                        f"Voici votre lien d'accès au canal (valable 24h):\n"
+                        "🎉 **Payment confirmed\!**\n\n"
+                        f"Here is your channel access link (valid 24h):\n"
                         f"{invite_link.invite_link}\n\n"
                         "⚠️ Ce lien est à usage unique."
                     ),
@@ -227,3 +227,4 @@ class TelegramService:
 
 # Instance globale du service
 telegram_service = TelegramService()
+

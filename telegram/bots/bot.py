@@ -1,4 +1,4 @@
-import os
+﻿import os
 import logging
 from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -40,7 +40,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 callback_data=f"buy|{creator_id}|{price_id}"
             )])
     if not keyboard:
-        await update.message.reply_text("Aucun créateur disponible pour le moment.")
+        await update.message.reply_text("No creator available at the moment.")
         return
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Choisis un créateur :", reply_markup=reply_markup)
@@ -70,10 +70,10 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             await query.edit_message_text(f"✅ Clique ici pour payer : {checkout_session.url}")
         except Exception as e:
-            await query.edit_message_text(f"❌ Erreur Stripe : {e}")
+            await query.edit_message_text(f"❌ Stripe error: {e}")
             print("Stripe ERROR:", e)
     else:
-        await query.edit_message_text("❌ Option invalide.")
+        await query.edit_message_text("❌ Invalid option.")
 
 if __name__ == "__main__":
     print("=== BOT EN LIGNE SUBLAUNCH LIKE ===")
@@ -81,3 +81,4 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_button))
     app.run_polling()
+

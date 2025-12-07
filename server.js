@@ -1,4 +1,4 @@
-// server.js - MAKERHUB V1 - Serveur Node.js Principal
+﻿// server.js - MAKERHUB V1 - Serveur Node.js Principal
 // VERSION CORRIGÉE - Webhook proxy AVANT body parser
 'use strict';
 
@@ -35,7 +35,7 @@ try {
   db = getDatabase();
   console.log('✅ Firebase Firestore connecté');
 } catch (error) {
-  console.error('❌ Erreur connexion Firebase:', error.message);
+  console.error('❌ Firebase connection error:', error.message);
 }
 
 // ==================== TRUST PROXY (pour ngrok/HTTPS) ====================
@@ -58,7 +58,7 @@ app.use('/webhook', createProxyMiddleware({
     console.log(`🔔 Webhook traité, status: ${proxyRes.statusCode}`);
   },
   onError: (err, req, res) => {
-    console.error('❌ Erreur proxy Webhook:', err.message);
+    console.error('❌ Proxy error Webhook:', err.message);
     res.status(503).json({
       success: false,
       error: 'Service Webhook indisponible'
@@ -66,7 +66,7 @@ app.use('/webhook', createProxyMiddleware({
   }
 }));
 
-console.log('🔔 Proxy Webhook configuré sur /webhook (AVANT body parser)');
+console.log('🔔 Proxy configured sur /webhook (AVANT body parser)');
 
 // ==================== MIDDLEWARES ====================
 
@@ -128,7 +128,7 @@ if (isDevelopment) {
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: isDevelopment ? 1000 : 100,
-  message: { error: 'Trop de requêtes, veuillez réessayer plus tard' }
+  message: { error: 'Too many requests, please try again later' }
 });
 app.use('/api/', apiLimiter);
 
@@ -156,7 +156,7 @@ app.use('/api/python', createProxyMiddleware({
     proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
   },
   onError: (err, req, res) => {
-    console.error('❌ Erreur proxy Python:', err.message);
+    console.error('❌ Proxy error Python:', err.message);
     res.status(503).json({
       success: false,
       error: 'Service Python indisponible'
@@ -164,7 +164,7 @@ app.use('/api/python', createProxyMiddleware({
   }
 }));
 
-console.log('🐍 Proxy Python configuré sur /api/python/*');
+console.log('🐍 Proxy configured sur /api/python/*');
 
 // ==================== PROXY CHECKOUT VERS PYTHON ====================
 app.use('/checkout', createProxyMiddleware({
@@ -175,7 +175,7 @@ app.use('/checkout', createProxyMiddleware({
     proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
   },
   onError: (err, req, res) => {
-    console.error('❌ Erreur proxy Checkout:', err.message);
+    console.error('❌ Proxy error Checkout:', err.message);
     res.status(503).json({
       success: false,
       error: 'Service Checkout indisponible'
@@ -183,7 +183,7 @@ app.use('/checkout', createProxyMiddleware({
   }
 }));
 
-console.log('💳 Proxy Checkout configuré sur /checkout/*');
+console.log('💳 Proxy configured sur /checkout/*');
 
 // ==================== PROXY SUCCESS/CANCEL VERS PYTHON ====================
 app.use('/success', createProxyMiddleware({
@@ -194,7 +194,7 @@ app.use('/success', createProxyMiddleware({
     proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
   },
   onError: (err, req, res) => {
-    console.error('❌ Erreur proxy Success:', err.message);
+    console.error('❌ Proxy error Success:', err.message);
     res.status(503).send('<html><body><h1>Service indisponible</h1></body></html>');
   }
 }));
@@ -207,12 +207,12 @@ app.use('/cancel', createProxyMiddleware({
     proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
   },
   onError: (err, req, res) => {
-    console.error('❌ Erreur proxy Cancel:', err.message);
+    console.error('❌ Proxy error Cancel:', err.message);
     res.status(503).send('<html><body><h1>Service indisponible</h1></body></html>');
   }
 }));
 
-console.log('✅ Proxy Success/Cancel configuré');
+console.log('✅ Proxy configured');
 
 // ==================== PROXY API TELEGRAM VERS PYTHON ====================
 app.use('/api/telegram', createProxyMiddleware({
@@ -223,7 +223,7 @@ app.use('/api/telegram', createProxyMiddleware({
     proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
   },
   onError: (err, req, res) => {
-    console.error('❌ Erreur proxy Telegram:', err.message);
+    console.error('❌ Proxy error Telegram:', err.message);
     res.status(503).json({
       success: false,
       error: 'Service Telegram indisponible'
@@ -231,7 +231,7 @@ app.use('/api/telegram', createProxyMiddleware({
   }
 }));
 
-console.log('📱 Proxy Telegram configuré sur /api/telegram/*');
+console.log('📱 Proxy configured sur /api/telegram/*');
 
 // ==================== FICHIERS STATIQUES ====================
 app.use(express.static(path.join(__dirname, 'frontend')));
@@ -384,7 +384,7 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
     }
     
     if (textsToTranslate.length === 0) {
-      console.log(`   ⚠️ Aucun contenu à traduire`);
+      console.log(`   ⚠️ No content to translate`);
       return landingData;
     }
     
@@ -428,14 +428,14 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`   ❌ Erreur DeepL: ${response.status} - ${errorText}`);
+      console.error(`   ❌ DeepL error: ${response.status} - ${errorText}`);
       return landingData;
     }
     
     const result = await response.json();
     
     if (!result.translations || result.translations.length !== textsToTranslate.length) {
-      console.error(`   ❌ Réponse DeepL invalide`);
+      console.error(`   ❌ Invalid DeepL response`);
       return landingData;
     }
     
@@ -453,7 +453,7 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
       }).then(() => {
         console.log(`   💾 Traduction ${target} sauvegardée dans Firebase`);
       }).catch(err => {
-        console.error(`   ❌ Erreur sauvegarde traduction:`, err.message);
+        console.error(`   ❌ Translation save error:`, err.message);
       });
     }
     
@@ -463,7 +463,7 @@ async function translateLandingContentIfNeeded(landingData, targetLang, docId) {
     return landingData;
     
   } catch (error) {
-    console.error(`   ❌ Erreur traduction DeepL:`, error.message);
+    console.error(`   ❌ DeepL translation error:`, error.message);
     return landingData;
   }
 }
@@ -499,7 +499,7 @@ app.get('/:profile/:slug', async (req, res, next) => {
         <body style="text-align:center;padding:50px;font-family:Arial,sans-serif;">
           <h1>503 - Service non disponible</h1>
           <p>La base de données n'est pas connectée.</p>
-          <a href="/dashboard.html">Retour au dashboard</a>
+          <a href="/dashboard.html">Back to dashboard</a>
         </body>
         </html>
       `);
@@ -547,9 +547,9 @@ app.get('/:profile/:slug', async (req, res, next) => {
             <head><title>Page non active</title></head>
             <body style="text-align:center;padding:50px;font-family:Arial,sans-serif;">
               <h1>🚧 Page en cours de création</h1>
-              <p>Cette page n'est pas encore publiée.</p>
-              <p style="color:#666;">Connectez un canal Telegram pour l'activer.</p>
-              <a href="/dashboard.html" style="color:#007bff;">Retour au dashboard</a>
+              <p>This page is not published yet.</p>
+              <p style="color:#666;">Connect a Telegram channel to activate it.</p>
+              <a href="/dashboard.html" style="color:#007bff;">Back to dashboard</a>
             </body>
             </html>
           `);
@@ -615,9 +615,9 @@ app.get('/:profile/:slug', async (req, res, next) => {
           <div class="container">
             <h1>404</h1>
             <h2>Page non trouvée</h2>
-            <p>La page que vous recherchez n'existe pas ou a été supprimée.</p>
+            <p>The page you are looking for does not exist or has been deleted.</p>
             <div class="path">/${profile}/${slug}</div>
-            <a href="/telegramsubscription.html">← Retour aux pages</a>
+            <a href="/telegramsubscription.html">← Back to pages</a>
           </div>
         </body>
         </html>
@@ -713,7 +713,7 @@ app.use((req, res) => {
       <h1>404 - Page non trouvée</h1>
       <p>La ressource demandée n'existe pas.</p>
       <p style="color:#999;">${req.path}</p>
-      <a href="/dashboard.html">Retour au dashboard</a>
+      <a href="/dashboard.html">Back to dashboard</a>
     </body>
     </html>
   `);
@@ -756,3 +756,5 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
+

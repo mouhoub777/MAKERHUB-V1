@@ -1,7 +1,16 @@
-// telegramsubscription.js - Telegram Pages Management with Firebase
+﻿// telegramsubscription.js - Telegram Pages Management with Firebase
 // COMPLETE VERSION WITH CURRENCY BUTTON - v2.4 CSP COMPATIBLE
 // NO INLINE EVENT HANDLERS (onclick, onload, onerror) - ALL addEventListener
 console.log('MAKERHUB Telegram Pages Manager initialized');
+
+// ============== PAGE LOADER ==============
+function hidePageLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader && !loader.classList.contains('hidden')) {
+        loader.classList.add('hidden');
+    }
+}
+// =========================================
 
 // Global variables
 let selectedLanguage = 'en';
@@ -335,16 +344,16 @@ function checkConnectionStatus() {
     
     if (connected === 'true') {
         if (activated === 'true') {
-            showToast('Canal Telegram connecte et page ACTIVEE avec succes!', 'success');
+            showToast('Telegram channel connected and page ACTIVATED successfully!', 'success');
         } else {
-            showToast('Canal Telegram connecte avec succes!', 'success');
+            showToast('Telegram channel connected successfully!', 'success');
         }
         shouldCleanUrl = true;
     }
     
     const newPage = urlParams.get('new');
     if (newPage === 'true') {
-        showToast('Page creee avec succes! (Veuillez connecter votre canal Telegram)', 'info');
+        showToast('Page created successfully! (Please connect your Telegram channel)', 'info');
         shouldCleanUrl = true;
     }
     
@@ -406,6 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     loadPages();
                 } else {
                     console.log('User not authenticated, redirecting to login...');
+                    hidePageLoader(); // Hide loader before redirect
                     window.location.href = '/auth.html';
                 }
             });
@@ -419,6 +429,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     initApp();
+    
+    // Fallback: hide loader after 3s max
+    setTimeout(hidePageLoader, 3000);
 });
 
 async function loadPages() {
@@ -437,6 +450,7 @@ async function loadPages() {
         if (!auth || !db) {
             console.error('Firebase services not available');
             showEmptyState();
+            hidePageLoader(); // HIDE LOADER
             return;
         }
         
@@ -444,6 +458,7 @@ async function loadPages() {
         if (!user) {
             console.log('User not connected');
             showEmptyState();
+            hidePageLoader(); // HIDE LOADER
             return;
         }
         
@@ -597,6 +612,7 @@ async function loadPages() {
         isLoading = false;
         console.log('Loading complete');
         hideLoadingState();
+        hidePageLoader(); // HIDE LOADER - data loaded!
     }
 }
 
@@ -928,7 +944,7 @@ async function triggerTranslationIfNeeded(pageId, targetLangs) {
             slogan: page.slogan || '',
             description: page.description || '',
             banner: page.banner || '',
-            buttonText: page.buttonText || 'Rejoindre'
+            buttonText: page.buttonText || 'Join'
         };
         
         const missing = targetLangs.filter(function(lang) {
@@ -1036,7 +1052,7 @@ async function sharePageLink(pageId, slug, profileName) {
         const pageDoc = await db.collection('landingPages').doc(pageId).get();
         
         if (!pageDoc.exists) {
-            showToast('Page introuvable', 'error');
+            showToast('Page not found', 'error');
             return;
         }
         
@@ -1154,10 +1170,6 @@ function selectLanguage(code) {
     const selectedOpt = document.querySelector('[data-language="' + code + '"]');
     if (selectedOpt) selectedOpt.classList.add('selected');
     
-    const lang = languages.find(function(l) { return l.code === code; });
-    const selectedName = document.getElementById('selectedLanguageName');
-    if (selectedName && lang) selectedName.textContent = lang.name;
-    
     const confirmBtn = document.getElementById('confirmLanguageBtn');
     if (confirmBtn) confirmBtn.disabled = false;
 }
@@ -1260,10 +1272,6 @@ function selectCurrency(code) {
     const selectedOpt = document.querySelector('[data-currency="' + code + '"]');
     if (selectedOpt) selectedOpt.classList.add('selected');
     
-    const curr = currencies.find(function(c) { return c.code === code; });
-    const selectedName = document.getElementById('selectedCurrencyName');
-    if (selectedName && curr) selectedName.textContent = curr.name;
-    
     const confirmBtn = document.getElementById('confirmCurrencyBtn');
     if (confirmBtn) confirmBtn.disabled = false;
 }
@@ -1279,8 +1287,8 @@ function clearCurrencySearch() {
 // Language Update Modal (Existing Page)
 function openLanguageUpdateModal(pageId) {
     if (!pageId) {
-        console.error('Page ID manquant');
-        showToast('Erreur: ID de page manquant', 'error');
+        console.error('Page ID missing');
+        showToast('Error: Missing page ID', 'error');
         return;
     }
     
@@ -1372,17 +1380,13 @@ function selectUpdateLanguage(code) {
     const selectedOpt = document.querySelector('[data-update-language="' + code + '"]');
     if (selectedOpt) selectedOpt.classList.add('selected');
     
-    const lang = languages.find(function(l) { return l.code === code; });
-    const selectedName = document.getElementById('selectedPageLanguageName');
-    if (selectedName && lang) selectedName.textContent = lang.name;
-    
     const confirmBtn = document.getElementById('confirmPageLanguageBtn');
     if (confirmBtn) confirmBtn.disabled = false;
 }
 
 async function applyLanguageUpdate() {
     if (!currentPageIdForLanguageUpdate || !selectedUpdateLanguage) {
-        showToast('Erreur: donnees manquantes', 'error');
+        showToast('Error: Missing data', 'error');
         return;
     }
     
@@ -1437,8 +1441,8 @@ function clearLanguageUpdateSearch() {
 // Currency Update Modal (Existing Page)
 function openCurrencyUpdateModal(pageId) {
     if (!pageId) {
-        console.error('Page ID manquant');
-        showToast('Erreur: ID de page manquant', 'error');
+        console.error('Page ID missing');
+        showToast('Error: Missing page ID', 'error');
         return;
     }
     
@@ -1452,12 +1456,6 @@ function openCurrencyUpdateModal(pageId) {
         modal.classList.add('show');
         modal.setAttribute('aria-hidden', 'false');
         populateUpdateCurrencies();
-        
-        const currInfo = currencies.find(function(c) { return c.code === selectedUpdateCurrency; });
-        const selectedName = document.getElementById('selectedPageCurrencyName');
-        if (selectedName && currInfo) {
-            selectedName.textContent = currInfo.symbol + ' ' + currInfo.code;
-        }
     }
 }
 
@@ -1531,17 +1529,13 @@ function selectUpdateCurrency(code) {
     const selectedOpt = document.querySelector('[data-update-currency="' + code + '"]');
     if (selectedOpt) selectedOpt.classList.add('selected');
     
-    const curr = currencies.find(function(c) { return c.code === code; });
-    const selectedName = document.getElementById('selectedPageCurrencyName');
-    if (selectedName && curr) selectedName.textContent = curr.symbol + ' ' + curr.code;
-    
     const confirmBtn = document.getElementById('confirmPageCurrencyBtn');
     if (confirmBtn) confirmBtn.disabled = false;
 }
 
 async function applyCurrencyUpdate() {
     if (!currentPageIdForCurrencyUpdate || !selectedUpdateCurrency) {
-        showToast('Error: missing data', 'error');
+        showToast('Error: Missing data', 'error');
         return;
     }
     

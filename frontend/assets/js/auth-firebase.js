@@ -1,4 +1,4 @@
-// auth-firebase.js - Version corrigée avec meilleure gestion des erreurs
+﻿// auth-firebase.js - Version corrigée avec meilleure gestion des erreurs
 const AuthApp = (function() {
     'use strict';
     
@@ -233,13 +233,13 @@ const AuthApp = (function() {
                                 : firebase.auth.Auth.Persistence.SESSION;
                             
                             auth.setPersistence(persistence).then(() => {
-                                // Redirect to createLanding with profile name
-                                window.location.href = `createLanding.html?profile=${profileName}`;
+                                // ✅ MODIFIÉ: Redirect to dashboard
+                                window.location.href = 'dashboard.html';
                             });
                         }
                     } catch (error) {
                         console.error('Error getting user data:', error);
-                        window.location.href = 'createLanding.html';
+                        window.location.href = 'dashboard.html';
                     }
                 }
             });
@@ -904,10 +904,13 @@ const AuthApp = (function() {
                     elements.signupSuccess.style.display = 'block';
                 }
                 
-                // Redirect after success to createLanding
+                // ✅ Redirect après signup: createLanding si flag, sinon dashboard
                 setTimeout(() => {
-                    const profileName = localStorage.getItem('makerhub_profile_name') || result.user.displayName || '';
-                    window.location.href = 'createLanding.html';
+                    if (window.redirectToCreateLanding) {
+                        window.location.href = '/createLanding.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
                 }, 2000);
             } else {
                 if (elements.signupError) {
@@ -958,10 +961,9 @@ const AuthApp = (function() {
                     elements.loginSuccess.style.display = 'block';
                 }
                 
-                // Redirect after success to createLanding (for development)
+                // ✅ MODIFIÉ: Redirect after success to DASHBOARD
                 setTimeout(() => {
-                    const profileName = localStorage.getItem('makerhub_profile_name') || '';
-                    window.location.href = `createLanding.html?profile=${profileName}`;
+                    window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
                 if (elements.loginError) {
@@ -1021,14 +1023,19 @@ const AuthApp = (function() {
                 return;
             }
             
-            // Pre-fill the profile name in signup modal
-            if (elements.profileName) {
-                elements.profileName.value = profileValue;
-                // Trigger validation
-                formHandlers.handleProfileInput();
-            }
-            
+            // Show modal first
             modal.show('signup');
+            
+            // Then pre-fill the profile name (after resetForms has been called)
+            setTimeout(() => {
+                const profileField = document.getElementById('profileName');
+                if (profileField) {
+                    profileField.value = profileValue;
+                    console.log('Profile name set to:', profileValue);
+                    // Trigger validation
+                    formHandlers.handleProfileInput();
+                }
+            }, 200);
         }
     };
 
@@ -1191,6 +1198,11 @@ const AuthApp = (function() {
         // Back to login from forgot
         if (elements.showLoginFromForgot) {
             elements.showLoginFromForgot.addEventListener('click', () => modal.show('login'));
+        }
+        
+        // ✅ AJOUTÉ: Show signup from login
+        if (elements.showSignupFromLogin) {
+            elements.showSignupFromLogin.addEventListener('click', () => modal.show('signup'));
         }
         
         // Carousel buttons

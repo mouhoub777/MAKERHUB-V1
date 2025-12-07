@@ -1,4 +1,4 @@
-// backend/routes/stripeRoutes.js - Routes Stripe avec chemins corrigés
+﻿// backend/routes/stripeRoutes.js - Routes Stripe avec chemins corrigés
 const express = require('express');
 // CHEMINS CORRIGÉS: depuis backend/routes/, le config est dans ../../config/
 const { stripe } = require('../../config/stripe');
@@ -25,8 +25,8 @@ const validateStripeData = (req, res, next) => {
   try {
     const { amount, currency, metadata } = req.body;
     
-    // Validation basique
-    if (amount && (typeof amount !== 'number' || amount < 50)) {
+    // ✅ CORRIGÉ: Validation minimum 0.50€ (était 50 par erreur)
+    if (amount && (typeof amount !== 'number' || amount < 0.50)) {
       return res.status(400).json({
         success: false,
         message: 'Montant invalide (minimum 0.50€)',
@@ -140,7 +140,7 @@ router.post('/create-payment-intent', validateStripeData, async (req, res) => {
     });
 
     // Gestion des erreurs Stripe spécifiques
-    let message = 'Erreur lors de la création du paiement';
+    let message = 'Error during de la création du paiement';
     let errorCode = 'payment_creation_failed';
 
     if (error.type === 'StripeCardError') {
@@ -229,7 +229,7 @@ router.post('/confirm-payment', async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la confirmation du paiement',
+      message: 'Error during de la confirmation du paiement',
       error: 'payment_confirmation_failed',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
@@ -285,7 +285,7 @@ router.get('/payment/:id', async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la récupération du paiement',
+      message: 'Error during de la récupération du paiement',
       error: 'payment_retrieval_failed',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
@@ -344,7 +344,7 @@ router.post('/webhooks', express.raw({ type: 'application/json' }), async (req, 
     console.error('❌ Erreur traitement webhook Stripe:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors du traitement du webhook',
+      message: 'Error during du traitement du webhook',
       error: 'webhook_processing_failed'
     });
   }
@@ -353,7 +353,7 @@ router.post('/webhooks', express.raw({ type: 'application/json' }), async (req, 
 // Fonctions de gestion des événements webhooks
 async function handlePaymentSucceeded(paymentIntent) {
   try {
-    console.log('✅ Paiement réussi:', paymentIntent.id);
+    console.log('✅ Payment successful:', paymentIntent.id);
     
     const db = getDatabase();
     if (!db) return;
@@ -376,7 +376,7 @@ async function handlePaymentSucceeded(paymentIntent) {
     // - etc.
 
   } catch (error) {
-    console.error('❌ Erreur traitement paiement réussi:', error);
+    console.error('❌ Erreur traitement Payment successful:', error);
   }
 }
 
@@ -523,7 +523,7 @@ console.log(`
    GET    /api/stripe/health                 - Health check
 
 🔔 Événements Webhooks Gérés:
-   - payment_intent.succeeded    - Paiement réussi
+   - payment_intent.succeeded    - Payment successful
    - payment_intent.payment_failed - Paiement échoué
    - payment_intent.canceled     - Paiement annulé
    - charge.dispute.created      - Litige créé

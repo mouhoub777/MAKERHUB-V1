@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MAKERHUB - Privacy Policy">
+    <title>Privacy Policy - MAKERHUB</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- External Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0a0a;
+            font-size: 1.2rem;
+        }
+        
+        .logo-text .brand {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .logo-text .lynk {
+            color: #FFD700;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .back-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .legal-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .legal-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .legal-header h1 {
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+        }
+        
+        .legal-header .update-date {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        
+        .legal-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+        }
+        
+        .legal-content h2 {
+            color: #FFD700;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .legal-content h2:first-child {
+            margin-top: 0;
+        }
+        
+        .legal-content h3 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        .legal-content p {
+            margin-bottom: 1rem;
+            color: #c0c0c0;
+        }
+        
+        .legal-content ul {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #c0c0c0;
+        }
+        
+        .legal-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .legal-content a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+        
+        .legal-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .company-info {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .company-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .data-table th {
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+        }
+        
+        .data-table td {
+            color: #c0c0c0;
+        }
+        
+        .footer {
+            background: #0a0a0a;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .legal-container {
+                padding: 2rem 1rem;
+            }
+            
+            .legal-content {
+                padding: 1.5rem;
+            }
+            
+            .legal-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .data-table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">MAKER</span><span class="lynk">HUB</span>
+                </div>
+            </a>
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="legal-container">
+        <div class="legal-header">
+            <h1>Privacy Policy</h1>
+            <p class="update-date">Last updated: December 6, 2025</p>
+        </div>
+        
+        <div class="legal-content">
+            <p>MOUB MARKETING S.R.L. ("we", "us", "our") is committed to protecting your personal data. This Privacy Policy explains what data we collect, how we use it, and what your rights are in accordance with the General Data Protection Regulation (GDPR).</p>
+            
+            <h2>1. Data Controller</h2>
+            
+            <div class="company-info">
+                <p><strong>Company Name:</strong> MOUB MARKETING S.R.L.</p>
+                <p><strong>Registration Number (CUI):</strong> 47903005</p>
+                <p><strong>Address:</strong> Strada Lujerului, Nr. 1, Bloc 100, Scara A, Etaj 2, Ap. 8, Sectorul 6, București, Romania</p>
+                <p><strong>Email:</strong> <a href="mailto:live@makerhub.pro">live@makerhub.pro</a></p>
+            </div>
+            
+            <h2>2. Data We Collect</h2>
+            
+            <h3>2.1 Information You Provide</h3>
+            <ul>
+                <li><strong>Account information:</strong> Email address, profile name, password (encrypted)</li>
+                <li><strong>Profile data:</strong> Display name, profile picture, bio</li>
+                <li><strong>Payment information:</strong> Processed securely by Stripe (we do not store card details)</li>
+                <li><strong>Telegram data:</strong> Channel information, subscriber data when you connect your channels</li>
+                <li><strong>Content:</strong> Landing pages, email campaigns, and other content you create</li>
+            </ul>
+            
+            <h3>2.2 Information Collected Automatically</h3>
+            <ul>
+                <li><strong>Device information:</strong> IP address, browser type, operating system</li>
+                <li><strong>Usage data:</strong> Pages visited, features used, time spent on platform</li>
+                <li><strong>Cookies:</strong> Session cookies, analytics cookies (see Section 8)</li>
+            </ul>
+            
+            <h2>3. How We Use Your Data</h2>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Purpose</th>
+                        <th>Legal Basis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Provide and maintain our services</td>
+                        <td>Contract performance</td>
+                    </tr>
+                    <tr>
+                        <td>Process payments and commissions</td>
+                        <td>Contract performance</td>
+                    </tr>
+                    <tr>
+                        <td>Send service notifications</td>
+                        <td>Legitimate interest</td>
+                    </tr>
+                    <tr>
+                        <td>Improve our platform</td>
+                        <td>Legitimate interest</td>
+                    </tr>
+                    <tr>
+                        <td>Analytics and statistics</td>
+                        <td>Consent</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing communications</td>
+                        <td>Consent</td>
+                    </tr>
+                    <tr>
+                        <td>Legal compliance</td>
+                        <td>Legal obligation</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>4. Data Sharing</h2>
+            
+            <p>We do not sell your personal data. We may share your data with:</p>
+            
+            <ul>
+                <li><strong>Stripe:</strong> For payment processing</li>
+                <li><strong>Firebase (Google):</strong> For authentication and database services</li>
+                <li><strong>DigitalOcean:</strong> For hosting services</li>
+                <li><strong>Telegram:</strong> When you connect your channels</li>
+                <li><strong>Email providers:</strong> For sending transactional emails</li>
+                <li><strong>Legal authorities:</strong> When required by law</li>
+            </ul>
+            
+            <h2>5. Data Retention</h2>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Retention Period</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Account data</td>
+                        <td>Until account deletion + 30 days</td>
+                    </tr>
+                    <tr>
+                        <td>Payment records</td>
+                        <td>7 years (legal requirement)</td>
+                    </tr>
+                    <tr>
+                        <td>Usage logs</td>
+                        <td>13 months</td>
+                    </tr>
+                    <tr>
+                        <td>Analytics data</td>
+                        <td>26 months</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing preferences</td>
+                        <td>Until consent withdrawal</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>6. Your Rights</h2>
+            
+            <p>Under the GDPR, you have the following rights:</p>
+            
+            <ul>
+                <li><strong>Right of access:</strong> Request a copy of your personal data</li>
+                <li><strong>Right to rectification:</strong> Correct inaccurate or incomplete data</li>
+                <li><strong>Right to erasure:</strong> Request deletion of your data ("right to be forgotten")</li>
+                <li><strong>Right to restriction:</strong> Limit how we process your data</li>
+                <li><strong>Right to portability:</strong> Receive your data in a portable format</li>
+                <li><strong>Right to object:</strong> Object to certain types of processing</li>
+                <li><strong>Right to withdraw consent:</strong> Withdraw consent at any time</li>
+            </ul>
+            
+            <p>To exercise these rights, contact us at: <a href="mailto:live@makerhub.pro">live@makerhub.pro</a></p>
+            
+            <p>You also have the right to file a complaint with a supervisory authority (ANSPDCP in Romania or your local data protection authority).</p>
+            
+            <h2>7. Data Security</h2>
+            
+            <p>We implement appropriate technical and organizational measures to protect your data, including:</p>
+            
+            <ul>
+                <li>SSL/TLS encryption for all data in transit</li>
+                <li>Encrypted password storage</li>
+                <li>Regular security audits</li>
+                <li>Access controls and authentication</li>
+                <li>Secure cloud infrastructure</li>
+            </ul>
+            
+            <h2>8. Cookies</h2>
+            
+            <p>We use the following types of cookies:</p>
+            
+            <ul>
+                <li><strong>Essential cookies:</strong> Required for the platform to function (authentication, security)</li>
+                <li><strong>Analytics cookies:</strong> Help us understand how you use our platform</li>
+                <li><strong>Preference cookies:</strong> Remember your settings and preferences</li>
+            </ul>
+            
+            <p>You can manage cookie preferences through your browser settings.</p>
+            
+            <h2>9. International Data Transfers</h2>
+            
+            <p>Some of our service providers may transfer data outside the European Economic Area (EEA). These transfers are protected by:</p>
+            
+            <ul>
+                <li>Standard Contractual Clauses (SCCs)</li>
+                <li>Adequacy decisions by the European Commission</li>
+                <li>Other appropriate safeguards as required by GDPR</li>
+            </ul>
+            
+            <h2>10. Children's Privacy</h2>
+            
+            <p>Our services are not intended for individuals under 18 years of age. We do not knowingly collect personal data from children.</p>
+            
+            <h2>11. Changes to This Policy</h2>
+            
+            <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date. We encourage you to review this policy periodically.</p>
+            
+            <h2>12. Contact Us</h2>
+            
+            <p>For any questions about this Privacy Policy or your personal data, please contact us:</p>
+            
+            <p>
+                <strong>Email:</strong> <a href="mailto:live@makerhub.pro">live@makerhub.pro</a><br>
+                <strong>Telegram:</strong> <a href="https://t.me/Makerhub" target="_blank" rel="noopener">@Makerhub</a><br>
+                <strong>Address:</strong> Strada Lujerului, Nr. 1, Bloc 100, Scara A, Etaj 2, Ap. 8, Sectorul 6, București, Romania
+            </p>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2025 MAKERHUB. All rights reserved.</p>
+    </footer>
+</body>
+</html>

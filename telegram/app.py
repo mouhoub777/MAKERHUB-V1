@@ -1,4 +1,4 @@
-import os
+﻿import os
 import logging
 import asyncio
 import re
@@ -74,7 +74,7 @@ async def get_telegram_channel_id(link):
             entity = await client.get_entity(link)
             return entity.id
         except Exception as e:
-            logger.error(f"Erreur récupération ID canal: {e}")
+            logger.error(f"Error retrieving channel ID: {e}")
             return None
 
 def fetch_telegram_channel_id(link):
@@ -100,7 +100,7 @@ def check_bot_is_admin(channel_link):
                             return True
                 return False
             except Exception as e:
-                logger.error(f"Erreur vérification admin: {e}")
+                logger.error(f"Admin verification error: {e}")
                 return False
     return asyncio.run(check_admin())
 
@@ -115,13 +115,13 @@ def api_get_channel_id():
         channel_link = data.get("channel_link")
         
         if not channel_link:
-            return jsonify({"error": "Lien du canal requis"}), 400
+            return jsonify({"error": "Channel link required"}), 400
         
-        logger.info(f"Récupération ID pour: {channel_link}")
+        logger.info(f"Retrieving ID for: {channel_link}")
         channel_id = fetch_telegram_channel_id(channel_link)
         
         if not channel_id:
-            return jsonify({"error": "Impossible de récupérer l'ID du canal."}), 400
+            return jsonify({"error": "Unable to retrieve channel ID."}), 400
         
         if channel_id > 0:
             channel_id = f"-100{channel_id}"
@@ -133,7 +133,7 @@ def api_get_channel_id():
         }), 200
         
     except Exception as e:
-        logger.error(f"Erreur get_channel_id: {e}")
+        logger.error(f"get_channel_id error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/telegram/check-bot-admin", methods=["POST"])
@@ -143,7 +143,7 @@ def api_check_bot_admin():
         channel_link = data.get("channel_link")
         
         if not channel_link:
-            return jsonify({"error": "Lien du canal requis"}), 400
+            return jsonify({"error": "Channel link required"}), 400
         
         is_admin = check_bot_is_admin(channel_link)
         
@@ -154,7 +154,7 @@ def api_check_bot_admin():
         }), 200
         
     except Exception as e:
-        logger.error(f"Erreur check_bot_admin: {e}")
+        logger.error(f"check_bot_admin error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/telegram/save-connection", methods=["POST"])
@@ -168,7 +168,7 @@ def api_save_telegram_connection():
         bot_verified = data.get("bot_verified", False)
         
         if not all([page_id, channel_id, channel_link]):
-            return jsonify({"error": "Données manquantes"}), 400
+            return jsonify({"error": "Missing data"}), 400
         
         doc_ref = db.collection("telegram_connections").document(page_id)
         doc_ref.set({
@@ -182,15 +182,15 @@ def api_save_telegram_connection():
             "botUsername": bot_username
         })
         
-        logger.info(f"✅ Connexion Telegram sauvegardée pour page {page_id}")
+        logger.info(f"✅ Telegram connection saved for page {page_id}")
         
         return jsonify({
             "success": True,
-            "message": "Connexion sauvegardée"
+            "message": "Connection saved"
         }), 200
         
     except Exception as e:
-        logger.error(f"Erreur save_telegram_connection: {e}")
+        logger.error(f"save_telegram_connection error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/telegram/create-invite-link", methods=["POST"])
@@ -203,7 +203,7 @@ def api_create_invite_link():
         member_limit = data.get("member_limit", 1)
         
         if not channel_id:
-            return jsonify({"error": "channel_id requis"}), 400
+            return jsonify({"error": "channel_id required"}), 400
         
         async def create_link():
             bot = Bot(token=bot_token)
@@ -219,10 +219,10 @@ def api_create_invite_link():
                 await bot.send_message(
                     chat_id=int(user_telegram_id),
                     text=(
-                        "🎉 **Accès au canal approuvé!**\n\n"
-                        f"Voici votre lien d'accès (valable {expire_hours}h):\n"
+                        "🎉 **Channel access approved\!**\n\n"
+                        f"Here is your access link (valid for {expire_hours}h):\n"
                         f"{invite_link.invite_link}\n\n"
-                        "⚠️ Ce lien est à usage unique."
+                        "⚠️ This link is for single use only."
                     ),
                     parse_mode="Markdown"
                 )
@@ -238,7 +238,7 @@ def api_create_invite_link():
         }), 200
         
     except Exception as e:
-        logger.error(f"Erreur create_invite_link: {e}")
+        logger.error(f"create_invite_link error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/telegram/add-member", methods=["POST"])
@@ -250,11 +250,11 @@ def api_add_member():
         email = data.get("email")
         
         if not page_id or not telegram_user_id:
-            return jsonify({"error": "page_id et telegram_user_id requis"}), 400
+            return jsonify({"error": "page_id and telegram_user_id required"}), 400
         
         conn_doc = db.collection("telegram_connections").document(page_id).get()
         if not conn_doc.exists:
-            return jsonify({"error": "Connexion Telegram non trouvée"}), 404
+            return jsonify({"error": "Telegram connection not found"}), 404
         
         conn_data = conn_doc.to_dict()
         channel_id = conn_data.get("channelId") or conn_data.get("channel_id")
@@ -272,10 +272,10 @@ def api_add_member():
             await bot.send_message(
                 chat_id=int(telegram_user_id),
                 text=(
-                    "🎉 **Paiement confirmé!**\n\n"
-                    f"Voici votre lien d'accès (valable 24h):\n"
+                    "🎉 **Payment confirmed\!**\n\n"
+                    f"Here is your access link (valid for 24h):\n"
                     f"{invite_link.invite_link}\n\n"
-                    "⚠️ Ce lien est à usage unique."
+                    "⚠️ This link is for single use only."
                 ),
                 parse_mode="Markdown"
             )
@@ -299,7 +299,7 @@ def api_add_member():
         }), 200
         
     except Exception as e:
-        logger.error(f"Erreur add_member: {e}")
+        logger.error(f"add_member error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/telegram/remove-member", methods=["POST"])
@@ -310,11 +310,11 @@ def api_remove_member():
         telegram_user_id = data.get("telegram_user_id")
         
         if not page_id or not telegram_user_id:
-            return jsonify({"error": "page_id et telegram_user_id requis"}), 400
+            return jsonify({"error": "page_id and telegram_user_id required"}), 400
         
         conn_doc = db.collection("telegram_connections").document(page_id).get()
         if not conn_doc.exists:
-            return jsonify({"error": "Connexion Telegram non trouvée"}), 404
+            return jsonify({"error": "Telegram connection not found"}), 404
         
         conn_data = conn_doc.to_dict()
         channel_id = conn_data.get("channelId") or conn_data.get("channel_id")
@@ -331,10 +331,10 @@ def api_remove_member():
         for doc in members_query:
             doc.reference.update({"status": "removed", "removedAt": firestore.SERVER_TIMESTAMP})
         
-        return jsonify({"success": True, "message": "Membre retiré"}), 200
+        return jsonify({"success": True, "message": "Member removed"}), 200
         
     except Exception as e:
-        logger.error(f"Erreur remove_member: {e}")
+        logger.error(f"remove_member error: {e}")
         return jsonify({"error": str(e)}), 500
 
 # ========================================
@@ -370,8 +370,8 @@ def checkout_landing_page(page_id):
                 logger.info(f"✅ Page trouvée par ID: {page_id}")
         
         if not page_doc:
-            logger.error(f"❌ Page non trouvée: {page_id}")
-            return jsonify({"error": "Page non trouvée"}), 404
+            logger.error(f"❌ Page not found: {page_id}")
+            return jsonify({"error": "Page not found"}), 404
         
         page_data = page_doc.to_dict()
         logger.info(f"✅ Page chargée: {page_data.get('brand', page_id)}")
@@ -390,8 +390,8 @@ def checkout_landing_page(page_id):
             selected_price = prices[0]
         
         if not selected_price:
-            logger.error(f"❌ Aucun prix trouvé pour la page {page_id}")
-            return jsonify({"error": "Aucun prix configuré"}), 400
+            logger.error(f"❌ No price found for page {page_id}")
+            return jsonify({"error": "No price configured"}), 400
         
         # Récupérer le montant
         price_value = selected_price.get('price') or selected_price.get('amount', 0)
@@ -407,7 +407,7 @@ def checkout_landing_page(page_id):
         logger.info(f"💰 Prix: {amount/100} {currency}")
         
         if amount <= 0:
-            return jsonify({"error": "Montant invalide"}), 400
+            return jsonify({"error": "Invalid amount"}), 400
         
         # Récupérer le Stripe Account ID du créateur
         creator_id = page_data.get('creatorId') or page_data.get('userId')
@@ -422,7 +422,7 @@ def checkout_landing_page(page_id):
                 user_plan = user_data.get('plan', 'freemium').lower()
                 logger.info(f"💳 Stripe Account: {stripe_account_id}, Plan: {user_plan}")
         
-        # URLs de retour
+        # URLs de Back
         base_url = os.getenv('DOMAIN', 'http://localhost:3000')
         profile_name = page_data.get('profileName', '')
         slug = page_data.get('slug', page_id)
@@ -452,7 +452,7 @@ def checkout_landing_page(page_id):
         
         logger.info(f"📅 Récurrence: {interval} (période: {period})")
         
-        # Session Stripe Checkout - MODE ABONNEMENT
+        # Session Stripe Checkout - MODE Subscription
         session_params = {
             'payment_method_types': ['card'],
             'line_items': [{
@@ -460,7 +460,7 @@ def checkout_landing_page(page_id):
                     'currency': currency,
                     'unit_amount': amount,
                     'product_data': {
-                        'name': page_data.get('brand', 'Abonnement'),
+                        'name': page_data.get('brand', 'Subscription'),
                         'description': product_description
                     },
                     'recurring': {
@@ -511,10 +511,10 @@ def checkout_landing_page(page_id):
         return redirect(session.url)
         
     except stripe.error.StripeError as e:
-        logger.error(f"❌ Erreur Stripe: {e}")
-        return jsonify({"error": f"Erreur Stripe: {str(e)}"}), 500
+        logger.error(f"❌ Stripe error: {e}")
+        return jsonify({"error": f"Stripe error: {str(e)}"}), 500
     except Exception as e:
-        logger.error(f"❌ Erreur checkout: {e}")
+        logger.error(f"❌ Checkout error: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
@@ -532,13 +532,13 @@ def stripe_webhook():
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except Exception as e:
-        logger.error(f"❌ Erreur webhook: {e}")
+        logger.error(f"❌ Webhook error: {e}")
         return Response(status=400)
     
-    logger.info(f"📥 Webhook reçu: {event['type']}")
+    logger.info(f"📥 Webhook received: {event['type']}")
     
     # ========================================
-    # NOUVEAU ABONNEMENT / PAIEMENT RÉUSSI
+    # NOUVEAU Subscription / PAIEMENT RÉUSSI
     # ========================================
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
@@ -551,7 +551,7 @@ def stripe_webhook():
         creator_id = metadata.get('creator_id')
         telegram_user_id = metadata.get('telegram_user_id')
         
-        logger.info(f"💰 Abonnement: {amount_total}€, Email: {customer_email}, Sub: {subscription_id}")
+        logger.info(f"💰 Subscription: {amount_total}€, Email: {customer_email}, Sub: {subscription_id}")
         
         # Sauvegarder avec camelCase
         db.collection('sales').add({
@@ -568,7 +568,7 @@ def stripe_webhook():
             'type': 'subscription'
         })
         
-        logger.info(f"✅ Vente enregistrée dans Firebase (sales)")
+        logger.info(f"✅ Sale recorded in Firebase (sales)")
         
         # Collecter l'email
         if customer_email:
@@ -581,10 +581,10 @@ def stripe_webhook():
                 'source': 'Stripe Checkout',
                 'createdAt': firestore.SERVER_TIMESTAMP
             })
-            logger.info(f"✅ Email collecté: {customer_email}")
+            logger.info(f"✅ Email collected: {customer_email}")
     
     # ========================================
-    # ABONNEMENT ANNULÉ → KICK MEMBRE
+    # Subscription ANNULÉ → KICK MEMBRE
     # ========================================
     elif event['type'] == 'customer.subscription.deleted':
         subscription = event['data']['object']
@@ -596,7 +596,7 @@ def stripe_webhook():
         cancellation_details = subscription.get('cancellation_details', {})
         cancellation_reason = cancellation_details.get('reason', 'unknown') if cancellation_details else 'unknown'
         
-        logger.info(f"❌ Abonnement annulé: {subscription_id}, Raison: {cancellation_reason}")
+        logger.info(f"❌ Subscription cancelled: {subscription_id}, Raison: {cancellation_reason}")
         
         # Trouver le membre
         members = db.collection('telegram_members').where('stripeSubscriptionId', '==', subscription_id).get()
@@ -610,7 +610,7 @@ def stripe_webhook():
             telegram_user_id = member_data.get('telegramUserId')
             email = member_data.get('email')
             
-            logger.info(f"🔴 Kick membre: {email} du canal {channel_id}")
+            logger.info(f"🔴 Kick member: {email} du canal {channel_id}")
             
             if channel_id and telegram_user_id:
                 try:
@@ -619,9 +619,9 @@ def stripe_webhook():
                             await client.kick_participant(int(channel_id), int(telegram_user_id))
                     
                     asyncio.run(kick_member())
-                    logger.info(f"✅ Membre kické: {telegram_user_id}")
+                    logger.info(f"✅ Member kicked: {telegram_user_id}")
                 except Exception as e:
-                    logger.error(f"❌ Erreur kick: {e}")
+                    logger.error(f"❌ Kick error: {e}")
             
             member_doc.reference.update({
                 'status': 'removed',
@@ -644,7 +644,7 @@ def stripe_webhook():
         customer_email = invoice.get('customer_email')
         attempt_count = invoice.get('attempt_count', 1)
         
-        logger.warning(f"⚠️ Paiement échoué (tentative {attempt_count}): {customer_email}, Sub: {subscription_id}")
+        logger.warning(f"⚠️ Payment failed (attempt {attempt_count}): {customer_email}, Sub: {subscription_id}")
         
         members = db.collection('telegram_members').where('stripeSubscriptionId', '==', subscription_id).get()
         
@@ -660,7 +660,7 @@ def stripe_webhook():
             
             member_doc.reference.update(update_data)
         
-        logger.info(f"⏳ Client {customer_email} en période de grâce")
+        logger.info(f"⏳ Client in grace period")
     
     # ========================================
     # RENOUVELLEMENT RÉUSSI
@@ -672,7 +672,7 @@ def stripe_webhook():
         customer_email = invoice.get('customer_email')
         
         if subscription_id:
-            logger.info(f"✅ Renouvellement réussi: {customer_email}, {amount}€")
+            logger.info(f"✅ Renewal successful: {customer_email}, {amount}€")
             
             members = db.collection('telegram_members').where('stripeSubscriptionId', '==', subscription_id).get()
             for member_doc in members:
@@ -711,13 +711,13 @@ def success_page():
             'error_support': 'If you have paid, contact support with your email.'
         },
         'fr': {
-            'title': 'Paiement réussi !',
+            'title': 'Payment Successful\!',
             'subtitle': 'Cliquez sur le bouton ci-dessous pour rejoindre le canal.',
             'button': 'Rejoindre le canal',
-            'warning': 'Ce lien est à usage unique.',
+            'warning': 'This link is for single use only.',
             'error_title': 'Oups !',
-            'error_back': 'Retour',
-            'error_support': 'Si vous avez payé, contactez le support avec votre email.'
+            'error_back': 'Back',
+            'error_support': 'If you have paid, contact support with your email.'
         },
         'es': {
             'title': '¡Pago exitoso!',
@@ -840,7 +840,7 @@ def success_page():
                 if not customer_email and hasattr(session, 'customer_details') and session.customer_details:
                     customer_email = getattr(session.customer_details, 'email', None)
                 
-                logger.info(f"✅ Paiement vérifié pour session {session_id}, page_id: {page_id}, email: {customer_email}, lang: {lang}")
+                logger.info(f"✅ Payment verified for session {session_id}, page_id: {page_id}, email: {customer_email}, lang: {lang}")
                 
                 # Vérifier si un lien existe déjà
                 existing = db.collection("telegram_members").where("stripeSessionId", "==", session_id).limit(1).get()
@@ -848,7 +848,7 @@ def success_page():
                 if existing:
                     member_data = existing[0].to_dict()  # ✅ CORRIGÉ
                     invite_link = member_data.get("inviteLink")
-                    logger.info(f"🔗 Lien existant récupéré: {invite_link}")
+                    logger.info(f"🔗 Existing link retrieved: {invite_link}")
                     
                 elif page_id:
                     channel_id = None
@@ -871,18 +871,18 @@ def success_page():
                             page_lang = page_data.get('language', 'en')
                             t = translations.get(page_lang, translations['en'])
                         
-                        logger.info(f"📄 Page trouvée, telegram data: {telegram_data}")
+                        logger.info(f"📄 Page found, telegram data: {telegram_data}")
                         
                         # Récupérer le channel_id
                         conn_doc = db.collection("telegram_connections").document(page_id).get()
                         if conn_doc.exists:
                             conn_data = conn_doc.to_dict()  # ✅ CORRIGÉ
                             channel_id = conn_data.get("channelId") or conn_data.get("channel_id")
-                            logger.info(f"📱 Channel ID depuis telegram_connections: {channel_id}")
+                            logger.info(f"📱 Channel ID from telegram_connections: {channel_id}")
                         
                         if not channel_id and telegram_data.get('isConnected'):
                             channel_id = telegram_data.get('channelId')
-                            logger.info(f"📱 Channel ID depuis landing page: {channel_id}")
+                            logger.info(f"📱 Channel ID from landing page: {channel_id}")
                         
                         if not channel_id and telegram_data.get('isConnected'):
                             channel_link = telegram_data.get('channelLink', '')
@@ -901,9 +901,9 @@ def success_page():
                                         channel_id = str(raw_channel_id)
                                     logger.info(f"📱 Channel ID via Telethon: {channel_id}")
                                 except Exception as e:
-                                    logger.error(f"❌ Erreur Telethon: {e}")
+                                    logger.error(f"❌ Telethon error: {e}")
                         
-                        logger.info(f"🔍 État final - channel_id: {channel_id}")
+                        logger.info(f"🔍 Final state - channel_id: {channel_id}")
                     
                     # Créer le lien d'invitation
                     if channel_id:
@@ -918,7 +918,7 @@ def success_page():
                             
                             link_obj = asyncio.run(create_link())
                             invite_link = link_obj.invite_link
-                            logger.info(f"✅ Lien créé: {invite_link}")
+                            logger.info(f"✅ Link created: {invite_link}")
                             
                             subscription_id = session.subscription if hasattr(session, 'subscription') else None
                             customer_id = session.customer if hasattr(session, 'customer') else None
@@ -944,15 +944,15 @@ def success_page():
                                     "source": "Stripe Checkout",
                                     "createdAt": firestore.SERVER_TIMESTAMP
                                 })
-                                logger.info(f"📧 Email collecté: {customer_email}")
+                                logger.info(f"📧 Email collected: {customer_email}")
                                 
                         except Exception as e:
-                            logger.error(f"❌ Erreur création lien: {e}")
+                            logger.error(f"❌ Link creation error: {e}")
                             import traceback
                             traceback.print_exc()
                             error_message = t.get('error_support', "Error creating link. Contact support.")
                     else:
-                        logger.error(f"❌ Pas de channel_id trouvé pour page {page_id}")
+                        logger.error(f"❌ No channel_id found for page {page_id}")
                         error_message = "Telegram channel not configured for this page."
                 else:
                     error_message = "Page not found."
@@ -962,7 +962,7 @@ def success_page():
             error_message = "Session not found."
             
     except Exception as e:
-        logger.error(f"❌ Erreur page success: {e}")
+        logger.error(f"❌ Success page error: {e}")
         import traceback
         traceback.print_exc()
         error_message = t.get('error_support', "Error. Contact support.")
@@ -1083,7 +1083,7 @@ def cancel_page():
     return """
     <!DOCTYPE html>
     <html>
-    <head><title>Annulé - MAKERHUB</title>
+    <head><title>Cancelled - MAKERHUB</title>
     <style>
         body { font-family: 'Segoe UI', Arial; text-align: center; padding: 50px; background: #f5f5f5; }
         .container { background: white; padding: 40px; border-radius: 16px; max-width: 400px; margin: 0 auto; }
@@ -1093,9 +1093,9 @@ def cancel_page():
     </head>
     <body>
         <div class="container">
-            <h1>❌ Paiement annulé</h1>
-            <p>Votre paiement a été annulé.</p>
-            <p><a href="javascript:history.back()">← Retour</a></p>
+            <h1>❌ Payment cancelled</h1>
+            <p>Your payment has been cancelled.</p>
+            <p><a href="javascript:history.back()">← Back</a></p>
         </div>
     </body>
     </html>
@@ -1109,7 +1109,7 @@ if __name__ == "__main__":
     PORT = int(os.getenv('PYTHON_PORT', 5001))
     
     print("=" * 60)
-    print("🚀 MAKERHUB Python Service - Gestion Membres Telegram")
+    print("🚀 MAKERHUB Python Service - Telegram Members Management")
     print("=" * 60)
     print(f"   PORT: {PORT}")
     print(f"   DOMAIN: {os.getenv('DOMAIN', 'http://localhost:3000')}")
@@ -1135,3 +1135,8 @@ if __name__ == "__main__":
     print("=" * 60)
     
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
+
+
+
+

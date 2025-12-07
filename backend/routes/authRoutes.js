@@ -1,18 +1,18 @@
-// backend/routes/authRoutes.js - Routes d'authentification avec chemins corrigés
+﻿// backend/routes/authRoutes.js - Routes d'authentification avec chemins corrigÃ©s
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin'); // Ajout pour Firebase Admin
-// CHEMIN CORRIGÉ: depuis backend/routes/, le config est dans ../../config/
+// CHEMIN CORRIGÃ‰: depuis backend/routes/, le config est dans ../../config/
 const { getDatabase } = require('../../config/database');
 
 const router = express.Router();
 
 // Configuration JWT
-const JWT_SECRET = process.env.JWT_SECRET || 'votre-clé-secrète-ultra-sécurisée';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m'; // Durée courte pour JWT interne
+const JWT_SECRET = process.env.JWT_SECRET || 'votre-clÃ©-secrÃ¨te-ultra-sÃ©curisÃ©e';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m'; // DurÃ©e courte pour JWT interne
 
-// Fonction helper pour échapper HTML
+// Fonction helper pour Ã©chapper HTML
 const escapeHtml = (text) => {
   if (!text) return '';
   return text.toString()
@@ -57,7 +57,7 @@ const validatePassword = (req, res, next) => {
   if (password.length < 6) {
     return res.status(400).json({
       success: false,
-      message: 'Le mot de passe doit contenir au moins 6 caractères'
+      message: 'Le mot de passe doit contenir au moins 6 caractÃ¨res'
     });
   }
   
@@ -80,7 +80,7 @@ const authenticateToken = (req, res, next) => {
     if (err) {
       return res.status(403).json({ 
         success: false,
-        message: 'Token invalide ou expiré' 
+        message: 'Token invalide ou expirÃ©' 
       });
     }
     req.user = user;
@@ -88,7 +88,7 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// POST /api/auth/exchange - Échange Firebase token → JWT interne (NOUVELLE ROUTE)
+// POST /api/auth/exchange - Ã‰change Firebase token â†’ JWT interne (NOUVELLE ROUTE)
 router.post('/exchange', async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
@@ -102,14 +102,14 @@ router.post('/exchange', async (req, res) => {
 
     const firebaseToken = authHeader.split('Bearer ')[1];
     
-    console.log('🔄 Exchange Firebase → JWT requested');
+    console.log('ðŸ”„ Exchange Firebase â†’ JWT requested');
     
-    // Vérifier le token Firebase avec Firebase Admin SDK
+    // VÃ©rifier le token Firebase avec Firebase Admin SDK
     let decodedToken;
     try {
       decodedToken = await admin.auth().verifyIdToken(firebaseToken);
     } catch (firebaseError) {
-      console.error('❌ Firebase token verification failed:', firebaseError.message);
+      console.error('âŒ Firebase token verification failed:', firebaseError.message);
       return res.status(401).json({ 
         success: false,
         error: 'Invalid Firebase token',
@@ -117,15 +117,15 @@ router.post('/exchange', async (req, res) => {
       });
     }
     
-    // Récupérer les infos utilisateur depuis la base de données si nécessaire
+    // RÃ©cupÃ©rer les infos utilisateur depuis la base de donnÃ©es si nÃ©cessaire
     const db = getDatabase();
     let userData = {
       uid: decodedToken.uid,
       email: decodedToken.email || '',
-      role: 'user' // Par défaut
+      role: 'user' // Par dÃ©faut
     };
     
-    // Si l'email existe, récupérer le rôle et autres infos
+    // Si l'email existe, rÃ©cupÃ©rer le rÃ´le et autres infos
     if (decodedToken.email) {
       try {
         const userDoc = await db.collection('users').doc(decodedToken.email).get();
@@ -136,11 +136,11 @@ router.post('/exchange', async (req, res) => {
           userData.subscription = dbUser.subscription || 'free';
         }
       } catch (dbError) {
-        console.warn('⚠️ Could not fetch user data from database:', dbError.message);
+        console.warn('âš ï¸ Could not fetch user data from database:', dbError.message);
       }
     }
     
-    // Créer le JWT interne avec expiration courte
+    // CrÃ©er le JWT interne avec expiration courte
     const jwtToken = jwt.sign(
       { 
         uid: userData.uid,
@@ -153,7 +153,7 @@ router.post('/exchange', async (req, res) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
 
-    console.log('✅ JWT token issued for:', userData.email || userData.uid);
+    console.log('âœ… JWT token issued for:', userData.email || userData.uid);
 
     res.json({ 
       success: true,
@@ -168,7 +168,7 @@ router.post('/exchange', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('❌ Token exchange error:', error);
+    console.error('âŒ Token exchange error:', error);
     res.status(500).json({ 
       success: false,
       error: 'Internal server error',
@@ -185,20 +185,20 @@ router.post('/register', validateEmail, validatePassword, async (req, res) => {
   try {
     const { email, password, fullName } = req.body;
 
-    console.log('🚀 Création compte MAKERHUB.PRO:', { 
+    console.log('ðŸš€ CrÃ©ation compte MAKERHUB.PRO:', { 
       email: escapeHtml(email), 
-      fullName: escapeHtml(fullName || 'Non spécifié')
+      fullName: escapeHtml(fullName || 'Non spÃ©cifiÃ©')
     });
 
     const db = getDatabase();
     if (!db) {
       return res.status(503).json({
         success: false,
-        message: 'Service de base de données non disponible'
+        message: 'Service de base de donnÃ©es non disponible'
       });
     }
 
-    // Validation des données
+    // Validation des donnÃ©es
     if (!fullName || fullName.trim().length === 0) {
       return res.status(400).json({ 
         success: false, 
@@ -209,19 +209,19 @@ router.post('/register', validateEmail, validatePassword, async (req, res) => {
     const sanitizedEmail = escapeHtml(email.toLowerCase().trim());
     const sanitizedFullName = escapeHtml(fullName.trim());
 
-    // Vérifier si l'email existe déjà
+    // VÃ©rifier si l'email existe dÃ©jÃ 
     const emailQuery = await db.collection('users').where('email', '==', sanitizedEmail).get();
     if (!emailQuery.empty) {
       return res.status(400).json({ 
         success: false, 
-        message: 'Cet email est déjà enregistré' 
+        message: 'Cet email est dÃ©jÃ  enregistrÃ©' 
       });
     }
 
     // Hasher le mot de passe
-    const hashedPassword = await bcrypt.hash(password, 12); // Salt rounds augmenté pour plus de sécurité
+    const hashedPassword = await bcrypt.hash(password, 12); // Salt rounds augmentÃ© pour plus de sÃ©curitÃ©
 
-    // Créer le nouvel utilisateur
+    // CrÃ©er le nouvel utilisateur
     const userId = Date.now().toString();
     const newUser = {
       id: userId,
@@ -241,7 +241,7 @@ router.post('/register', validateEmail, validatePassword, async (req, res) => {
     // Sauvegarder dans Firebase
     await db.collection('users').doc(sanitizedEmail).set(newUser);
 
-    // Créer un token JWT
+    // CrÃ©er un token JWT
     const tokenPayload = { 
       id: newUser.id, 
       email: newUser.email, 
@@ -252,11 +252,11 @@ router.post('/register', validateEmail, validatePassword, async (req, res) => {
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '24h' }); // Token long pour l'inscription
 
     const processingTime = Date.now() - startTime;
-    console.log(`✅ Utilisateur MAKERHUB.PRO créé en ${processingTime}ms:`, newUser.email);
+    console.log(`âœ… Utilisateur MAKERHUB.PRO crÃ©Ã© en ${processingTime}ms:`, newUser.email);
 
     res.json({
       success: true,
-      message: 'Compte créé avec succès',
+      message: 'Compte crÃ©Ã© avec succÃ¨s',
       token,
       user: {
         id: newUser.id,
@@ -270,7 +270,7 @@ router.post('/register', validateEmail, validatePassword, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Erreur création compte:', {
+    console.error('âŒ Erreur crÃ©ation compte:', {
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString()
@@ -291,13 +291,13 @@ router.post('/login', validateEmail, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log('🔐 Connexion MAKERHUB.PRO:', escapeHtml(email));
+    console.log('ðŸ” Connexion MAKERHUB.PRO:', escapeHtml(email));
 
     const db = getDatabase();
     if (!db) {
       return res.status(503).json({
         success: false,
-        message: 'Service de base de données non disponible'
+        message: 'Service de base de donnÃ©es non disponible'
       });
     }
 
@@ -306,7 +306,7 @@ router.post('/login', validateEmail, async (req, res) => {
     // Trouver l'utilisateur
     const userDoc = await db.collection('users').doc(sanitizedEmail).get();
     if (!userDoc.exists) {
-      // Attendre un peu pour éviter les attaques de timing
+      // Attendre un peu pour Ã©viter les attaques de timing
       await new Promise(resolve => setTimeout(resolve, 200));
       return res.status(401).json({ 
         success: false, 
@@ -316,18 +316,18 @@ router.post('/login', validateEmail, async (req, res) => {
 
     const user = userDoc.data();
 
-    // Vérifier si le compte est actif
+    // VÃ©rifier si le compte est actif
     if (!user.isActive) {
       return res.status(403).json({
         success: false,
-        message: 'Compte désactivé. Contactez l\'administrateur.'
+        message: 'Compte dÃ©sactivÃ©. Contactez l\'administrateur.'
       });
     }
 
-    // Vérifier le mot de passe
+    // VÃ©rifier le mot de passe
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      // Attendre un peu pour éviter les attaques de timing
+      // Attendre un peu pour Ã©viter les attaques de timing
       await new Promise(resolve => setTimeout(resolve, 200));
       return res.status(401).json({ 
         success: false, 
@@ -335,7 +335,7 @@ router.post('/login', validateEmail, async (req, res) => {
       });
     }
 
-    // Mettre à jour les statistiques de connexion
+    // Mettre Ã  jour les statistiques de connexion
     try {
       await db.collection('users').doc(sanitizedEmail).update({
         lastLoginAt: new Date(),
@@ -343,10 +343,10 @@ router.post('/login', validateEmail, async (req, res) => {
         updatedAt: new Date()
       });
     } catch (updateError) {
-      console.warn('⚠️ Impossible de mettre à jour les stats de connexion:', updateError);
+      console.warn('âš ï¸ Impossible de mettre Ã  jour les stats de connexion:', updateError);
     }
 
-    // Créer un token JWT
+    // CrÃ©er un token JWT
     const tokenPayload = { 
       id: user.id, 
       email: user.email, 
@@ -357,11 +357,11 @@ router.post('/login', validateEmail, async (req, res) => {
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '24h' }); // Token long pour le login
 
     const processingTime = Date.now() - startTime;
-    console.log(`✅ Connexion réussie MAKERHUB.PRO en ${processingTime}ms:`, user.email);
+    console.log(`âœ… Connexion rÃ©ussie MAKERHUB.PRO en ${processingTime}ms:`, user.email);
 
     res.json({
       success: true,
-      message: 'Connexion réussie',
+      message: 'Connexion rÃ©ussie',
       token,
       user: {
         id: user.id,
@@ -377,7 +377,7 @@ router.post('/login', validateEmail, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Erreur connexion:', {
+    console.error('âŒ Login error:', {
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString()
@@ -385,20 +385,20 @@ router.post('/login', validateEmail, async (req, res) => {
     
     res.status(500).json({ 
       success: false, 
-      message: 'Erreur serveur lors de la connexion',
+      message: 'Server error during login',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// GET /api/auth/profile - Profil utilisateur connecté
+// GET /api/auth/profile - Profil utilisateur connectÃ©
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const db = getDatabase();
     if (!db) {
       return res.status(503).json({
         success: false,
-        message: 'Service de base de données non disponible'
+        message: 'Service de base de donnÃ©es non disponible'
       });
     }
 
@@ -407,7 +407,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
     if (!userDoc.exists) {
       return res.status(404).json({ 
         success: false,
-        message: 'Utilisateur non trouvé' 
+        message: 'Utilisateur non trouvÃ©' 
       });
     }
 
@@ -429,7 +429,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('❌ Erreur récupération profil:', {
+    console.error('âŒ Erreur rÃ©cupÃ©ration profil:', {
       error: error.message,
       userId: req.user?.id,
       timestamp: new Date().toISOString()
@@ -443,7 +443,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// PUT /api/auth/profile - Mettre à jour le profil
+// PUT /api/auth/profile - Mettre Ã  jour le profil
 router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { fullName } = req.body;
@@ -459,23 +459,23 @@ router.put('/profile', authenticateToken, async (req, res) => {
     if (!db) {
       return res.status(503).json({
         success: false,
-        message: 'Service de base de données non disponible'
+        message: 'Service de base de donnÃ©es non disponible'
       });
     }
 
     const sanitizedFullName = escapeHtml(fullName.trim());
 
-    // Mettre à jour le profil
+    // Mettre Ã  jour le profil
     await db.collection('users').doc(req.user.email).update({
       fullName: sanitizedFullName,
       updatedAt: new Date()
     });
 
-    console.log('✅ Profil mis à jour:', req.user.email);
+    console.log('âœ… Profil mis Ã  jour:', req.user.email);
 
     res.json({
       success: true,
-      message: 'Profil mis à jour avec succès',
+      message: 'Profil mis Ã  jour avec succÃ¨s',
       user: {
         ...req.user,
         fullName: sanitizedFullName
@@ -483,7 +483,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Erreur mise à jour profil:', {
+    console.error('âŒ Erreur mise Ã  jour profil:', {
       error: error.message,
       userId: req.user?.id,
       timestamp: new Date().toISOString()
@@ -491,30 +491,30 @@ router.put('/profile', authenticateToken, async (req, res) => {
     
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur lors de la mise à jour',
+      message: 'Erreur serveur lors de la mise Ã  jour',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/auth/logout - Déconnexion (optionnel, pour logs)
+// POST /api/auth/logout - DÃ©connexion (optionnel, pour logs)
 router.post('/logout', authenticateToken, async (req, res) => {
   try {
-    console.log('🔓 Déconnexion utilisateur:', req.user.email);
+    console.log('ðŸ”“ DÃ©connexion utilisateur:', req.user.email);
     
-    // Ici on pourrait invalider le token côté serveur si on avait une blacklist
-    // Pour l'instant, la déconnexion est gérée côté client
+    // Ici on pourrait invalider le token cÃ´tÃ© serveur si on avait une blacklist
+    // Pour l'instant, la dÃ©connexion est gÃ©rÃ©e cÃ´tÃ© client
     
     res.json({
       success: true,
-      message: 'Déconnexion réussie'
+      message: 'DÃ©connexion rÃ©ussie'
     });
     
   } catch (error) {
-    console.error('❌ Erreur déconnexion:', error);
+    console.error('âŒ Erreur dÃ©connexion:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors de la déconnexion'
+      message: 'Erreur lors de la dÃ©connexion'
     });
   }
 });
@@ -522,7 +522,7 @@ router.post('/logout', authenticateToken, async (req, res) => {
 // POST /api/auth/refresh - Renouveler le token
 router.post('/refresh', authenticateToken, async (req, res) => {
   try {
-    // Créer un nouveau token avec les mêmes données
+    // CrÃ©er un nouveau token avec les mÃªmes donnÃ©es
     const tokenPayload = { 
       id: req.user.id, 
       email: req.user.email, 
@@ -534,20 +534,20 @@ router.post('/refresh', authenticateToken, async (req, res) => {
     
     res.json({
       success: true,
-      message: 'Token renouvelé',
+      message: 'Token renouvelÃ©',
       token: newToken
     });
     
   } catch (error) {
-    console.error('❌ Erreur renouvellement token:', error);
+    console.error('âŒ Token renewal error:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur lors du renouvellement du token'
+      message: 'Error during token renewal'
     });
   }
 });
 
-// GET /api/auth/verify - Vérifier la validité du token
+// GET /api/auth/verify - VÃ©rifier la validitÃ© du token
 router.get('/verify', authenticateToken, (req, res) => {
   res.json({
     success: true,
@@ -589,7 +589,7 @@ router.get('/health', (req, res) => {
 
 // Middleware de gestion d'erreurs
 router.use((error, req, res, next) => {
-  console.error('⛔ Auth routes error:', {
+  console.error('â›” Auth routes error:', {
     error: error.message,
     stack: error.stack,
     path: req.path,
@@ -599,36 +599,36 @@ router.use((error, req, res, next) => {
   
   res.status(500).json({
     success: false,
-    message: 'Erreur interne du serveur',
+    message: 'Internal server error',
     details: process.env.NODE_ENV === 'development' ? error.message : undefined,
     timestamp: new Date().toISOString()
   });
 });
 
 console.log(`
-🔐 MAKERHUB Auth Routes - ARCHITECTURE HYBRIDE
+ðŸ” MAKERHUB Auth Routes - ARCHITECTURE HYBRIDE
 ==============================================
 
-✅ CHEMINS CORRIGÉS:
+âœ… CHEMINS CORRIGÃ‰S:
    - Config: ../../config/database (depuis backend/routes/)
 
-🔑 Routes Authentification:
-   POST   /api/auth/exchange    - 🆕 Échange Firebase → JWT interne
+ðŸ”‘ Routes Authentification:
+   POST   /api/auth/exchange    - ðŸ†• Ã‰change Firebase â†’ JWT interne
    POST   /api/auth/register    - Inscription utilisateur
    POST   /api/auth/login       - Connexion utilisateur
    GET    /api/auth/profile     - Profil utilisateur
-   PUT    /api/auth/profile     - Mise à jour profil
-   POST   /api/auth/logout      - Déconnexion (logs)
+   PUT    /api/auth/profile     - Mise Ã  jour profil
+   POST   /api/auth/logout      - DÃ©connexion (logs)
    POST   /api/auth/refresh     - Renouveler token
-   GET    /api/auth/verify      - Vérifier token
+   GET    /api/auth/verify      - VÃ©rifier token
    GET    /api/auth/health      - Health check
 
-🔐 Architecture Hybride:
+ðŸ” Architecture Hybride:
    - Firebase Auth pour utilisateurs
    - JWT interne pour services (15min)
-   - Échange sécurisé Firebase → JWT
+   - Ã‰change sÃ©curisÃ© Firebase â†’ JWT
 
-🛡️ Sécurité:
+ðŸ›¡ï¸ SÃ©curitÃ©:
    - Hachage bcrypt (12 rounds)
    - JWT avec expiration variable
    - Validation email format
@@ -636,15 +636,15 @@ console.log(`
    - Protection attaques timing
    - Middleware authentification
 
-📊 Fonctionnalités:
-   - Gestion complète utilisateurs
+ðŸ“Š FonctionnalitÃ©s:
+   - Gestion complÃ¨te utilisateurs
    - Statistiques connexion
-   - Validation données robuste
-   - Gestion d'erreurs sécurisée
-   - Logs détaillés
+   - Validation donnÃ©es robuste
+   - Gestion d'erreurs sÃ©curisÃ©e
+   - Logs dÃ©taillÃ©s
 
-🚀 Version: 2.0.0-hybrid-auth
-📅 Dernière mise à jour: ${new Date().toISOString()}
+ðŸš€ Version: 2.0.0-hybrid-auth
+ðŸ“… DerniÃ¨re mise Ã  jour: ${new Date().toISOString()}
 `);
 
 module.exports = router;

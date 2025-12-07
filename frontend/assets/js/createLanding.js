@@ -1,11 +1,11 @@
-// createLanding.js - MAKERHUB.PRO Landing Page Creator JavaScript
-// VERSION SANS DESIGN TEMPLATES - Template blanc par défaut
+﻿// createLanding.js - MAKERHUB.PRO Landing Page Creator JavaScript
+// VERSION SANS DESIGN TEMPLATES - Template blanc par dÃ©faut
 'use strict';
 
-// ✅ FONCTION DE COMPRESSION D'IMAGE
+// âœ… FONCTION DE COMPRESSION D'IMAGE
 function compressImage(file, maxWidth, maxHeight, quality) {
     return new Promise(function(resolve, reject) {
-        // Si c'est une vidéo, ne pas compresser
+        // Si c'est une vidÃ©o, ne pas compresser
         if (file.type.startsWith('video/')) {
             resolve(file);
             return;
@@ -40,18 +40,18 @@ function compressImage(file, maxWidth, maxHeight, quality) {
                 canvas.width = width;
                 canvas.height = height;
                 
-                // Dessiner l'image redimensionnée
+                // Dessiner l'image redimensionnÃ©e
                 ctx.drawImage(img, 0, 0, width, height);
                 
                 // Convertir en blob
                 canvas.toBlob(function(blob) {
                     if (blob) {
-                        // Créer un nouveau fichier avec le blob compressé
+                        // CrÃ©er un nouveau ficYesterday avec le blob compressÃ©
                         var compressedFile = new File([blob], file.name, {
                             type: 'image/jpeg',
                             lastModified: Date.now()
                         });
-                        console.log('🗜️ Image compressée: ' + (file.size / 1024).toFixed(0) + 'KB → ' + (compressedFile.size / 1024).toFixed(0) + 'KB');
+                        console.log('ðŸ—œï¸ Image compressÃ©e: ' + (file.size / 1024).toFixed(0) + 'KB â†’ ' + (compressedFile.size / 1024).toFixed(0) + 'KB');
                         resolve(compressedFile);
                     } else {
                         resolve(file);
@@ -70,7 +70,7 @@ function compressImage(file, maxWidth, maxHeight, quality) {
     });
 }
 
-// Template par défaut: white-minimal (fond blanc)
+// Template par dÃ©faut: white-minimal (fond blanc)
 let selectedTemplate = 'white-minimal';
 let selectedBorderColor = '#000000';
 let selectedFont = 'inter';
@@ -88,7 +88,7 @@ let textFormatting = {
 let logoHandlersBound = false;
 let isFileDialogOpen = false;
 
-// Couleurs du template par défaut (blanc)
+// Couleurs du template par dÃ©faut (blanc)
 const defaultTemplateColors = {
     bg: '#ffffff',
     text: '#1a1a1a',
@@ -106,7 +106,7 @@ const fontFamilies = {
     'dm-sans': "'DM Sans', sans-serif"
 };
 
-// ✅ 13 LANGUES SUPPORTÉES PAR DEEPL (supprimé: NO, HI, NL, SV, DA, FI)
+// âœ… 13 LANGUES SUPPORTÃ‰ES PAR DEEPL (supprimÃ©: NO, HI, NL, SV, DA, FI)
 const SUPPORTED_LANGUAGES = ['en', 'fr', 'es', 'de', 'pt', 'it', 'pl', 'ru', 'ja', 'zh', 'ko', 'ar', 'tr'];
 
 const createLandingApp = {
@@ -138,7 +138,7 @@ const createLandingApp = {
         const isEditMode = urlParams.get('edit') === 'true';
         const pageSlug = urlParams.get('page');
         
-        // Appliquer le template par défaut (blanc)
+        // Appliquer le template par dÃ©faut (blanc)
         if (!isEditMode) {
             selectedBorderColor = '#000000';
             selectedTemplate = 'white-minimal';
@@ -147,7 +147,7 @@ const createLandingApp = {
             this.loadReviews();
         }
         
-        // Charger les données existantes si on est en mode edit
+        // Charger les donnÃ©es existantes si on est en mode edit
         if (isEditMode && pageSlug) {
             this.loadExistingPage(pageSlug);
         } else {
@@ -156,7 +156,7 @@ const createLandingApp = {
         }
     },
     
-    // Appliquer le template blanc par défaut
+    // Appliquer le template blanc par dÃ©faut
     applyDefaultTemplate: function() {
         var previewContent = document.getElementById('previewContent');
         if (previewContent) {
@@ -198,22 +198,22 @@ const createLandingApp = {
         if (accessPanel) accessPanel.style.borderColor = '#000000';
     },
     
-    // ✅ CHARGER UNE PAGE EXISTANTE EN MODE EDIT
+    // âœ… CHARGER UNE PAGE EXISTANTE EN MODE EDIT
     loadExistingPage: async function(pageSlug) {
         try {
-            console.log('📝 Chargement de la page:', pageSlug);
+            console.log('ðŸ“ Chargement de la page:', pageSlug);
             
             var self = this;
             var pageDoc = await window.firebaseDb.collection('landingPages').doc(pageSlug).get();
             
             if (!pageDoc.exists) {
-                this.showError('Page non trouvée: ' + pageSlug);
+                this.showError('Page non trouvÃ©e: ' + pageSlug);
                 return;
             }
             
             var data = pageDoc.data();
-            console.log('✅ Données chargées:', data);
-            console.log('🎨 Couleur dans Firebase:', data.borderColor);
+            console.log('âœ… DonnÃ©es chargÃ©es:', data);
+            console.log('ðŸŽ¨ Couleur dans Firebase:', data.borderColor);
             
             // Remplir le formulaire
             if (data.channelName) document.getElementById('channelName').value = data.channelName;
@@ -225,30 +225,30 @@ const createLandingApp = {
             if (data.buttonEmoji) document.getElementById('buttonEmoji').value = data.buttonEmoji;
             if (data.accessEmoji) document.getElementById('accessEmoji').value = data.accessEmoji;
             
-            // Appliquer le template par défaut
+            // Appliquer le template par dÃ©faut
             selectedTemplate = 'white-minimal';
             this.applyDefaultTemplate();
             
             // Couleur de bordure
             var colorToUse = data.borderColor || data.color || '#000000';
-            console.log('🎨 Couleur à appliquer:', colorToUse);
+            console.log('ðŸŽ¨ Couleur Ã  appliquer:', colorToUse);
             
             // FORCER la couleur globale
             selectedBorderColor = colorToUse;
             window.selectedBorderColor = colorToUse; // Backup global
             
-            // Mettre à jour l'aperçu du sélecteur de couleur
+            // Mettre Ã  jour l'aperÃ§u du sÃ©lecteur de couleur
             var preview = document.getElementById('colorPreview');
             var nameElement = document.getElementById('colorName');
             var valueElement = document.getElementById('colorValue');
             if (preview) {
                 preview.style.backgroundColor = colorToUse;
-                console.log('🎨 Preview sélecteur mis à jour');
+                console.log('ðŸŽ¨ Preview sÃ©lecteur mis Ã  jour');
             }
             if (nameElement) nameElement.textContent = 'Custom';
             if (valueElement) valueElement.textContent = colorToUse.toUpperCase();
             
-            // APPLIQUER IMMÉDIATEMENT sur les éléments de preview
+            // APPLIQUER IMMÃ‰DIATEMENT sur les Ã©lÃ©ments de preview
             var paymentBtn = document.getElementById('previewPaymentBtn');
             var accessPanel = document.querySelector('.access-panel');
             var lockIcon = document.querySelector('.access-panel .fa-lock');
@@ -256,11 +256,11 @@ const createLandingApp = {
             if (paymentBtn) {
                 paymentBtn.style.backgroundColor = colorToUse;
                 paymentBtn.style.background = colorToUse;
-                console.log('🎨 Bouton coloré:', colorToUse);
+                console.log('ðŸŽ¨ Bouton colorÃ©:', colorToUse);
             }
             if (accessPanel) {
                 accessPanel.style.borderColor = colorToUse;
-                console.log('🎨 Panel bordure colorée');
+                console.log('ðŸŽ¨ Panel bordure colorÃ©e');
             }
             if (lockIcon) {
                 lockIcon.style.color = colorToUse;
@@ -349,18 +349,18 @@ const createLandingApp = {
             
             // Stocker la couleur avant updatePreview
             var colorBeforeUpdate = selectedBorderColor;
-            console.log('🎨 Couleur AVANT updatePreview:', colorBeforeUpdate);
+            console.log('ðŸŽ¨ Couleur AVANT updatePreview:', colorBeforeUpdate);
             
-            // Mettre à jour la preview
+            // Mettre Ã  jour la preview
             this.updatePreview();
             
-            console.log('🎨 Couleur APRÈS updatePreview:', selectedBorderColor);
+            console.log('ðŸŽ¨ Couleur APRÃˆS updatePreview:', selectedBorderColor);
             
-            // Forcer l'application de la couleur sur le bouton (plusieurs fois pour être sûr)
+            // Forcer l'application de la couleur sur le bouton (plusieurs fois pour Ãªtre sÃ»r)
             var self = this;
             var applyColor = function() {
-                var colorToApply = colorBeforeUpdate; // Utiliser la couleur sauvegardée
-                console.log('🎨 Application forcée de la couleur:', colorToApply);
+                var colorToApply = colorBeforeUpdate; // Utiliser la couleur sauvegardÃ©e
+                console.log('ðŸŽ¨ Application forcÃ©e de la couleur:', colorToApply);
                 
                 var paymentBtn = document.getElementById('previewPaymentBtn');
                 var accessPanel = document.querySelector('.access-panel');
@@ -370,15 +370,15 @@ const createLandingApp = {
                     paymentBtn.style.setProperty('background', colorToApply, 'important');
                     paymentBtn.style.setProperty('background-color', colorToApply, 'important');
                     paymentBtn.style.boxShadow = 'none';
-                    console.log('✅ Bouton mis à jour avec:', colorToApply);
-                    // Ajuster la couleur du texte selon la luminosité
+                    console.log('âœ… Bouton mis Ã  jour avec:', colorToApply);
+                    // Ajuster la couleur du texte selon la luminositÃ©
                     var rgb = self.hexToRgb(colorToApply);
                     if (rgb) {
                         var luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
                         paymentBtn.style.color = luminance > 0.5 ? '#000000' : '#ffffff';
                     }
                 } else {
-                    console.log('❌ Bouton non trouvé!');
+                    console.log('âŒ Bouton non trouvÃ©!');
                 }
                 if (accessPanel) accessPanel.style.borderColor = colorToApply;
                 if (lockIcon) lockIcon.style.color = colorToApply;
@@ -387,16 +387,16 @@ const createLandingApp = {
                 selectedBorderColor = colorToApply;
             };
             
-            // Appliquer immédiatement et après délais
+            // Appliquer immÃ©diatement et aprÃ¨s dÃ©lais
             applyColor();
             setTimeout(applyColor, 100);
             setTimeout(applyColor, 300);
             setTimeout(applyColor, 500);
             
-            console.log('✅ Page chargée avec succès!');
+            console.log('âœ… Page chargÃ©e avec succÃ¨s!');
             
         } catch (error) {
-            console.error('❌ Erreur chargement page:', error);
+            console.error('âŒ Erreur chargement page:', error);
             this.showError('Erreur: ' + error.message);
         }
     },
@@ -456,7 +456,7 @@ const createLandingApp = {
                         });
                     }
                     sessionStorage.removeItem('makerhub_temp_landing_data');
-                    this.showSuccess('Prix configures avec succes');
+                    this.showSuccess('Prices configured successfully');
                     this.updatePreview();
                 } catch (error) {
                     console.error('Erreur restauration:', error);
@@ -649,8 +649,8 @@ const createLandingApp = {
         var now = new Date();
         var diffTime = Math.abs(now - date);
         var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays === 0) return "Aujourd'hui";
-        if (diffDays === 1) return "Hier";
+        if (diffDays === 0) return "Today";
+        if (diffDays === 1) return "Yesterday";
         if (diffDays < 7) return 'Il y a ' + diffDays + ' jours';
         if (diffDays < 30) {
             var weeks = Math.floor(diffDays / 7);
@@ -814,19 +814,19 @@ const createLandingApp = {
     handleMediaUpload: function(id, input) {
         if (input.files && input.files[0]) {
             var file = input.files[0];
-            var maxVideoSize = 20 * 1024 * 1024; // 20 MB max pour les vidéos
+            var maxVideoSize = 20 * 1024 * 1024; // 20 MB max pour les vidÃ©os
             var maxImageSize = 10 * 1024 * 1024; // 10 MB max pour les images
             
-            // ✅ Vérifier la taille des vidéos
+            // âœ… VÃ©rifier la taille des vidÃ©os
             if (file.type.startsWith('video/') && file.size > maxVideoSize) {
-                this.showError('Video trop lourde! Maximum 20 MB (environ 1 minute). Taille actuelle: ' + (file.size / 1024 / 1024).toFixed(1) + ' MB');
+                this.showError('Video too large\! Maximum 20 MB (environ 1 minute). Taille actuelle: ' + (file.size / 1024 / 1024).toFixed(1) + ' MB');
                 input.value = '';
                 return;
             }
             
-            // ✅ Vérifier la taille des images (avant compression)
+            // âœ… VÃ©rifier la taille des images (avant compression)
             if (file.type.startsWith('image/') && file.size > maxImageSize) {
-                this.showError('Image trop lourde! Maximum 10 MB. Taille actuelle: ' + (file.size / 1024 / 1024).toFixed(1) + ' MB');
+                this.showError('Image too large\! Maximum 10 MB. Taille actuelle: ' + (file.size / 1024 / 1024).toFixed(1) + ' MB');
                 input.value = '';
                 return;
             }
@@ -909,18 +909,18 @@ const createLandingApp = {
             var currentText = descriptionTextarea.value;
             var lines = currentText.split('\n');
             var cleanLines = lines.map(function(line) { 
-                return line.replace(/^[\d\.\s\-\•\➤\⚡\🔥\⭐\💎\🚀\🎯\💡\🏆\🎖️\🌟\📱\📲\💻\🌐\🔔\👑\🎉\✨\💰\💼\🧠]+\s*/, '').trim(); 
+                return line.replace(/^[\d\.\s\-\â€¢\âž¤\âš¡\ðŸ”¥\â­\ðŸ’Ž\ðŸš€\ðŸŽ¯\ðŸ’¡\ðŸ†\ðŸŽ–ï¸\ðŸŒŸ\ðŸ“±\ðŸ“²\ðŸ’»\ðŸŒ\ðŸ””\ðŸ‘‘\ðŸŽ‰\âœ¨\ðŸ’°\ðŸ’¼\ðŸ§ ]+\s*/, '').trim(); 
             });
             var formattedText = '';
             var number;
             switch(type) {
                 case 'bullet':
-                    formattedText = cleanLines.map(function(line) { return line ? '• ' + line : line; }).join('\n');
+                    formattedText = cleanLines.map(function(line) { return line ? 'â€¢ ' + line : line; }).join('\n');
                     if (bulletBtn) bulletBtn.classList.add('active');
                     descriptionTextarea.dataset.listType = 'bullet';
                     break;
                 case 'arrow':
-                    formattedText = cleanLines.map(function(line) { return line ? '➤ ' + line : line; }).join('\n');
+                    formattedText = cleanLines.map(function(line) { return line ? 'âž¤ ' + line : line; }).join('\n');
                     if (arrowBtn) arrowBtn.classList.add('active');
                     descriptionTextarea.dataset.listType = 'arrow';
                     break;
@@ -1043,9 +1043,9 @@ const createLandingApp = {
             var text = descriptionInput.value || 'Description will appear here...';
             var lines = text.split('\n').filter(function(line) { return line.trim() !== ''; });
             var htmlContent = text;
-            var isBulletList = lines.length > 0 && lines.every(function(line) { return line.startsWith('• '); });
+            var isBulletList = lines.length > 0 && lines.every(function(line) { return line.startsWith('â€¢ '); });
             var isNumberedList = lines.length > 0 && lines.every(function(line) { return /^\d+\.\s/.test(line); });
-            var isArrowList = lines.length > 0 && lines.every(function(line) { return line.startsWith('➤ '); });
+            var isArrowList = lines.length > 0 && lines.every(function(line) { return line.startsWith('âž¤ '); });
             if (isBulletList) {
                 var items = lines.map(function(line) { var content = line.substring(2).trim(); return '<li>' + content + '</li>'; }).join('');
                 htmlContent = '<ul style="margin: 0; padding-left: 20px;">' + items + '</ul>';
@@ -1053,7 +1053,7 @@ const createLandingApp = {
                 var items = lines.map(function(line) { var content = line.replace(/^\d+\.\s/, '').trim(); return '<li>' + content + '</li>'; }).join('');
                 htmlContent = '<ol style="margin: 0; padding-left: 20px;">' + items + '</ol>';
             } else if (isArrowList) {
-                var items = lines.map(function(line) { var content = line.substring(2).trim(); return '<div style="margin-bottom: 8px;">➤ ' + content + '</div>'; }).join('');
+                var items = lines.map(function(line) { var content = line.substring(2).trim(); return '<div style="margin-bottom: 8px;">âž¤ ' + content + '</div>'; }).join('');
                 htmlContent = items;
             } else {
                 htmlContent = text.replace(/\n/g, '<br>');
@@ -1085,7 +1085,7 @@ const createLandingApp = {
         var previewContent = document.getElementById('previewContent');
         if (previewContent && fontFamilies[selectedFont]) previewContent.style.fontFamily = fontFamilies[selectedFont];
         
-        // Appliquer le template blanc par défaut
+        // Appliquer le template blanc par dÃ©faut
         if (previewContent) {
             previewContent.style.background = defaultTemplateColors.bg;
             previewContent.style.color = defaultTemplateColors.text;
@@ -1113,17 +1113,17 @@ const createLandingApp = {
         if (lockIcon) lockIcon.style.color = selectedBorderColor;
     },
     
-    // ✅ CRÉATION DE PAGE SANS TRADUCTION AUTOMATIQUE
+    // âœ… CRÃ‰ATION DE PAGE SANS TRADUCTION AUTOMATIQUE
     createLandingPage: async function() {
         var self = this;
         
-        // ✅ Détecter si on est en mode edit
+        // âœ… DÃ©tecter si on est en mode edit
         var urlParams = new URLSearchParams(window.location.search);
         var isEditMode = urlParams.get('edit') === 'true';
         var existingSlug = urlParams.get('page');
         
         if (!window.firebaseAuth || !window.firebaseAuth.currentUser) {
-            this.showError('Connectez-vous');
+            this.showError('Please log in');
             setTimeout(function() { window.location.href = '/auth.html'; }, 2000);
             return;
         }
@@ -1136,12 +1136,12 @@ const createLandingApp = {
         var description = document.getElementById('description').value.trim();
         var buttonText = document.getElementById('buttonText').value.trim() || 'Join Now';
         var buttonEmoji = document.getElementById('buttonEmoji').value || '';
-        var accessEmoji = document.getElementById('accessEmoji').value || '🔒';
+        var accessEmoji = document.getElementById('accessEmoji').value || 'ðŸ”’';
         
-        if (!channelName) { this.showError('Nom de canal requis'); return; }
-        if (!brand) { this.showError('Nom de marque requis'); return; }
+        if (!channelName) { this.showError('Channel name required'); return; }
+        if (!brand) { this.showError('Brand name required'); return; }
         
-        // ✅ Utiliser le slug existant en mode edit
+        // âœ… Utiliser le slug existant en mode edit
         var simpleSlug = isEditMode && existingSlug ? existingSlug : channelName.toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '')
@@ -1164,7 +1164,7 @@ const createLandingApp = {
             var profileFromUrl = urlParams.get('profile');
             if (profileFromUrl) profileName = profileFromUrl;
             
-            // Récupérer la langue et devise depuis l'URL
+            // RÃ©cupÃ©rer la langue et devise depuis l'URL
             var selectedLanguage = urlParams.get('lang') || 'en';
             var selectedCurrency = urlParams.get('curr') || 'USD';
             
@@ -1182,7 +1182,7 @@ const createLandingApp = {
             var logoUrl = '';
             if (logoFile && window.firebaseStorage) {
                 try {
-                    // ✅ Compresser le logo (max 800x800, qualité 80%)
+                    // âœ… Compresser le logo (max 800x800, qualitÃ© 80%)
                     var compressedLogo = await compressImage(logoFile, 800, 800, 0.8);
                     
                     var timestamp = Date.now();
@@ -1206,11 +1206,11 @@ const createLandingApp = {
             
             var uploadedMediaUrls = [];
             if (mediaItems && mediaItems.length > 0) {
-                // ✅ Upload en PARALLÈLE pour aller plus vite
+                // âœ… Upload en PARALLÃˆLE pour aller plus vite
                 var uploadPromises = mediaItems.map(async function(media, index) {
                     try {
                         if (media.file) {
-                            // Compresser les images (max 1200x1200, qualité 75%)
+                            // Compresser les images (max 1200x1200, qualitÃ© 75%)
                             var fileToUpload = await compressImage(media.file, 1200, 1200, 0.75);
                             
                             var timestamp = Date.now() + index;
@@ -1276,7 +1276,7 @@ const createLandingApp = {
             
             var fullButtonText = (buttonEmoji + ' ' + buttonText).trim();
             
-            // ✅ Initialiser les traductions avec seulement la langue source
+            // âœ… Initialiser les traductions avec seulement la langue source
             var translations = {};
             translations[selectedLanguage] = { 
                 brand: brand, 
@@ -1353,7 +1353,7 @@ const createLandingApp = {
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             
-            console.log('📝 Creation landing page:', {
+            console.log('ðŸ“ Creation landing page:', {
                 slug: simpleSlug,
                 channelSlug: channelSlug,
                 profileName: profileName,
@@ -1368,11 +1368,11 @@ const createLandingApp = {
                 landingData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
                 delete landingData.createdAt;
                 await window.firebaseDb.collection('landingPages').doc(simpleSlug).update(landingData);
-                this.showSuccess('Page mise a jour avec succes!');
+                this.showSuccess('Page updated successfully\!');
             } else {
                 // Mode CREATE: nouvelle page
                 await window.firebaseDb.collection('landingPages').doc(simpleSlug).set(landingData);
-                this.showSuccess('Page creee avec succes!');
+                this.showSuccess('Page created successfully\!');
             }
             
             localStorage.removeItem('makerhub_prices_' + simpleSlug);

@@ -1,4 +1,4 @@
-# telegram/templates.py
+﻿# telegram/templates.py
 """
 Templates HTML pour les pages de succès, annulation et erreur
 MAKERHUB V1
@@ -9,11 +9,11 @@ def get_success_html(session_id=None, page_id=None):
     """Template HTML pour la page de succès après paiement"""
     return '''
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement réussi - MakerHub</title>
+    <title>Payment Successful - MakerHub</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -57,11 +57,11 @@ def get_success_html(session_id=None, page_id=None):
         <div class="success-icon">
             <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
         </div>
-        <h1>Paiement réussi !</h1>
-        <p>Merci pour votre achat ! Vous allez recevoir un email de confirmation avec les instructions d'accès.</p>
-        <p>Si vous avez connecté Telegram, vérifiez vos messages pour recevoir votre lien d'invitation au canal.</p>
-        <a href="https://t.me/Makerhubsub_bot" class="btn">Ouvrir Telegram</a>
-        <div class="info">Un problème ? Contactez-nous à support@makerhub.pro</div>
+        <h1>Payment Successful\!</h1>
+        <p>Thank you for your purchase\! You will receive a confirmation email with access instructions.</p>
+        <p>If you connected Telegram, check your messages to receive your channel invitation link.</p>
+        <a href="https://t.me/Makerhubsub_bot" class="btn">Open Telegram</a>
+        <div class="info">Having issues? Contact us at support@makerhub.pro</div>
     </div>
 </body>
 </html>
@@ -72,11 +72,11 @@ def get_cancel_html(page_id=None):
     """Template HTML pour la page d'annulation"""
     return '''
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement annulé - MakerHub</title>
+    <title>Payment Cancelled - MakerHub</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -112,26 +112,26 @@ def get_cancel_html(page_id=None):
         <div class="cancel-icon">
             <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
         </div>
-        <h1>Paiement annulé</h1>
-        <p>Votre paiement a été annulé. Aucun montant n'a été débité de votre compte.</p>
-        <a href="javascript:history.back()" class="btn">Réessayer</a>
-        <a href="https://makerhub.pro" class="btn btn-secondary">Retour à l'accueil</a>
+        <h1>Payment Cancelled</h1>
+        <p>Your payment has been cancelled. No amount has been charged to your account.</p>
+        <a href="javascript:history.back()" class="btn">Try Again</a>
+        <a href="https://makerhub.pro" class="btn btn-secondary">Back to Home</a>
     </div>
 </body>
 </html>
 '''
 
 
-def get_error_html(error_message='Une erreur est survenue', error_code=None):
+def get_error_html(error_message='An error occurred', error_code=None):
     """Template HTML pour les pages d'erreur"""
     error_code_html = f'<br><small>Code: {error_code}</small>' if error_code else ''
     return f'''
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur - MakerHub</title>
+    <title>Error - MakerHub</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -178,13 +178,15 @@ def get_error_html(error_message='Une erreur est survenue', error_code=None):
         <div class="error-icon">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
         </div>
-        <h1>Oups ! Une erreur est survenue</h1>
-        <p>Nous n'avons pas pu traiter votre demande. Veuillez réessayer ou contacter notre support.</p>
+        <h1>Oops\! An error occurred</h1>
+        <p>Nous n'avons pas pu traiter votre demande. Veuillez Try Again ou contacter notre support.</p>
         <div class="error-details">{error_message}{error_code_html}</div>
-        <a href="javascript:history.back()" class="btn">Réessayer</a>
-        <a href="https://makerhub.pro" class="btn btn-secondary">Retour à l'accueil</a>
-        <div class="info">Besoin d'aide ? Contactez-nous à support@makerhub.pro</div>
+        <a href="javascript:history.back()" class="btn">Try Again</a>
+        <a href="https://makerhub.pro" class="btn btn-secondary">Back to Home</a>
+        <div class="info">Need help? Contact us at support@makerhub.pro</div>
     </div>
 </body>
 </html>
 '''
+
+

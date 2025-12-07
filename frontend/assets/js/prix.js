@@ -1,4 +1,4 @@
-// prix.js - MAKERHUB.PRO Pricing Management JavaScript (VERSION FINALE CORRIGÉE)
+// prix.js - MAKERHUB.PRO Pricing Management JavaScript (VERSION FINALE CORRIGÉE - ANGLAIS)
 'use strict';
 
 // Variables Firebase
@@ -14,14 +14,23 @@ const PricingConfig = {
   MAX_PLANS: 3 // Limite maximale de plans
 };
 
-// Map périodes builder -> backend
+// Map périodes builder -> backend (ANGLAIS)
 const PERIOD_MAP = {
-  monthly: 'mois',
-  yearly: 'an',
-  quarterly: '3mois',
-  '3months': '3mois',
-  weekly: 'semaine',
-  daily: 'jour'
+  monthly: 'month',
+  yearly: 'year',
+  quarterly: '3months',
+  '3months': '3months',
+  weekly: 'week',
+  daily: 'day'
+};
+
+// Labels de périodes en ANGLAIS
+const PERIOD_LABELS = {
+  month: 'month',
+  year: 'year',
+  '3months': '3 months',
+  week: 'week',
+  day: 'day'
 };
 
 // Utility functions
@@ -130,7 +139,7 @@ class PricingManager {
     this.startAutoSave();
     this.updateAddButtonState(); // Vérifier l'état du bouton au démarrage
     
-    console.log('MAKERHUB Pricing Manager v3.2 initialized with centralized config');
+    console.log('MAKERHUB Pricing Manager v3.3 initialized (ENGLISH version)');
   }
 
   // Get page ID with multiple fallbacks
@@ -257,9 +266,6 @@ class PricingManager {
         subtree: true
       });
     }
-
-    // PAS DE POPUP DE RESTAURATION - SUPPRIMÉ
-    // this.checkAutoSavedData(); // SUPPRIMÉ
   }
 
   // MODIFIÉ - Try to close window safely avec redirection intelligente
@@ -289,17 +295,6 @@ class PricingManager {
       window.location.href = defaultRedirectUrl;
     }
   }
-
-  // SUPPRIMÉ - Plus de popup de restauration
-  /*
-  checkAutoSavedData() {
-    // SUPPRIMÉ
-  }
-
-  restoreAutoSavedData(data) {
-    // SUPPRIMÉ
-  }
-  */
 
   // Update button state based on plans count
   updateAddButtonState() {
@@ -549,6 +544,21 @@ class PricingManager {
 
   // Load Pricing Data (avec support Firestore optionnel)
   async loadPricingData(pageId) {
+    // Fonction pour mapper les champs Firestore vers le format formulaire
+    const mapFirestoreToForm = (plan) => {
+      return {
+        ...plan,
+        // Mapper les noms de champs Firestore -> Formulaire
+        hasLimitedSpots: plan.hasLimitedSpots || plan.limitedSeats || false,
+        hasFreeTrial: plan.hasFreeTrial || plan.freeTrialDays > 0 || false,
+        limitedSpots: plan.limitedSpots || plan.spots || 100,
+        freeTrialDays: plan.freeTrialDays || plan.trialDays || 14,
+        discountPercent: plan.discountPercent || (plan.discount ? parseInt(plan.discount.replace(/[^0-9]/g, '')) : 0),
+        isPopular: plan.isPopular || plan.best || false,
+        billingPeriod: plan.billingPeriod || plan.period || 'monthly'
+      };
+    };
+
     // D'abord essayer de charger depuis Firestore si disponible
     if (db && auth && auth.currentUser) {
       try {
@@ -559,7 +569,9 @@ class PricingManager {
           // Limiter au nombre maximum de plans
           const plansToLoad = prices.slice(0, PricingConfig.MAX_PLANS);
           plansToLoad.forEach(plan => {
-            this.addPricingPlan(plan);
+            const mappedPlan = mapFirestoreToForm(plan);
+            console.log('Mapped plan:', mappedPlan);
+            this.addPricingPlan(mappedPlan);
           });
           return;
         }
@@ -575,7 +587,8 @@ class PricingManager {
       // Limiter au nombre maximum de plans
       const plansToLoad = existingData.prices.slice(0, PricingConfig.MAX_PLANS);
       plansToLoad.forEach(plan => {
-        this.addPricingPlan(plan);
+        const mappedPlan = mapFirestoreToForm(plan);
+        this.addPricingPlan(mappedPlan);
       });
     } else {
       // Add default plan
@@ -637,8 +650,8 @@ class PricingManager {
         // Calculate final price
         plan.finalPrice = pct > 0 ? price * (1 - pct / 100) : price;
         
-        // Mapper la période pour le format backend
-        plan.period = PERIOD_MAP[billingPeriod] || 'mois';
+        // Mapper la période pour le format backend (ANGLAIS)
+        plan.period = PERIOD_MAP[billingPeriod] || 'month';
         
         plans.push(plan);
       }
@@ -654,7 +667,7 @@ class PricingManager {
     };
   }
 
-  // Export for landing page backend format (robuste)
+  // Export for landing page backend format (robuste) - TOUT EN ANGLAIS
   exportForLanding() {
     const { plans } = this.gatherPricingData();
     const C = window.MAKERHUB_CONFIG || {};
@@ -670,15 +683,16 @@ class PricingManager {
       if (!ALLOWED_CODES.size || !ALLOWED_CODES.has(code)) code = 'EUR';
       const symbol = CODE2SYM[code] || p.currency || '€';
 
-      // 2) Période : map vers format backend
-      let period = PERIOD_MAP[p.billingPeriod] || 'mois';
+      // 2) Période : map vers format backend (ANGLAIS)
+      let period = PERIOD_MAP[p.billingPeriod] || 'month';
 
       // 3) Prix & affichages
       const base = Number(p.price || 0);
       const pct = Math.min(Math.max(Number(p.discountPercent || 0), 0), 100);
       const finalPrice = pct > 0 ? base * (1 - pct / 100) : base;
 
-      const labelPeriod = period === '3mois' ? '3 mois' : (period === 'an' ? 'an' : period === 'semaine' ? 'semaine' : period === 'jour' ? 'jour' : 'mois');
+      // CORRIGÉ - Labels en ANGLAIS
+      const labelPeriod = PERIOD_LABELS[period] || 'month';
       const label = `${Math.round(finalPrice)}${symbol} / ${labelPeriod}`;
       const strike = pct > 0 ? `${Math.round(base)}${symbol}` : '';
       const discount = pct > 0 ? `-${Math.round(pct)}%` : '';
@@ -695,9 +709,9 @@ class PricingManager {
         strike,
         discount,
         limitedSeats: !!p.hasLimitedSpots,
-        limitedSpots: p.hasLimitedSpots ? (p.limitedSpots || 100) : 0, // MODIFICATION ICI
+        limitedSpots: p.hasLimitedSpots ? (p.limitedSpots || 100) : 0,
         freeTrialDays: p.hasFreeTrial ? (Number(p.freeTrialDays) || 0) : 0,
-        buttonText: "S'abonner"
+        buttonText: "Join Now"  // ANGLAIS
       };
     });
   }
@@ -774,7 +788,7 @@ class PricingManager {
       
       // Show success message
       const message = this.redirectSource === 'createLanding' 
-        ? 'Prix configurés ! Retour à la création de page...'
+        ? 'Prices configured! Returning to page creation...'
         : 'Pricing configuration saved successfully!';
       
       this.showSuccessMessage(message);

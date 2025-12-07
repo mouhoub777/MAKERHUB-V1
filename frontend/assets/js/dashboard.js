@@ -1,4 +1,4 @@
-// dashboard.js - Development Version with Timeout Protection
+﻿// dashboard.js - Development Version with Timeout Protection
 (function() {
   'use strict';
 
@@ -63,7 +63,7 @@
         const userEmail = document.getElementById('userEmail');
         const userAvatar = document.getElementById('userAvatar');
         
-        if (userName) userName.textContent = user.displayName || 'Utilisateur';
+        if (userName) userName.textContent = user.displayName || 'User';
         if (userEmail) userEmail.textContent = user.email;
         if (userAvatar) userAvatar.textContent = (user.displayName || user.email || 'U').charAt(0).toUpperCase();
         
@@ -84,7 +84,6 @@
         // Initialize dashboard features
         initializeSidebar();
         initializeFeatures();
-        initializeSetupModal();
         
       } else {
         console.log('❌ No user authenticated, redirecting to auth...');
@@ -162,8 +161,8 @@
     
     switch(feature) {
       case 'telegram':
-        // Show setup modal for Telegram
-        showSetupModal();
+        // Redirect to create landing page
+        window.location.href = '/createLanding.html';
         break;
       case 'profile':
         window.location.href = '/createProfile.html';
@@ -182,70 +181,6 @@
         break;
       default:
         console.log('Unknown feature:', feature);
-    }
-  }
-
-  function initializeSetupModal() {
-    const modal = document.getElementById('setupModal');
-    const closeModal = document.getElementById('closeModal');
-    const cancelModal = document.getElementById('cancelModal');
-    const setupForm = document.getElementById('setupForm');
-    
-    if (closeModal) {
-      closeModal.addEventListener('click', () => {
-        if (modal) modal.classList.remove('show');
-      });
-    }
-    
-    if (cancelModal) {
-      cancelModal.addEventListener('click', () => {
-        if (modal) modal.classList.remove('show');
-      });
-    }
-    
-    if (setupForm) {
-      setupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const lang = document.getElementById('langSelect').value;
-        const currency = document.getElementById('currencySelect').value;
-        const botName = document.getElementById('botName').value;
-        
-        console.log('Setup config:', { lang, currency, botName });
-        
-        // Save config to Firestore
-        try {
-          const auth = window.firebaseServices ? window.firebaseServices.auth : null;
-          const db = window.firebaseServices ? window.firebaseServices.db : null;
-          
-          if (auth && db && auth.currentUser) {
-            await db.collection('users').doc(auth.currentUser.uid).update({
-              telegramConfig: {
-                language: lang,
-                currency: currency,
-                botName: botName,
-                configuredAt: firebase.firestore.FieldValue.serverTimestamp()
-              }
-            });
-            
-            console.log('✅ Configuration saved');
-            if (modal) modal.classList.remove('show');
-            
-            // Redirect to Telegram page
-            window.location.href = '/telegram.html';
-          }
-        } catch (error) {
-          console.error('Error saving config:', error);
-          showError('Erreur lors de la sauvegarde de la configuration');
-        }
-      });
-    }
-  }
-
-  function showSetupModal() {
-    const modal = document.getElementById('setupModal');
-    if (modal) {
-      modal.classList.add('show');
     }
   }
 
@@ -274,7 +209,6 @@
 
   // Development helpers
   window.dashboardDebug = {
-    showSetupModal: showSetupModal,
     showError: showError,
     checkAuth: () => {
       const auth = window.firebaseServices ? window.firebaseServices.auth : null;

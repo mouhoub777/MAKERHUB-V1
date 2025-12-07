@@ -1,4 +1,4 @@
-module.exports = {
+﻿module.exports = {
   // Configuration complète des devises
   currencies: {
     USD: {
@@ -47,7 +47,7 @@ module.exports = {
     },
     AUD: {
       code: 'AUD',
-      name: 'Dollar australien',
+      name: 'Australian Dollar',
       symbol: 'A$',
       locale: 'en-AU',
       country: 'AU',
@@ -135,7 +135,7 @@ module.exports = {
     },
     BRL: {
       code: 'BRL',
-      name: 'Real brésilien',
+      name: 'Brazilian Real',
       symbol: 'R$',
       locale: 'pt-BR',
       country: 'BR',

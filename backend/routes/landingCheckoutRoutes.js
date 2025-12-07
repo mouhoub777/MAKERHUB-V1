@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const { stripe } = require('../../config/stripe'); // ✅ Chemin corrigé
 const admin = require('firebase-admin');
@@ -28,7 +28,7 @@ router.post('/create-landing-checkout-session', async (req, res) => {
     if (!pageDoc.exists) {
       return res.status(404).json({
         success: false,
-        message: 'Page non trouvée'
+        message: 'Page not found'
       });
     }
 

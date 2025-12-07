@@ -1,4 +1,4 @@
-// middleware/validation.js - Middleware de validation et sanitisation
+﻿// middleware/validation.js - Middleware de validation et sanitisation
 const validator = require('validator');
 
 // Langues supportées
@@ -60,7 +60,7 @@ function validateEmail(email) {
 // Valider une langue cible
 function validateTargetLanguage(language) {
   if (!language || typeof language !== 'object') {
-    return { isValid: false, error: 'Langue invalide' };
+    return { isValid: false, error: 'Invalid language' };
   }
   
   const { code, name, flag, targetChannel } = language;
@@ -82,7 +82,7 @@ function validateTargetLanguage(language) {
   
   // Vérifier le canal cible
   if (!validateTelegramUrl(targetChannel)) {
-    return { isValid: false, error: `URL du canal cible invalide pour ${name}` };
+    return { isValid: false, error: `Invalid target channel URL for ${name}` };
   }
   
   return { isValid: true };
@@ -97,17 +97,17 @@ function validateConfig(req, res, next) {
     
     // Valider userId
     if (!validateUserId(userId)) {
-      errors.push('userId invalide (3-100 caractères alphanumérique)');
+      errors.push('Invalid userId (3-100 alphanumeric characters)');
     }
     
     // Valider email
     if (!validateEmail(email)) {
-      errors.push('Email invalide');
+      errors.push('Invalid email');
     }
     
     // Valider le canal source
     if (!validateTelegramUrl(sourceChannel)) {
-      errors.push('URL du canal source invalide');
+      errors.push('Invalid source channel URL');
     }
     
     // Valider les langues cibles
@@ -118,7 +118,7 @@ function validateConfig(req, res, next) {
       if (targetLanguages.length === 0) {
         errors.push('Au moins une langue cible requise');
       } else if (targetLanguages.length > 5) {
-        errors.push('Maximum 5 langues cibles autorisées');
+        errors.push('Maximum 5 target languages allowed');
       }
       
       // Valider chaque langue
@@ -141,7 +141,7 @@ function validateConfig(req, res, next) {
     // Si des erreurs sont trouvées, les retourner
     if (errors.length > 0) {
       return res.status(400).json({
-        error: 'Données de configuration invalides',
+        error: 'Invalid configuration data',
         details: errors
       });
     }
@@ -149,9 +149,9 @@ function validateConfig(req, res, next) {
     next();
     
   } catch (error) {
-    console.error('Erreur validation middleware:', error);
+    console.error('Validation middleware error:', error);
     res.status(500).json({
-      error: 'Erreur lors de la validation des données'
+      error: 'Error validating data'
     });
   }
 }
@@ -206,23 +206,23 @@ function validateWebhookData(req, res, next) {
     // Vérifier que c'est bien un update Telegram
     if (typeof update_id !== 'number') {
       return res.status(400).json({
-        error: 'Format de webhook Telegram invalide'
+        error: 'Invalid Telegram webhook format'
       });
     }
     
     // Il doit y avoir soit un message soit un channel_post
     if (!message && !channel_post) {
       return res.status(400).json({
-        error: 'Aucun message ou channel_post trouvé'
+        error: 'No message or channel_post found'
       });
     }
     
     next();
     
   } catch (error) {
-    console.error('Erreur validation webhook:', error);
+    console.error('Webhook validation error:', error);
     res.status(500).json({
-      error: 'Erreur lors de la validation du webhook'
+      error: 'Error validating webhook'
     });
   }
 }
@@ -235,7 +235,7 @@ function validateQueryParams(req, res, next) {
   
   // Valider userId si présent
   if (userId && !validateUserId(userId)) {
-    errors.push('userId invalide dans les paramètres de requête');
+    errors.push('Invalid userId in query parameters');
   }
   
   // Valider limit si présent
@@ -250,7 +250,7 @@ function validateQueryParams(req, res, next) {
   
   if (errors.length > 0) {
     return res.status(400).json({
-      error: 'Paramètres de requête invalides',
+      error: 'Invalid query parameters',
       details: errors
     });
   }
@@ -264,7 +264,7 @@ function validateObjectId(req, res, next) {
   
   if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
     return res.status(400).json({
-      error: 'ID de configuration invalide'
+      error: 'Invalid configuration ID'
     });
   }
   
@@ -295,18 +295,18 @@ function validateTranslationParams(req, res, next) {
   
   // Valider la langue cible
   if (!targetLanguage || !SUPPORTED_LANGUAGES.includes(targetLanguage.toUpperCase())) {
-    errors.push('Langue cible invalide');
+    errors.push('Invalid target language');
   }
   
   // Valider la langue source si fournie
   if (sourceLanguage && sourceLanguage !== 'auto' && 
       !SUPPORTED_LANGUAGES.includes(sourceLanguage.toUpperCase())) {
-    errors.push('Langue source invalide');
+    errors.push('Invalid source language');
   }
   
   if (errors.length > 0) {
     return res.status(400).json({
-      error: 'Paramètres de traduction invalides',
+      error: 'Invalid translation parameters',
       details: errors
     });
   }

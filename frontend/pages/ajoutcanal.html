@@ -191,12 +191,12 @@
   </div>
 
   <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage-compat.js"></script>
   
-  <!-- Firebase configuration from /config/ folder -->
+  <!-- Firebase configuration -->
   <script src="/config/firebase.js"></script>
   
   <!-- Sidebar Component -->
@@ -205,12 +205,9 @@
   <!-- Main ajoutcanal script -->
   <script src="/assets/js/ajoutcanal.js"></script>
   
-  <!-- Critical handlers that must work immediately -->
+  <!-- Navigation & Logout handlers -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // IMPORTANT: Handlers pour les boutons de navigation - doivent fonctionner immédiatement
-      // même si Firebase n'est pas encore chargé
-      
       // Fonction de navigation back
       function handleBackNavigation() {
         console.log('↩️ Back navigation triggered');
@@ -244,32 +241,16 @@
         window.location.href = `/telegramsubscription.html?${params.join('&')}`;
       }
       
-      // Attacher les handlers immédiatement
+      // Attacher les handlers
       const backButtonTop = document.getElementById('backButtonTop');
       const backButtonBottom = document.getElementById('backButtonBottom');
       const goToDashboardSuccess = document.getElementById('goToDashboardSuccess');
-      const backToDashboardBtn = document.getElementById('backToDashboardBtn');
       const backToEdit = document.getElementById('backToEdit');
       
-      // Boutons Back/Cancel
-      if (backButtonTop) {
-        backButtonTop.addEventListener('click', handleBackNavigation);
-      }
-      if (backButtonBottom) {
-        backButtonBottom.addEventListener('click', handleBackNavigation);
-      }
+      if (backButtonTop) backButtonTop.addEventListener('click', handleBackNavigation);
+      if (backButtonBottom) backButtonBottom.addEventListener('click', handleBackNavigation);
+      if (goToDashboardSuccess) goToDashboardSuccess.addEventListener('click', goToTelegramDashboard);
       
-      // Bouton Dashboard (header)
-      if (backToDashboardBtn) {
-        backToDashboardBtn.addEventListener('click', goToTelegramDashboard);
-      }
-      
-      // Bouton Success Dashboard
-      if (goToDashboardSuccess) {
-        goToDashboardSuccess.addEventListener('click', goToTelegramDashboard);
-      }
-      
-      // Bouton Keep Editing
       if (backToEdit) {
         backToEdit.addEventListener('click', function() {
           document.getElementById('statusCard').style.display = 'none';
@@ -277,22 +258,15 @@
           document.getElementById('channelLink').focus();
         });
       }
-      
-      // Sign out handler
-      const signoutBtn = document.getElementById('logoutBtn');
-      if (signoutBtn) {
-        signoutBtn.addEventListener('click', async function(e) {
-          e.preventDefault();
-          if (window.firebaseAuth) {
-            try {
-              await window.firebaseAuth.signOut();
-              window.location.href = '/auth.html';
-            } catch (error) {
-              console.error('Sign out error:', error);
-            }
-          }
-        });
-      }
+    });
+  </script>
+  
+  <!-- Logout Script -->
+  <script>
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      firebase.auth().signOut().then(() => {
+        window.location.href = '/auth.html';
+      });
     });
   </script>
 </body>

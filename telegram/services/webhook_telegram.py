@@ -1,4 +1,4 @@
-import os
+﻿import os
 import stripe
 from flask import Flask, request
 from telegram import Bot
@@ -38,11 +38,11 @@ def webhook_received():
             payload, sig_header, STRIPE_WEBHOOK_SECRET
         )
     except stripe.error.SignatureVerificationError as e:
-        print("❌ Signature Stripe invalide :", e)
-        return "Signature Stripe invalide", 400
+        print("❌ Invalid Stripe signature :", e)
+        return "Invalid Stripe signature", 400
     except Exception as e:
         print("❌ Erreur lors du traitement du webhook :", e)
-        return "Erreur webhook", 400
+        return "Webhook error", 400
 
     print(f"✅ Event type: {event['type']} reçu et validé")
 
@@ -51,7 +51,7 @@ def webhook_received():
         telegram_user_id = session["metadata"].get("telegram_user_id")
         creator_id = session["metadata"].get("creator_id")
 
-        print(f"✅ Paiement reçu - Telegram ID: {telegram_user_id} | Creator ID: {creator_id}")
+        print(f"✅ Payment received - Telegram ID: {telegram_user_id} | Creator ID: {creator_id}")
 
         if not telegram_user_id or not creator_id:
             print("❌ Metadata manquante.")
@@ -80,7 +80,7 @@ def webhook_received():
                 bot.send_message(
                     chat_id=int(telegram_user_id),
                     text=(
-                        "✅ Merci pour ton paiement !\n"
+                        "✅ Thank you for your payment\!\n"
                         f"Voici ton lien d'accès (valable 24h, usage unique) :\n\n{invite_link.invite_link}\n\n"
                         "👉 Si tu ne reçois pas le lien, clique sur [ce lien](https://t.me/AccesvipFP_bot) puis appuie sur Démarrer dans Telegram, et contacte le support."
                     ),
@@ -93,7 +93,7 @@ def webhook_received():
                 # Par exemple : sauvegarde invite_link pour lui redonner sur la page ou sur demande
 
         except Exception as err:
-            print("❌ Erreur lors de la génération du lien :", err)
+            print("❌ Error generating link :", err)
             return "", 200
 
     elif event["type"] in ("customer.subscription.deleted", "invoice.payment_failed"):
@@ -105,20 +105,20 @@ def webhook_received():
             telegram_user_id = data["metadata"].get("telegram_user_id")
             creator_id = data["metadata"].get("creator_id")
 
-        print(f"⛔ Désabonnement détecté - Telegram ID: {telegram_user_id} | Creator ID: {creator_id}")
+        print(f"⛔ Unsubscription detected - Telegram ID: {telegram_user_id} | Creator ID: {creator_id}")
 
         if not telegram_user_id or not creator_id:
-            print("❌ Metadata manquante pour désabonnement.")
+            print("❌ Missing metadata for unsubscription.")
             return "", 200
 
         doc = db.collection("creators").document(creator_id).get()
         if not doc.exists:
-            print("❌ Creator introuvable en BDD pour désabonnement.")
+            print("❌ Creator not found in DB for unsubscription.")
             return "", 200
 
         channel_id = doc.to_dict().get("channel_id")
         if not channel_id:
-            print("❌ Creator sans channel_id pour désabonnement.")
+            print("❌ Creator without channel_id for unsubscription.")
             return "", 200
 
         # Retirer le membre avec userbot Telethon (admin obligatoire)
@@ -128,9 +128,10 @@ def webhook_received():
                 client.kick_participant(channel_id, int(telegram_user_id))
                 print(f"✅ Utilisateur {telegram_user_id} retiré du canal {channel_id}")
         except Exception as err:
-            print(f"❌ Erreur lors du retrait du membre : {err}")
+            print(f"❌ Error removing member : {err}")
 
     return "", 200
 
 if __name__ == "__main__":
     app.run(port=4242)
+

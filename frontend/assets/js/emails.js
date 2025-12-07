@@ -1,5 +1,5 @@
-// Email Marketing - JavaScript Functionality
-// MAKERHUB V1 - Collecte d'emails seulement (envoi désactivé)
+﻿// Email Marketing - JavaScript Functionality
+// MAKERHUB V1 - Collecte d'emails seulement (envoi dÃ©sactivÃ©)
 
 // Email subscribers data - connect to your database
 let allData = [];
@@ -98,8 +98,8 @@ function renderTable() {
       <tr>
         <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
           <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-          <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Aucun email collecté</div>
-          <div style="font-size: 14px;">Les emails seront collectés automatiquement après chaque paiement Stripe</div>
+          <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Aucun email collectÃ©</div>
+          <div style="font-size: 14px;">Les emails seront collectÃ©s automatiquement aprÃ¨s chaque paiement Stripe</div>
         </td>
       </tr>
     `;
@@ -182,7 +182,7 @@ function sendEmailToSelected() {
   
   // Show V1 message
   const choice = confirm(
-    '📧 Email campaigns will be available in V2!\n\n' +
+    'ðŸ“§ Email campaigns will be available in V2!\n\n' +
     'The SMTP system is ready but not deployed in this version.\n\n' +
     'Would you like to export the selected emails as CSV instead?'
   );
@@ -236,7 +236,7 @@ function exportSelectedEmails() {
   document.body.removeChild(link);
   window.URL.revokeObjectURL(url);
   
-  alert(`✅ Successfully exported ${selectedData.length} email${selectedData.length > 1 ? 's' : ''} to CSV!`);
+  alert(`âœ… Successfully exported ${selectedData.length} email${selectedData.length > 1 ? 's' : ''} to CSV!`);
 }
 
 // Export all emails
@@ -281,8 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <tr>
           <td colspan="4" style="text-align: center; padding: 40px; color: var(--danger);">
             <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-            <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Firebase non initialisé</div>
-            <div style="font-size: 14px;">Veuillez rafraîchir la page ou vérifier la configuration</div>
+            <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Firebase non initialisÃ©</div>
+            <div style="font-size: 14px;">Veuillez rafraÃ®chir la page ou vÃ©rifier la configuration</div>
           </td>
         </tr>
       `;
