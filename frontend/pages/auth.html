@@ -343,10 +343,10 @@
                         <ul class="features-list">
                             <li>Telegram Membership (4%)</li>
                             <li>Statistics</li>
-                            <li class="feature-disabled">Telegram Translation</li>
-                            <li class="feature-disabled">Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
+                            <li class="feature-disabled">Telegram Translation</li>
+                            <li class="feature-disabled">Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
                         </ul>
                         
                         <button class="plan-cta cta-primary" aria-label="Upgrade to pro plan">Upgrade to Pro</button>
@@ -366,8 +366,8 @@
                         
                         <ul class="features-list">
                             <li>Unlimited Telegram Channels (2%)</li>
-                            <li>Telegram Translation <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Statistics</li>
+                            <li>Telegram Translation <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
                             <li>Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
@@ -408,9 +408,9 @@
                     <h4>Contact</h4>
                     <a href="mailto:live@makerhub.pro">live@makerhub.pro</a>
                     <div class="social-link">
-                        <a href="https://t.me/Makerhub" target="_blank" class="telegram-link" rel="noopener noreferrer">
+                        <a href="https://t.me/makerhubsupport" target="_blank" class="telegram-link" rel="noopener noreferrer">
                             <i class="fab fa-telegram-plane" aria-hidden="true"></i>
-                            @Makerhub
+                            @makerhubsupport
                         </a>
                     </div>
                 </div>
@@ -534,8 +534,8 @@
     <!-- Configuration JavaScript -->
     <script>
         window.MAKERHUB_CONFIG = {
-            NODE_API_URL: 'http://localhost:3000',
-            NODE_ENV: 'development'
+            NODE_API_URL: 'https://makerhub.pro',
+            NODE_ENV: 'production'
         };
     </script>
 
@@ -569,6 +569,7 @@
             document.getElementById('monetizeTelegramBtn')?.addEventListener('click', function() {
                 // Flag pour rediriger vers createLanding après signup
                 window.redirectToCreateLanding = true;
+                window.selectedPlan = null; // Reset plan selection
                 
                 // Utiliser le système de modal existant
                 if (window.authApp && window.authApp.showSignupModal) {
@@ -576,6 +577,121 @@
                 } else {
                     // Fallback: cliquer sur le bouton Sign Up
                     document.getElementById('signupBtn-header')?.click();
+                }
+            });
+        });
+    </script>
+
+    <!-- Subscription Script for Pricing Section -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const API_URL = window.MAKERHUB_CONFIG?.NODE_API_URL || 'https://makerhub.pro';
+            
+            // Variable globale pour stocker le plan sélectionné
+            window.selectedPlan = null;
+
+            // Fonction pour s'abonner (appelée après signup ou si déjà connecté)
+            window.subscribeToPlan = async function(plan) {
+                try {
+                    const user = firebase.auth().currentUser;
+                    if (!user) {
+                        // Stocker le plan et ouvrir modal signup
+                        window.selectedPlan = plan;
+                        window.redirectToCreateLanding = false; // Ne pas rediriger vers createLanding
+                        
+                        if (window.authApp && window.authApp.showSignupModal) {
+                            window.authApp.showSignupModal();
+                        } else {
+                            document.getElementById('signupBtn-header')?.click();
+                        }
+                        return;
+                    }
+
+                    // Utilisateur connecté → rediriger vers Stripe
+                    console.log('💳 Redirection vers Stripe Checkout pour plan:', plan);
+                    
+                    const token = await user.getIdToken();
+
+                    const response = await fetch(`${API_URL}/api/subscription/create-checkout`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ plan: plan })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success && data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        alert(data.error || 'Erreur lors de la création de l\'abonnement');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    alert('Erreur de connexion. Veuillez réessayer.');
+                }
+            };
+
+            // Attacher les événements aux boutons pricing
+            const pricingButtons = document.querySelectorAll('.pricing .plan-cta');
+            pricingButtons.forEach(btn => {
+                const card = btn.closest('.pricing-card');
+                const planName = card.querySelector('.plan-name')?.textContent?.toLowerCase();
+                
+                btn.addEventListener('click', () => {
+                    if (planName === 'freemium') {
+                        // Plan gratuit - ouvrir signup sans plan payant
+                        window.selectedPlan = null;
+                        if (window.authApp && window.authApp.showSignupModal) {
+                            window.authApp.showSignupModal();
+                        } else {
+                            document.getElementById('signupBtn-header')?.click();
+                        }
+                    } else if (planName === 'pro' || planName === 'business') {
+                        window.subscribeToPlan(planName);
+                    }
+                });
+            });
+
+            // Écouter quand l'utilisateur se connecte (après signup)
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user && window.selectedPlan) {
+                    // L'utilisateur vient de s'inscrire et avait sélectionné un plan payant
+                    console.log('✅ Signup réussi, redirection vers Stripe pour plan:', window.selectedPlan);
+                    
+                    // Petit délai pour laisser Firebase finir
+                    setTimeout(async () => {
+                        const plan = window.selectedPlan;
+                        window.selectedPlan = null; // Reset
+                        
+                        try {
+                            const token = await user.getIdToken();
+                            
+                            const response = await fetch(`${API_URL}/api/subscription/create-checkout`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({ plan: plan })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success && data.url) {
+                                window.location.href = data.url;
+                            } else {
+                                console.error('Erreur Stripe:', data.error);
+                                // Rediriger vers la page plans si erreur
+                                window.location.href = '/plans.html';
+                            }
+                        } catch (error) {
+                            console.error('Erreur redirection Stripe:', error);
+                            window.location.href = '/plans.html';
+                        }
+                    }, 1500);
                 }
             });
         });

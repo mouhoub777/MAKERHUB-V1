@@ -1,5 +1,5 @@
 ﻿// telegramsubscription.js - Telegram Pages Management with Firebase
-// COMPLETE VERSION WITH CURRENCY BUTTON - v2.4 CSP COMPATIBLE
+// COMPLETE VERSION WITH CURRENCY BUTTON - v2.5 WITH PLAN & STRIPE CHECK
 // NO INLINE EVENT HANDLERS (onclick, onload, onerror) - ALL addEventListener
 console.log('MAKERHUB Telegram Pages Manager initialized');
 
@@ -24,6 +24,7 @@ let currentPageIdForLanguageUpdate = null;
 let selectedUpdateLanguage = null;
 let currentPageIdForCurrencyUpdate = null;
 let selectedUpdateCurrency = null;
+let userSetupData = null; // Store user setup info globally
 
 // Security Helper
 const SecurityHelper = {
@@ -125,6 +126,186 @@ const currencies = [
     { code: 'BRL', name: 'Brazilian Real', symbol: 'R$' },
     { code: 'ZAR', name: 'South African Rand', symbol: 'R' }
 ];
+
+// ============== USER SETUP VERIFICATION ==============
+async function checkUserSetup() {
+    if (!auth || !auth.currentUser) return { hasStripe: false, plan: null };
+    
+    const user = auth.currentUser;
+    
+    try {
+        // 1. Vérifier/Créer le plan utilisateur
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        let userData = userDoc.exists ? userDoc.data() : {};
+        
+        // Si pas de plan, définir Freemium par défaut (10% commission)
+        if (!userData.plan) {
+            console.log('📋 No plan found, setting Freemium (10% commission)');
+            await db.collection('users').doc(user.uid).set({
+                plan: 'freemium',
+                commissionRate: 10,
+                planUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            userData.plan = 'freemium';
+            userData.commissionRate = 10;
+        }
+        
+        // 2. Vérifier Stripe Connect
+        let hasStripe = false;
+        try {
+            const token = await user.getIdToken();
+            const response = await fetch('/api/stripe-connect/stripe-status', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const stripeData = await response.json();
+                hasStripe = stripeData.status === 'connected' || 
+                           (stripeData.payments_enabled && stripeData.payouts_enabled);
+            }
+        } catch (stripeError) {
+            console.error('Error checking Stripe status:', stripeError);
+        }
+        
+        const setupData = {
+            hasStripe: hasStripe,
+            plan: userData.plan || 'freemium',
+            commissionRate: userData.commissionRate || 10
+        };
+        
+        // Store globally
+        userSetupData = setupData;
+        
+        return setupData;
+        
+    } catch (error) {
+        console.error('Error in checkUserSetup:', error);
+        return { hasStripe: false, plan: 'freemium', commissionRate: 10 };
+    }
+}
+
+// Afficher l'alerte Stripe Connect
+function showStripeConnectAlert() {
+    // Vérifier si l'alerte existe déjà
+    if (document.getElementById('stripeConnectAlert')) return;
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.id = 'stripeConnectAlert';
+    alertDiv.className = 'stripe-connect-alert';
+    alertDiv.innerHTML = `
+        <div class="alert-content">
+            <div class="alert-icon">
+                <i class="fab fa-stripe-s"></i>
+            </div>
+            <div class="alert-text">
+                <h3>Connect Your Stripe Account</h3>
+                <p>To receive payments from your subscribers, you need to connect your Stripe account first.</p>
+            </div>
+            <button class="btn btn-stripe-connect" id="goToStripeConnect">
+                <i class="fas fa-link"></i>
+                Connect Stripe
+            </button>
+        </div>
+    `;
+    
+    // Ajouter les styles
+    if (!document.getElementById('stripeAlertStyles')) {
+        const style = document.createElement('style');
+        style.id = 'stripeAlertStyles';
+        style.textContent = `
+            .stripe-connect-alert {
+                background: linear-gradient(135deg, #635BFF 0%, #7B73FF 100%);
+                border-radius: 12px;
+                padding: 20px 24px;
+                margin-bottom: 24px;
+                color: white;
+                animation: slideDown 0.3s ease;
+            }
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .stripe-connect-alert .alert-content {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            .stripe-connect-alert .alert-icon {
+                width: 48px;
+                height: 48px;
+                background: rgba(255,255,255,0.2);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+            }
+            .stripe-connect-alert .alert-text {
+                flex: 1;
+                min-width: 200px;
+            }
+            .stripe-connect-alert .alert-text h3 {
+                margin: 0 0 4px 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+            .stripe-connect-alert .alert-text p {
+                margin: 0;
+                font-size: 14px;
+                opacity: 0.9;
+            }
+            .btn-stripe-connect {
+                background: white;
+                color: #635BFF;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s;
+            }
+            .btn-stripe-connect:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+            @media (max-width: 600px) {
+                .stripe-connect-alert .alert-content {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                .btn-stripe-connect {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Insérer avant la section des pages
+    const pagesSection = document.querySelector('.pages-section');
+    if (pagesSection) {
+        pagesSection.insertBefore(alertDiv, pagesSection.firstChild);
+    }
+    
+    // Event listener pour le bouton
+    document.getElementById('goToStripeConnect')?.addEventListener('click', function() {
+        window.location.href = '/payments.html';
+    });
+}
+
+// Cacher l'alerte Stripe si elle existe
+function hideStripeConnectAlert() {
+    const alert = document.getElementById('stripeConnectAlert');
+    if (alert) {
+        alert.remove();
+    }
+}
+// =====================================================
 
 // Initialize all event listeners
 function initializeEventListeners() {
@@ -460,6 +641,17 @@ async function loadPages() {
             showEmptyState();
             hidePageLoader(); // HIDE LOADER
             return;
+        }
+        
+        // ✅ VÉRIFIER LE SETUP UTILISATEUR (Plan + Stripe)
+        const userSetup = await checkUserSetup();
+        console.log('👤 User setup:', userSetup);
+        
+        // Afficher l'alerte Stripe si pas connecté
+        if (!userSetup.hasStripe) {
+            showStripeConnectAlert();
+        } else {
+            hideStripeConnectAlert();
         }
         
         let profileName = 'default';
@@ -890,6 +1082,15 @@ function handleCardAction(event) {
         return;
     }
     
+    // ✅ Vérifier Stripe Connect pour les actions qui nécessitent des paiements
+    if ((action === 'pricing') && userSetupData && !userSetupData.hasStripe) {
+        showToast('Please connect your Stripe account first to set pricing', 'warning');
+        setTimeout(function() {
+            window.location.href = '/payments.html';
+        }, 1500);
+        return;
+    }
+    
     switch(action) {
         case 'edit':
             editPage(pageId);
@@ -1036,6 +1237,15 @@ function connectTelegram(pageId) {
 }
 
 function startCreatePage() {
+    // ✅ Vérifier Stripe Connect avant de créer une page
+    if (userSetupData && !userSetupData.hasStripe) {
+        showToast('Please connect your Stripe account first to receive payments', 'warning');
+        setTimeout(function() {
+            window.location.href = '/payments.html';
+        }, 1500);
+        return;
+    }
+    
     openLanguageModal();
 }
 

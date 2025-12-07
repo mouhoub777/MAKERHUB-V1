@@ -77,10 +77,10 @@
           <ul class="features-list">
             <li>Telegram Membership (4%)</li>
             <li>Statistics</li>
-            <li class="disabled">Telegram Translation</li>
-            <li class="disabled">Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
             <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
             <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
+            <li class="disabled">Telegram Translation</li>
+            <li class="disabled">Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
           </ul>
           
           <button class="plan-cta cta-primary">Upgrade to Pro</button>
@@ -99,11 +99,11 @@
           
           <ul class="features-list">
             <li>Unlimited Telegram Channels (2%)</li>
+            <li>Statistics</li>
             <li>Telegram Translation <span class="coming-soon-tag">Coming Soon</span></li>
             <li>Calendar & Bookings <span class="coming-soon-tag">Coming Soon</span></li>
             <li>Email Marketing <span class="coming-soon-tag">Coming Soon</span></li>
             <li>Telegram Funnel <span class="coming-soon-tag">Coming Soon</span></li>
-            <li>Statistics</li>
           </ul>
           
           <button class="plan-cta cta-primary">Upgrade to Business</button>
@@ -122,6 +122,14 @@
 <!-- Firebase Config -->
 <script src="/config/firebase.js"></script>
 
+<!-- MAKERHUB Config -->
+<script>
+    window.MAKERHUB_CONFIG = {
+        NODE_API_URL: 'http://localhost:3000',
+        NODE_ENV: 'development'
+    };
+</script>
+
 <!-- Sidebar Component -->
 <script src="/assets/js/sidebar.js"></script>
 
@@ -130,6 +138,106 @@
   document.getElementById('logoutBtn')?.addEventListener('click', () => {
     firebase.auth().signOut().then(() => {
       window.location.href = '/auth.html';
+    });
+  });
+</script>
+
+<!-- Subscription Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const API_URL = window.MAKERHUB_CONFIG?.NODE_API_URL || 'https://makerhub.pro';
+    
+    // Vérifier si succès ou annulation
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      const plan = urlParams.get('plan');
+      alert(`🎉 Félicitations ! Vous êtes maintenant abonné au plan ${plan} !`);
+      window.history.replaceState({}, document.title, '/plans.html');
+    }
+    if (urlParams.get('canceled') === 'true') {
+      alert('Paiement annulé.');
+      window.history.replaceState({}, document.title, '/plans.html');
+    }
+
+    // Fonction pour s'abonner
+    async function subscribeToPlan(plan) {
+      try {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          alert('Veuillez vous connecter pour vous abonner.');
+          window.location.href = '/auth.html';
+          return;
+        }
+
+        const token = await user.getIdToken();
+
+        const response = await fetch(`${API_URL}/api/subscription/create-checkout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ plan: plan })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.url) {
+          window.location.href = data.url;
+        } else {
+          alert(data.error || 'Erreur lors de la création de l\'abonnement');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur de connexion. Veuillez réessayer.');
+      }
+    }
+
+    // Attacher les événements aux boutons
+    const buttons = document.querySelectorAll('.plan-cta');
+    buttons.forEach(btn => {
+      const card = btn.closest('.pricing-card');
+      const planName = card.querySelector('.plan-name')?.textContent?.toLowerCase();
+      
+      btn.addEventListener('click', () => {
+        if (planName === 'freemium') {
+          // Plan gratuit - juste continuer
+          window.location.href = '/dashboard.html';
+        } else if (planName === 'pro' || planName === 'business') {
+          subscribeToPlan(planName);
+        }
+      });
+    });
+
+    // Charger le statut actuel
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const token = await user.getIdToken();
+          const response = await fetch(`${API_URL}/api/subscription/status`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await response.json();
+          
+          if (data.success && data.plan !== 'freemium') {
+            // Marquer le plan actuel
+            const cards = document.querySelectorAll('.pricing-card');
+            cards.forEach(card => {
+              const name = card.querySelector('.plan-name')?.textContent?.toLowerCase();
+              if (name === data.plan) {
+                const btn = card.querySelector('.plan-cta');
+                if (btn) {
+                  btn.textContent = '✓ Plan actuel';
+                  btn.disabled = true;
+                  btn.style.opacity = '0.7';
+                }
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Erreur chargement statut:', error);
+        }
+      }
     });
   });
 </script>

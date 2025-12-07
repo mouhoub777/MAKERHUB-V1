@@ -306,6 +306,7 @@ app.use('/api/auth', require('./backend/routes/authRoutes'));
 app.use('/api/checkout', require('./backend/routes/checkoutRoutes'));
 app.use('/api/tracking', require('./backend/routes/Trackingroutes'));
 app.use('/api/landing-checkout', require('./backend/routes/landingCheckoutRoutes'));
+app.use('/api/subscription', require('./backend/routes/subscriptionRoutes'));
 
 // ==================== ROUTES PAGES HTML ====================
 app.get('/', (req, res) => {
@@ -314,7 +315,7 @@ app.get('/', (req, res) => {
 
 const pages = [
   'auth', 'dashboard', 'createLanding', 'telegramsubscription',
-  'emails', 'statistiques', 'avis', 'prix', 'ajoutcanal', 'payments'
+  'emails', 'statistiques', 'avis', 'prix', 'ajoutcanal', 'payments', 'plans'
 ];
 
 pages.forEach(page => {
@@ -736,10 +737,12 @@ app.listen(PORT, () => {
   console.log(`   📱 Telegram: http://localhost:${PORT}/telegramsubscription.html`);
   console.log(`   📧 Emails: http://localhost:${PORT}/emails.html`);
   console.log(`   💳 Payments: http://localhost:${PORT}/payments.html`);
+  console.log(`   💰 Plans: http://localhost:${PORT}/plans.html`);
   console.log('');
   console.log('🔗 API ENDPOINTS:');
   console.log(`   ❤️  Health: http://localhost:${PORT}/api/health`);
   console.log(`   💳 Stripe: http://localhost:${PORT}/api/stripe-status`);
+  console.log(`   💰 Subscription: http://localhost:${PORT}/api/subscription/*`);
   console.log(`   🐍 Python: http://localhost:${PORT}/api/python/health`);
   console.log(`   💰 Checkout: http://localhost:${PORT}/checkout/{pageId}`);
   console.log(`   📱 Telegram: http://localhost:${PORT}/api/telegram/*`);
@@ -756,5 +759,3 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-
-
